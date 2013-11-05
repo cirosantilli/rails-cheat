@@ -1,0 +1,35 @@
+<h1>Controller0#new</h1>
+
+<% if @model0.errors.any? %>
+  <div id="error_explanation">
+
+    <p>List all errors:</p>
+    <ul>
+    <% @model0.errors.each do |field, msg| %>
+      <li><%= field %>: <%= msg %></li>
+    <% end %>
+    </ul>
+
+    <p>List all errors with full_messages:</p>
+    <ul>
+    <% @model0.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<%= form_tag :action => 'create' do %>
+  <p><label for="model0_string_col">String Column</label>:
+  <%= text_field 'model0', 'string_col' %></p>
+  <% if @model0.errors.has_key? :string_col %>
+    <p>Errors for this field: <%= @model0.errors[:string_col].join(', ') %></p>
+  <% end %>
+  <p><label for="model0_integer_col">Integer Column</label>:
+  <%= text_field 'model0', 'integer_col' %></p>
+
+  <p><label for="model0_model1_id">Model 1</label>:
+  <%= collection_select(:model0, :model1_id, @model1s, :id, :string_col) %></p>
+  <%= submit_tag 'Create' %>
+<% end %>
+<%= link_to 'Back', {:action => 'list'} %>

@@ -1,0 +1,44 @@
+<h1>Controller0#action0</h1>
+<p>Find me in app/views/controller0/action0.html.erb</p>
+<% @var0 == 0 or raise %>
+<% @var1 == 1 or raise %>
+
+<h2>link_to</h2>
+<%= link_to 'New', {:action => 'new'} %>
+<%= link_to 'Show', {:action => 'show', :var0 => 0, :var1 => 1} %>
+<%#= link_to 'I_DONT_EXIST', {:action => 'I_DONT_EXIST'} %>
+
+<h2>params</h2>
+
+<p>params = <%= @params %></p>
+
+<p>Try this URL: <a href="?a=b&c=d">?a=b&c=d</a></p>
+
+<h2>forms</h2>
+
+<p><%= text_field 'model0', 'string_col' %></p>
+<p><input id="model0_string_col" name="model0[string_col]" type="text" /></p>
+
+<%#= password_field_tag(:password) %>
+<%#= hidden_field_tag(:parent_id, "5") %>
+<%#= search_field(:user, :name) %>
+<%#= telephone_field(:user, :phone) %>
+<%#= date_field(:user, :born_on) %>
+<%#= datetime_field(:user, :meeting_time) %>
+<%#= datetime_local_field(:user, :graduation_day) %>
+<%#= month_field(:user, :birthday_month) %>
+<%#= week_field(:user, :birthday_week) %>
+<%#= url_field(:user, :homepage) %>
+<%#= email_field(:user, :address) %>
+<%#= color_field(:user, :favorite_color) %>
+<%#= time_field(:task, :started_at) %>
+
+<%#dropdown selection on one to many relation%>
+  <%#= collection_select(:model0, :model1_id, @model1s, :id, :string_col) %>
+
+<%= form_tag :action => 'create' do %>
+<p><label for="model0_string_col">String Column</label>:
+
+
+<%= submit_tag 'Create' %>
+<% end %>

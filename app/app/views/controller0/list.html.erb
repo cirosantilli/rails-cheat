@@ -1,0 +1,11 @@
+<h1>Controller0#list</h1>
+<% if @model0s.blank? %>
+    <p>None</p>
+<% else %>
+    <ul id="model0s">
+    <% @model0s.each do |c| %>
+        <li><%= link_to c.string_col, {:action => 'show', :id => c.id} -%></li>
+    <% end %>
+    </ul>
+<% end %>
+<p><%= link_to "Create new Model0", {:action => 'new' }%></p>
