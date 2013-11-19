@@ -3,7 +3,7 @@
 <% @var0 == 0 or raise %>
 <% @var1 == 1 or raise %>
 
-<h2>link_to</h2>
+<h2>#link_to</h2>
 <ul>
   <li><%= link_to 'New', {action: 'new'} %></li>
   <li><%= link_to 'List', {action: 'list'} %></li>
@@ -14,11 +14,21 @@
   <li><%= link_to 'List Confirm', {action: 'list'}, data: {confirm: 'Are you sure you want to list?!?!'} %></li>
 </ul>
 
-<h2>params</h2>
+<h2>#render #partials</h2>
+
+<p>Insert another template at current point.</p>
+<p>The template file gets an underline appended!</p>
+<%= render "partial.html.erb" %>
+
+<h2>#params</h2>
 
 <p>params = <%= @params %></p>
 <p>Try this URL: <a href="?a=b&c=d&list[]=1&list[]=2&hash0[key0]=val0&hash0[key1]=val1">?a=b&c=d&list[]=1&list[]=2&hash0[key0]=val0&hash0[key1]=val1</a></p>
 <p>Only the a=b form is standard for URLs. It is rails tht parses lists and hashes.</p>
+
+<h2>#Rails.env</h2>
+
+<p>Rails.env = <%= @env %></p>
 
 <h2>forms</h2>
 
@@ -46,11 +56,7 @@
 <%= submit_tag 'Create' %>
 <% end %>
 
-<h1>Rails.env</h1>
-
-<p>Rails.env = <%= @env %></p>
-
-<h1>action mailer</h1>
+<h2>action mailer</h2>
 
 <p>For this to work, first configure your SMTP.</p>
 <%= form_tag action: 'mail' do %>

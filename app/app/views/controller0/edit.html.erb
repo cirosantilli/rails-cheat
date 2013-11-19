@@ -1,11 +1,7 @@
 <h1>Controller0#edit</h1>
+<%= render "model0_form_errors.html.erb" %>
 <%= form_tag action: 'update', id: @model0 do %>
-  <p><label for="model0_string_col">String Column</label>:
-  <%= text_field 'model0', 'string_col' %></p>
-  <p><label for="model0_integer_col">Integer Column</label>:
-  <%= text_field 'model0', 'integer_col' %></p>
-  <p><label for="model0_model1_id">Model 1</label>:
-  <%= collection_select(:model0, :model1_id, @model1s, :id, :string_col) %></p>
+  <%= render "model0_form_fields.html.erb" %>
   <%= submit_tag 'Save Changes' %>
 <% end %>
 <%= link_to 'Back', {action: 'show', id: @model0.id} %>

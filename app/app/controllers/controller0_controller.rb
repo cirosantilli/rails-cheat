@@ -94,7 +94,7 @@ class Controller0Controller < ApplicationController
         if @model0.update_attributes(model0_params)
           redirect_to action: 'show', id: @model0
         else
-          @model1s = Model1s.all
+          @model1s = Model1.all
           render action: 'edit'
         end
     end

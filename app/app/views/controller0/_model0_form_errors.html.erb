@@ -1,0 +1,16 @@
+<% if @model0.errors.any? %>
+  <div id="error_explanation">
+    <p>List all errors:</p>
+    <ul>
+    <% @model0.errors.each do |field, msg| %>
+      <li><%= field %>: <%= msg %></li>
+    <% end %>
+    </ul>
+    <p>List all errors with full_messages:</p>
+    <ul>
+    <% @model0.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>
