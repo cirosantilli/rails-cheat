@@ -4,7 +4,12 @@
 <% else %>
     <ul id="model0s">
     <% @model0s.each do |c| %>
-        <li><%= link_to c.string_col, {:action => 'show', :id => c.id} -%></li>
+        <li>
+            <%= link_to c.string_col, {action: 'show', id: c.id} -%>
+            <b> <%= link_to 'Edit', {action: 'edit', id: c.id} %></b>
+            <b> <%= link_to "Delete", {action: 'delete', id: c.id},
+                confirm: "Are you sure you want to delete this item?" %></b>
+        </li>
     <% end %>
     </ul>
 <% end %>

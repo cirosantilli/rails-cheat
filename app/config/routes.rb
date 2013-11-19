@@ -15,8 +15,12 @@ App::Application.routes.draw do
   get "controller0/action1" => "controller0#action1"
   get "controller0/list" => "controller0#list"
   get "controller0/new" => "controller0#new"
-  get "controller0/show" => "controller0#show"
   post "controller0/create" => "controller0#create"
+  get "controller0/show" => "controller0#show"
+  get "controller0/edit" => "controller0#edit"
+  post "controller0/update" => "controller0#update"
+  get "controller0/delete" => "controller0#delete"
+  post "controller0/mail" => "controller0#mail"
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

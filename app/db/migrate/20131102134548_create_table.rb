@@ -26,7 +26,7 @@ class CreateTable < ActiveRecord::Migration
       #
       #     `:limit` is the maximum length of a string field.
       #
-      t.column :string_col, :string, :limit => 32, :null => false
+      t.column :string_col, :string, limit: 32, null: false
       t.column :text_col, :text
       t.column :integer_col, :integer
       t.column :float_col, :float
@@ -48,7 +48,7 @@ class CreateTable < ActiveRecord::Migration
     Model0.create string_col: 'def', integer_col: 456
 
     create_table :model1s do |t|
-      t.column :string_col, :string, :limit => 32, :null => false
+      t.column :string_col, :string, limit: 32, null: false
     end
 
     Model1.create string_col: '0'

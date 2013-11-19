@@ -76,10 +76,10 @@ class Controller0Controller < ApplicationController
     def create
       @model0 = Model0.new(model0_params)
       if @model0.save
-        redirect_to :action => 'list'
+        redirect_to action: 'list'
       else
         @model1s = Model1.find(:all)
-        render :action => 'new'
+        render action: 'new'
       end
     end
 
@@ -89,9 +89,18 @@ class Controller0Controller < ApplicationController
     end
 
     def update
+        @model0 = Model0.find(params[:id])
+        if @model0.update_attributes(model0_params)
+          redirect_to action: 'show', id: @model0
+        else
+          @model1s = Model1s.find(:all)
+          render action: 'edit'
+        end
     end
 
     def delete
+        Model0.find(params[:id]).destroy
+        redirect_to action: 'list'
     end
 
   private
