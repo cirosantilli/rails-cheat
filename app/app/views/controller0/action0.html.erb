@@ -1,66 +1,93 @@
+<% provide(:title, 'controller0') %>
+
 <h1>Controller0#action0</h1>
-<p>Find me in app/views/controller0/action0.html.erb</p>
-<% @var0 == 0 or raise %>
-<% @var1 == 1 or raise %>
+
+  <p>Find me in app/views/controller0/action0.html.erb</p>
+  <% @var0 == 0 or raise %>
+  <% @var1 == 1 or raise %>
+
+<h2>#before_filter_do</h2>
+
+<p>before_filter_do = <%= @before_filter_do %></p>
 
 <h2>#link_to</h2>
-<ul>
-  <li><%= link_to 'New', {action: 'new'} %></li>
-  <li><%= link_to 'List', {action: 'list'} %></li>
-  <%#Dictionary parameters different from action become URL parameters `?id=XX`%>
-  <li><%= link_to 'Show', {action: 'show', id: '1'} %></li>
-  <li><%= link_to 'Edit', {action: 'edit', id: '1'} %></li>
-  <%#A confirm named param can also be passed. Useful for delete. %>
-  <li><%= link_to 'List Confirm', {action: 'list'}, data: {confirm: 'Are you sure you want to list?!?!'} %></li>
-</ul>
+
+  <ul>
+    <li><%= link_to 'New', {action: 'new'} %></li>
+    <li><%= link_to 'List', {action: 'list'} %></li>
+    <%#Dictionary parameters different from action become URL parameters `?id=XX`%>
+    <li><%= link_to 'Show', {action: 'show', id: '1'} %></li>
+    <li><%= link_to 'Edit', {action: 'edit', id: '1'} %></li>
+    <%#A confirm named param can also be passed. Useful for delete. %>
+    <li><%= link_to 'List Confirm', {action: 'list'}, data: {confirm: 'Are you sure you want to list?!?!'} %></li>
+  </ul>
 
 <h2>#render #partials</h2>
 
-<p>Insert another template at current point.</p>
-<p>The template file gets an underline appended!</p>
-<%= render "partial.html.erb" %>
+  <p>Insert another template at current point.</p>
+  <p>The template file gets an underline appended!</p>
+  <%= render "partial.html.erb" %>
 
 <h2>#params</h2>
 
-<p>params = <%= @params %></p>
-<p>Try this URL: <a href="?a=b&c=d&list[]=1&list[]=2&hash0[key0]=val0&hash0[key1]=val1">?a=b&c=d&list[]=1&list[]=2&hash0[key0]=val0&hash0[key1]=val1</a></p>
-<p>Only the a=b form is standard for URLs. It is rails tht parses lists and hashes.</p>
+  <p>params = <%= @params %></p>
+  <p>Try this URL: <a href="?a=b&c=d&list[]=1&list[]=2&hash0[key0]=val0&hash0[key1]=val1">?a=b&c=d&list[]=1&list[]=2&hash0[key0]=val0&hash0[key1]=val1</a></p>
+  <p>Only the a=b form is standard for URLs. It is rails tht parses lists and hashes.</p>
 
 <h2>#Rails.env</h2>
 
-<p>Rails.env = <%= @env %></p>
+  <p>Rails.env = <%= @env %></p>
 
-<h2>forms</h2>
+<h2>#forms</h2>
 
-<p><%= text_field 'model0', 'string_col' %></p>
-<p><input id="model0_string_col" name="model0[string_col]" type="text" /></p>
+  <p><%= text_field 'model0', 'string_col' %></p>
+  <p><input id="model0_string_col" name="model0[string_col]" type="text" /></p>
 
-<%#= password_field_tag(:password) %>
-<%#= hidden_field_tag(:parent_id, "5") %>
-<%#= search_field(:user, :name) %>
-<%#= telephone_field(:user, :phone) %>
-<%#= date_field(:user, :born_on) %>
-<%#= datetime_field(:user, :meeting_time) %>
-<%#= datetime_local_field(:user, :graduation_day) %>
-<%#= month_field(:user, :birthday_month) %>
-<%#= week_field(:user, :birthday_week) %>
-<%#= url_field(:user, :homepage) %>
-<%#= email_field(:user, :address) %>
-<%#= color_field(:user, :favorite_color) %>
-<%#= time_field(:task, :started_at) %>
-<%#dropdown selection on one to many relation%>
-<%#= collection_select(:model0, :model1_id, @model1s, :id, :string_col) %>
+  <%#= password_field_tag(:password) %>
+  <%#= hidden_field_tag(:parent_id, "5") %>
+  <%#= search_field(:user, :name) %>
+  <%#= telephone_field(:user, :phone) %>
+  <%#= date_field(:user, :born_on) %>
+  <%#= datetime_field(:user, :meeting_time) %>
+  <%#= datetime_local_field(:user, :graduation_day) %>
+  <%#= month_field(:user, :birthday_month) %>
+  <%#= week_field(:user, :birthday_week) %>
+  <%#= url_field(:user, :homepage) %>
+  <%#= email_field(:user, :address) %>
+  <%#= color_field(:user, :favorite_color) %>
+  <%#= time_field(:task, :started_at) %>
+  <%#dropdown selection on one to many relation%>
+  <%#= collection_select(:model0, :model1_id, @model1s, :id, :string_col) %>
 
-<%= form_tag :action => 'create' do %>
-<p><label for="model0_string_col">String Column</label>:
-<%= submit_tag 'Create' %>
-<% end %>
+  <%= form_tag :action => 'create' do %>
+  <p><label for="model0_string_col">String Column</label>:
+  <%= submit_tag 'Create' %>
+  <% end %>
 
-<h2>action mailer</h2>
+<h2>#flash</h2>
 
-<p>For this to work, first configure your SMTP.</p>
-<%= form_tag action: 'mail' do %>
-  <p><label for="user_address">Send emails to</label>:
-  <%= email_field 'user', 'address' %></p>
-  <%= submit_tag 'Send' %>
-<% end %>
+  <p><%= link_to 'Redirect to myself', {action: 'redirect_to_action0'} %>
+
+  <p class="notice">notice now = <%= notice %></p>
+  <p class="alert">alert now = <%= alert %></p>
+
+<h2>#action mailer</h2>
+
+  <p>For this to work, first configure your SMTP.</p>
+  <%= form_tag action: 'mail' do %>
+    <p><label for="user_address">Send emails to</label>:
+    <%= email_field 'user', 'address' %></p>
+    <%= submit_tag 'Send' %>
+  <% end %>
+
+<h2>#devise</h2>
+
+  <% if user_signed_in? %>
+    <p>current_user.email = <%= current_user.email %></p>
+    <p><%= link_to 'Edit profile', edit_user_registration_path %> |
+    <%= link_to "Logout", destroy_user_session_path, method: :delete  %></p>
+  <% else %>
+    <p>Not logged in.</p>
+    <p><%= link_to "Sign up", new_user_registration_path  %> |
+    <%= link_to "Login", new_user_session_path %></p>
+  <% end %>

@@ -49,6 +49,40 @@ class Controller0Controller < ApplicationController
 
         #render :action => 'new'
 
+    ##flash
+
+      # Standard method of giving user notifications.
+
+      # Useful specially for messages generated in one action that must cross redirection.
+
+      # Rendered on templates as functions `notice` and `alert`, typically on the layout.
+
+      # Flash only for current page:
+
+        flash.now[:notice] = "notice0"
+        flash.now[:alert] = "alert0"
+
+      # Flash from now until the next page or redirection:
+
+        #flash[:notice] = "notice0"
+        #flash[:alert] = "alert0"
+        #
+        #redirect_to root_url
+        #redirect_to root_url
+
+      # Flash now overrides it a flash.
+
+      # Shorter version
+
+        #redirect_to root_url,
+          #notice: "You have successfully logged out.",
+          #alert: "You're stuck here!"
+  end
+
+  def redirect_to_action0
+    redirect_to action: "action0",
+      notice: "notice redirect",
+      alert: "alert redirect"
   end
 
   def action1
@@ -115,6 +149,35 @@ class Controller0Controller < ApplicationController
       ).deliver
       redirect_to action: 'action0'
   end
+
+  ##before_filter
+
+    # Action taken before doing any action.
+
+    # Can for example redirect user to another page.
+
+      before_filter :before_filter_do, unless: :before_filter_dont
+
+      # Things you can do here:
+      #
+      # - pass variables to template
+      # - redirect_to somewhere.
+      #
+      def before_filter_do
+        @before_filter_do = 1
+      end
+
+      # If this is true, `before_filter_do` will not be run.
+      #
+      def before_filter_dont
+        false
+      end
+
+  ##devise
+
+    # This redirects unauthenticated users to the login:
+
+        #before_filter :authenticate_user!
 
   private
 

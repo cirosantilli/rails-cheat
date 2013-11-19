@@ -1,5 +1,9 @@
 App::Application.routes.draw do
 
+  ##root
+
+      root 'controller0#action0'
+
   # Link urls to actions.
 
   ##get
@@ -10,23 +14,31 @@ App::Application.routes.draw do
 
     # POST requests only.
 
-  get "controller0" => "controller0#action0"
-  get "controller0/action0" => "controller0#action0"
-  get "controller0/action1" => "controller0#action1"
-  get "controller0/list" => "controller0#list"
-  get "controller0/new" => "controller0#new"
-  post "controller0/create" => "controller0#create"
-  get "controller0/show" => "controller0#show"
-  get "controller0/edit" => "controller0#edit"
-  post "controller0/update" => "controller0#update"
-  get "controller0/delete" => "controller0#delete"
-  post "controller0/mail" => "controller0#mail"
+      get "controller0" => "controller0#action0"
+      get "controller0/action0" => "controller0#action0"
+      get "controller0/redirect_to_action0" => "controller0#redirect_to_action0"
+      get "controller0/action1" => "controller0#action1"
+      get "controller0/list" => "controller0#list"
+      get "controller0/new" => "controller0#new"
+      post "controller0/create" => "controller0#create"
+      get "controller0/show" => "controller0#show"
+      get "controller0/edit" => "controller0#edit"
+      post "controller0/update" => "controller0#update"
+      get "controller0/delete" => "controller0#delete"
+      post "controller0/mail" => "controller0#mail"
+
+  ##devise_for
+
+    # This was created by devise.
+
+    # - `:users` TODO. Another option is `:admin`
+    # - `path:`: redirection path relative to root. Default: `users`
+
+      devise_for :users
+      #devise_for :users, path: "auth"
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
-
-  # You can have the root of your site routed with "root"
-  root 'controller0#action0'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

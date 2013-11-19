@@ -27,4 +27,6 @@ App::Application.configure do
   # If can't send, redirect to an error page.
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :smtp
+  # TODO
+  config.action_mailer.default_url_options = { :host => 'localhost:3000' }
 end

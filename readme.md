@@ -300,3 +300,33 @@ Create a `.example` version and Gitignore it to protect the password.
 ##lib/tasks
 
 All `.rake` files in this dir are searched for rake commands.
+
+#devise
+
+User signup and authentication.
+
+Gemfile: `gem devise`.
+
+    rails generate devise:install
+    rails generate devise:views
+    rails generate devise User
+
+where `User` is the model that will represent the user.
+
+#email confirmation
+
+Get action mailer working.
+
+`app/models`: uncomment `:confirmable`
+
+Migration file: uncomment the `:confirmable` section.
+
+`config/initializers/devise.rb`:
+
+- config.mailer = 'Devise::Mailer'
+
+---
+
+rake db:migrate
+
+Restart rails.
