@@ -16,12 +16,13 @@ class Controller0Controller < ApplicationController
 
         @var0 = 0
         @var1 = 1
+        @env = Rails.env
 
     ##db functions
 
       ##find
 
-          @model0s = Model0.find(:all)
+          @model0s = Model0.all
 
       ##save
 
@@ -56,7 +57,7 @@ class Controller0Controller < ApplicationController
   # Typcial CRUD actions:
 
     def list
-      @model0s = Model0.find(:all)
+      @model0s = Model0.all
     end
 
     # Detaion on one item.
@@ -68,7 +69,7 @@ class Controller0Controller < ApplicationController
     # The POST is treated by `create`
     def new
         @model0 = Model0.new
-        @model1s = Model1.find(:all)
+        @model1s = Model1.all
     end
 
     # POST action that will actually create the new model
@@ -78,14 +79,14 @@ class Controller0Controller < ApplicationController
       if @model0.save
         redirect_to action: 'list'
       else
-        @model1s = Model1.find(:all)
+        @model1s = Model1.all
         render action: 'new'
       end
     end
 
     def edit
         @model0 = Model0.find(params[:id])
-        @model1s = Model1.find(:all)
+        @model1s = Model1.all
     end
 
     def update
@@ -93,7 +94,7 @@ class Controller0Controller < ApplicationController
         if @model0.update_attributes(model0_params)
           redirect_to action: 'show', id: @model0
         else
-          @model1s = Model1s.find(:all)
+          @model1s = Model1s.all
           render action: 'edit'
         end
     end
@@ -102,6 +103,18 @@ class Controller0Controller < ApplicationController
         Model0.find(params[:id]).destroy
         redirect_to action: 'list'
     end
+
+  def mail
+      MyMailer.email0(params[:user][:address]).deliver
+      ActionMailer::Base.mail(
+        to: params[:user][:address],
+        from: 'ror-cheat',
+        subject: 'string body',
+        content_type: "text/html",
+        body: 'the body is a string',
+      ).deliver
+      redirect_to action: 'action0'
+  end
 
   private
 

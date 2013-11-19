@@ -158,23 +158,45 @@ By convention RoR application development uses 3 databases:
 
 ##create
 
-Once the database is configured, you can create it with:
+Once the database connection is configured, create current database (`Rails.env`):
 
     rake db:create
+
+Create all databases (e.g. development, test and produciton):
+
+    rake db:create:all
+
+Create only the production database:
+
+    RAILS_ENV=production rake db:create
 
 This does not automatically migrate. Now you should:
 
     rake db:migrate
 
-TODO what is the difference:
+This will also update the schema under `db/schema.rb`.
 
-    rake db:setup
+Load the schema under `db/schema.rb`, creating it on an existing db:
+
+    rake db:schema:load
+
+This is useful after migrations have already been done and `db/schema.rb`
+is already up to date. In that case, this command can be much faster than
+`db:migrate`, since only a single operation is done.
 
 Populate the database with its initial data for a new app installation:
 
     rake db:seed
 
 This data is defined under `db/seed.rb`.
+
+Create db, load schema and seed data all in one:
+
+    rake db:setup
+
+This is a good option to start a database to its working condition once
+migrations have already made `db/schema.rb` be up to date, for example
+to reset a development database after a `db:drop`.
 
 ##dbconsole
 
@@ -244,6 +266,8 @@ To run the tests do:
 
 ##mail
 
+##email
+
 ##action mailer
 
 Quickstart:
@@ -270,3 +294,9 @@ SMPT configuration under `config/initializers/smtp_settings.rb`:
     }
 
 Create a `.example` version and Gitignore it to protect the password.
+
+#lib
+
+##lib/tasks
+
+All `.rake` files in this dir are searched for rake commands.

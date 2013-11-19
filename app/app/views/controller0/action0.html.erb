@@ -11,16 +11,14 @@
   <li><%= link_to 'Show', {action: 'show', id: '1'} %></li>
   <li><%= link_to 'Edit', {action: 'edit', id: '1'} %></li>
   <%#A confirm named param can also be passed. Useful for delete. %>
-  <li><%= link_to 'List Confirm', {action: 'list'}, confirm: 'Are you sure you want to list?!?!' %></li>
+  <li><%= link_to 'List Confirm', {action: 'list'}, data: {confirm: 'Are you sure you want to list?!?!'} %></li>
 </ul>
 
 <h2>params</h2>
 
 <p>params = <%= @params %></p>
-
 <p>Try this URL: <a href="?a=b&c=d&list[]=1&list[]=2&hash0[key0]=val0&hash0[key1]=val1">?a=b&c=d&list[]=1&list[]=2&hash0[key0]=val0&hash0[key1]=val1</a></p>
-
-<p>Only the a=b form is standard for URLs. It is rails adds the capability to extract lists and hashes.</p>
+<p>Only the a=b form is standard for URLs. It is rails tht parses lists and hashes.</p>
 
 <h2>forms</h2>
 
@@ -40,14 +38,11 @@
 <%#= email_field(:user, :address) %>
 <%#= color_field(:user, :favorite_color) %>
 <%#= time_field(:task, :started_at) %>
-
 <%#dropdown selection on one to many relation%>
-  <%#= collection_select(:model0, :model1_id, @model1s, :id, :string_col) %>
+<%#= collection_select(:model0, :model1_id, @model1s, :id, :string_col) %>
 
 <%= form_tag :action => 'create' do %>
 <p><label for="model0_string_col">String Column</label>:
-
-
 <%= submit_tag 'Create' %>
 <% end %>
 
@@ -58,9 +53,8 @@
 <h1>action mailer</h1>
 
 <p>For this to work, first configure your SMTP.</p>
-
 <%= form_tag action: 'mail' do %>
-  <p><label for="user_address">Send email to</label>:
+  <p><label for="user_address">Send emails to</label>:
   <%= email_field 'user', 'address' %></p>
   <%= submit_tag 'Send' %>
 <% end %>

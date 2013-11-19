@@ -43,17 +43,22 @@ class CreateTable < ActiveRecord::Migration
 
     end
 
-    # It is possible to create some elements here already:
-    Model0.create string_col: 'abc', integer_col: 123
-    Model0.create string_col: 'def', integer_col: 456
-
     create_table :model1s do |t|
       t.column :string_col, :string, limit: 32, null: false
     end
 
-    Model1.create string_col: '0'
-    Model1.create string_col: '1'
-    Model1.create string_col: '2'
-    Model1.create string_col: '3'
+    # It is possible to create some elements here already,
+    # however this is not recommended since those elements
+    # will not be present on the `db/schema.rb`.
+    #
+    # Use schemas or `db/seeds.rb` for that instead.
+    #
+    #Model0.create string_col: 'abc', integer_col: 123
+    #Model0.create string_col: 'def', integer_col: 456
+
+    #Model1.create string_col: '0'
+    #Model1.create string_col: '1'
+    #Model1.create string_col: '2'
+    #Model1.create string_col: '3'
   end
 end
