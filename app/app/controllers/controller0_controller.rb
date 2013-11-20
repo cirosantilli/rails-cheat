@@ -49,6 +49,30 @@ class Controller0Controller < ApplicationController
 
         #render :action => 'new'
 
+    ##cookies
+
+      # Expires when browser is closed:
+      if not cookies.has_key?(:browser_close)
+        cookies[:expire_browser_close] = "0"
+      else
+        cookies[:expire_browser_close] = (cookies[:expire_browser_close].to_i + 1).to_s
+      end
+
+      if not cookies.has_key?(:expire_three_secs)
+        cookies[:expire_three_secs] = "0"
+      else
+        cookies[:expire_three_secs] = {
+          value: (cookies[:expire_three_secs].to_i + 1).to_s,
+          expires: 3.seconds.from_now
+        }
+      end
+
+      # Expires in maximum possible time (20 years):
+      cookies.permanent[:permanent] = "0"
+
+      # Assign an array of values to a cookie.
+      cookies[:array] = [0, 1]
+
     ##flash
 
       # Standard method of giving user notifications.
@@ -83,6 +107,9 @@ class Controller0Controller < ApplicationController
     redirect_to action: "action0",
       notice: "notice redirect",
       alert: "alert redirect"
+  end
+
+  def ajax_test
   end
 
   def action1

@@ -64,6 +64,14 @@
   <%= submit_tag 'Create' %>
   <% end %>
 
+<h2>#cookies</h2>
+
+  <ul>
+    <% cookies.each do |k, v| %>
+      <li><%= k %> = <%= v %></li>
+    <% end %>
+  </ul>
+
 <h2>#flash</h2>
 
   <p><%= link_to 'Redirect to myself', {action: 'redirect_to_action0'} %>
@@ -80,7 +88,9 @@
     <%= submit_tag 'Send' %>
   <% end %>
 
-<h2>#devise</h2>
+<h1>#third party</h1>
+
+<h2>#devise #omniauth</h2>
 
   <% if user_signed_in? %>
     <p>current_user.email = <%= current_user.email %></p>
@@ -90,4 +100,16 @@
     <p>Not logged in.</p>
     <p><%= link_to "Sign up", new_user_registration_path  %> |
     <%= link_to "Login", new_user_session_path %></p>
+    <%= link_to "Sign in with Facebook", user_omniauth_authorize_path(:facebook) %>
   <% end %>
+
+<h2>#faker</h2>
+
+  <ul>
+    <li>name = <%= Faker::Name.name %></li>
+    <li>email = <%= Faker::Internet.email %></li>
+    <li>free_email = <%= Faker::Internet.free_email %></li>
+    <li>user_name = <%= Faker::Internet.user_name %></li>
+    <li>words = <%= Faker::Lorem.words(2) %></li>
+    <li>paragraphs = <%= Faker::Lorem.paragraphs(2) %></li>
+  </ul>

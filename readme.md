@@ -255,14 +255,43 @@ Automatically generates a base CRUD interface for a model.
 
 #tests
 
-Load test data on the test db. Create the test db from the current `db/schema.rb`
-if one does not exist already.
+Load test data on the test db.
+
+Create the test db from the current `db/schema.rb`:
 
     rake db:test:load
+
+Run all the tests:
+
+    rake test
 
 To run the tests do:
 
     rake test tests/models/${MODEL_NAME}.rb
+
+Run all unit tests:
+
+    rake test:units
+
+Run all functional tests:
+
+    rake test:functionals
+
+Run all integration tests:
+
+    rake test:integration
+
+Run all tests in a given file:
+
+    rake test TEST=test/models/model0_test.rb
+
+Run a single test method:
+
+    ruby -I"lib:test" test/models/model0_test.rb -n name_of_the_method"
+
+Run all tests matching a given regexp in given file:
+
+    ruby -I"lib:test" test/unit/invitation_test.rb -n /.*between.*/
 
 ##mail
 
@@ -297,6 +326,8 @@ Create a `.example` version and Gitignore it to protect the password.
 
 #lib
 
+Contains Ruby libriries to be imported.
+
 ##lib/tasks
 
 All `.rake` files in this dir are searched for rake commands.
@@ -313,7 +344,7 @@ Gemfile: `gem devise`.
 
 where `User` is the model that will represent the user.
 
-#email confirmation
+##email confirmation
 
 Get action mailer working.
 
@@ -325,8 +356,18 @@ Migration file: uncomment the `:confirmable` section.
 
 - config.mailer = 'Devise::Mailer'
 
+##unregistered users
+
+Just don't add:
+
+    before_filter: authenticate!
+
+and unauthenticated users can view pages normally.
+
 ---
 
 rake db:migrate
 
 Restart rails.
+
+##omniauth

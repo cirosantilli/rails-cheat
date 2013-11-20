@@ -1,11 +1,20 @@
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+# This object can be obtained via `model0s(:m0)`
+model0_0:
+  string_col: a0
+  integer_col: 0
+  text_col: t0
+  model1_id: 1
 
-# This model initially had no columns defined.  If you add columns to the
-# model remove the '{}' from the fixture names and add the columns immediately
-# below each fixture, per the syntax in the comments below
-#
-one: {}
-# column: value
-#
-two: {}
-#  column: value
+# ERB is OK.
+<% (1..10).each do |n| %>
+model0_<%= n %>:
+  string_col: a<%= n %>
+  integer_col: <%= n %>
+  text_col: t<%= n %>
+  model1_id: m<%= n + 1 %>
+<% end %>
+
+<% (1..11).each do |n| %>
+model1_<%= n %>:
+  string_col: a<%= n %>
+<% end %>

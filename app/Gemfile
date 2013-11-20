@@ -44,5 +44,9 @@ end
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
-# Most used signup / authentication plugin
 gem 'devise'
+gem 'omniauth'
+gem 'omniauth-google-oauth2'
+gem 'omniauth-facebook'
+
+gem 'faker'

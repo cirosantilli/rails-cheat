@@ -17,6 +17,7 @@ App::Application.routes.draw do
       get "controller0" => "controller0#action0"
       get "controller0/action0" => "controller0#action0"
       get "controller0/redirect_to_action0" => "controller0#redirect_to_action0"
+      get "controller0/ajax_test" => "controller0#ajax_test"
       get "controller0/action1" => "controller0#action1"
       get "controller0/list" => "controller0#list"
       get "controller0/new" => "controller0#new"
@@ -29,12 +30,10 @@ App::Application.routes.draw do
 
   ##devise_for
 
-    # This was created by devise.
+    # - model: which model defies the user.
+    # - path: login path relative to root. Default: `users`
 
-    # - `:users` TODO. Another option is `:admin`
-    # - `path:`: redirection path relative to root. Default: `users`
-
-      devise_for :users
+      devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
       #devise_for :users, path: "auth"
 
   # The priority is based upon order of creation: first created -> highest priority.
