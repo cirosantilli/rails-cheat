@@ -1,6 +1,6 @@
 <h1>Controller0#edit</h1>
 <%= render "model0_form_errors.html.erb" %>
-<%= form_tag action: 'update', id: @model0 do %>
+<%= form_tag({action: 'update', id: @model0}, method: 'put') do %>
   <%= render "model0_form_fields.html.erb" %>
   <%= submit_tag 'Save Changes' %>
 <% end %>

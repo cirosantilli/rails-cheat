@@ -21,7 +21,7 @@ gem 'coffee-rails', '~> 4.0.0'
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 
-# Every internal link makes the body reload via AJAX.
+# Every internal <a> link makes the body reload via AJAX instead of reloading the entire page.
 gem 'turbolinks'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
@@ -36,7 +36,8 @@ end
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
 # Use unicorn as the app server
-# gem 'unicorn'
+gem 'unicorn'
+#gem 'unicorn-rails'
 
 # Use Capistrano for deployment
 # gem 'capistrano', group: :development

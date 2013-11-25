@@ -16,7 +16,6 @@ class Controller0Controller < ApplicationController
 
         @var0 = 0
         @var1 = 1
-        @env = Rails.env
 
     ##db functions
 
@@ -31,47 +30,79 @@ class Controller0Controller < ApplicationController
           #@model0 = Model0.new(model0_params)
           #@model0.save
 
-    ##params
+    ##actions
 
-      # Contains URL + POST parameters + other things like the controller and action name.
+      ##render
 
-        @params = params
+        # Return an HTTP 200 OK response whose body is given by the template with the same name
+        # as the current method.
 
-    ##redirect_to
+          #render
 
-      # Return an http redirect to another address.
+        # Exists this method afterwards.
 
-        #redirect_to :action => 'list'
+        # This is the default action that happens if the end of this method is reached.
 
-    ##render
+        # Use body from template of action `new`:
 
-      # Render any erb instead of the default (determined by the name of this function).
+          #render action: 'new'
 
-        #render :action => 'new'
+        # Give the body on a string without any template files:
+
+          #render text: '<h1>text</h1>'
+
+        # Give the body on a string. Pass it through erb before returning:
+
+          #render text: '<h1><%= 1 %></h1>'
+
+      ##redirect_to
+
+        # Return an http redirect to another address.
+
+          #redirect_to :action => 'list'
+
+      ##respond_to
+
+        # Allows to generate different formats of response depending on the `Accept-Type` HTTP header of the request.
+
+        # If the there is no format for the incomming `Accept-Type`, an error occurs.
+
+        # Well explained in the docs: <http://api.rubyonrails.org/classes/ActionController/MimeResponds.html#method-i-respond_to>
+
+        # Exaple from the docs:
+
+          #respond_to do |format|
+            #format.html { redirect_to(person_list_url) }
+            #format.js
+            #format.xml  { render xml: @person.to_xml(include: @company) }
+          #end
 
     ##cookies
 
       # Expires when browser is closed:
-      if not cookies.has_key?(:browser_close)
-        cookies[:expire_browser_close] = "0"
-      else
-        cookies[:expire_browser_close] = (cookies[:expire_browser_close].to_i + 1).to_s
-      end
 
-      if not cookies.has_key?(:expire_three_secs)
-        cookies[:expire_three_secs] = "0"
-      else
-        cookies[:expire_three_secs] = {
-          value: (cookies[:expire_three_secs].to_i + 1).to_s,
-          expires: 3.seconds.from_now
-        }
-      end
+        if not cookies.has_key?(:browser_close)
+          cookies[:expire_browser_close] = "0"
+        else
+          cookies[:expire_browser_close] = (cookies[:expire_browser_close].to_i + 1).to_s
+        end
+
+        if not cookies.has_key?(:expire_three_secs)
+          cookies[:expire_three_secs] = "0"
+        else
+          cookies[:expire_three_secs] = {
+            value: (cookies[:expire_three_secs].to_i + 1).to_s,
+            expires: 3.seconds.from_now
+          }
+        end
 
       # Expires in maximum possible time (20 years):
-      cookies.permanent[:permanent] = "0"
+
+        cookies.permanent[:permanent] = "0"
 
       # Assign an array of values to a cookie.
-      cookies[:array] = [0, 1]
+
+        cookies[:array] = [0, 1]
 
     ##flash
 
@@ -101,6 +132,10 @@ class Controller0Controller < ApplicationController
         #redirect_to root_url,
           #notice: "You have successfully logged out.",
           #alert: "You're stuck here!"
+
+    ##logger
+
+        Rails.logger.info('controller0 log test')
   end
 
   def redirect_to_action0
@@ -110,18 +145,32 @@ class Controller0Controller < ApplicationController
   end
 
   def ajax_test
+    render text: Time.new.to_s
   end
 
   def action1
   end
 
+  ##routes
+
+      def url_params
+      end
+
+      def url_params_abc
+          render action: 'url_params'
+      end
+
+      def url_params_keyval
+          render action: 'url_params'
+      end
+
   # Typcial CRUD actions:
 
-    def list
+    def index
       @model0s = Model0.all
     end
 
-    # Detaion on one item.
+    # Detail on on one item.
     def show
         @model0 = Model0.find(params[:id])
     end
@@ -138,7 +187,7 @@ class Controller0Controller < ApplicationController
     def create
       @model0 = Model0.new(model0_params)
       if @model0.save
-        redirect_to action: 'list'
+        redirect_to action: 'index'
       else
         @model1s = Model1.all
         render action: 'new'
@@ -160,22 +209,10 @@ class Controller0Controller < ApplicationController
         end
     end
 
-    def delete
+    def destroy
         Model0.find(params[:id]).destroy
-        redirect_to action: 'list'
+        redirect_to action: 'index'
     end
-
-  def mail
-      MyMailer.email0(params[:user][:address]).deliver
-      ActionMailer::Base.mail(
-        to: params[:user][:address],
-        from: 'ror-cheat',
-        subject: 'string body',
-        content_type: "text/html",
-        body: 'the body is a string',
-      ).deliver
-      redirect_to action: 'action0'
-  end
 
   ##before_filter
 
@@ -199,6 +236,32 @@ class Controller0Controller < ApplicationController
       def before_filter_dont
         false
       end
+
+  ##i18n
+
+      before_action :set_locale
+
+      def set_locale
+        I18n.locale = params[:locale] || I18n.default_locale
+      end
+
+  def mail
+      MyMailer.email0(params[:user][:address]).deliver
+      ActionMailer::Base.mail(
+        to: params[:user][:address],
+        from: 'ror-cheat',
+        subject: 'string body',
+        content_type: "text/html",
+        body: 'the body is a string',
+      ).deliver
+      redirect_to action: 'action0'
+  end
+
+  ##layout
+
+    # Set layout for entire controller:
+
+      #layout 'standard'
 
   ##devise
 

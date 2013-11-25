@@ -3,14 +3,14 @@
 <% if @model0.errors.any? %>
   <div id="error_explanation">
 
-    <p>List all errors:</p>
+    <p>Index all errors:</p>
     <ul>
     <% @model0.errors.each do |field, msg| %>
       <li><%= field %>: <%= msg %></li>
     <% end %>
     </ul>
 
-    <p>List all errors with full_messages:</p>
+    <p>Index all errors with full_messages:</p>
     <ul>
     <% @model0.errors.full_messages.each do |msg| %>
       <li><%= msg %></li>
@@ -32,4 +32,4 @@
   <%= collection_select(:model0, :model1_id, @model1s, :id, :string_col) %></p>
   <%= submit_tag 'Create' %>
 <% end %>
-<%= link_to 'Back', {:action => 'list'} %>
+<%= link_to 'Back', {:action => 'index'} %>

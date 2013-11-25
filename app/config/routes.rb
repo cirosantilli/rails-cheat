@@ -1,43 +1,92 @@
 App::Application.routes.draw do
 
-  ##root
-
-      root 'controller0#action0'
-
   # Link urls to actions.
+
+  # The priority is based upon order of creation: first created -> highest priority.
+
+  # See how all your routes lay out with "rake routes".
+
+  ##scope
+
+    # Everything inside the scope do end block gets the scope url prefix.
+
+    # Can also set the controller for all routes inside the scope.
+
+  ##namespace
+
+    #TODO vs scope
 
   ##get
 
     # GET requests only.
 
+      #get "url" => 'controller#action'
+
+      #scope "prefix", controller: :controller do
+        #get "url" => :action
+      #end
+
+    # Optional part:
+
+      #get "url(/something)" => 'controller#action'
+
   ##post
 
     # POST requests only.
 
-      get "controller0" => "controller0#action0"
-      get "controller0/action0" => "controller0#action0"
-      get "controller0/redirect_to_action0" => "controller0#redirect_to_action0"
-      get "controller0/ajax_test" => "controller0#ajax_test"
-      get "controller0/action1" => "controller0#action1"
-      get "controller0/list" => "controller0#list"
-      get "controller0/new" => "controller0#new"
-      post "controller0/create" => "controller0#create"
-      get "controller0/show" => "controller0#show"
-      get "controller0/edit" => "controller0#edit"
-      post "controller0/update" => "controller0#update"
-      get "controller0/delete" => "controller0#delete"
-      post "controller0/mail" => "controller0#mail"
+  ##i18n optional locale prefix.
 
-  ##devise_for
+  scope "(:locale)", locale: /en|zh/ do
+
+    ##root
+
+      # Set the website root.
+
+          root 'controller0#action0'
+
+    scope "controller0", controller: :controller0 do
+
+          get "" => :action0
+          get "action0" => :action0
+          get "redirect-to-action0" => :redirect_to_action0
+          get "ajax-test" => :ajax_test
+          get "action1" => :action1
+          post "mail" => :mail
+
+      ## URL params
+
+          get "url_params_keyval" => :url_params_keyval
+          get "url_params/:id" => :url_params
+          get "url_params_abc/:id" => :url_params_abc, id: /[abc]+/
+
+      ##resource ##CRUD
+
+        scope "model0" do
+          get "" => :index
+          get "new" => :new
+          post "" => :create
+          get ":id" => :show
+          get ":id/edit" => :edit
+          put ":id" => :update
+          delete ":id" => :destroy
+        end
+
+        # TODO Automatically generate exactly all above 7 CRUD operations:
+        #resource :controller0, path: 'model0'
+
+    end
+  end
+
+
+  ##devise
+
+    # Cannot be inside a scope?
 
     # - model: which model defies the user.
     # - path: login path relative to root. Default: `users`
 
-      devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
+      devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
       #devise_for :users, path: "auth"
-
-  # The priority is based upon order of creation: first created -> highest priority.
-  # See how all your routes lay out with "rake routes".
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
@@ -73,7 +122,7 @@ App::Application.routes.draw do
   #       get 'recent', on: :collection
   #     end
   #   end
-  
+
   # Example resource route with concerns:
   #   concern :toggleable do
   #     post 'toggle'

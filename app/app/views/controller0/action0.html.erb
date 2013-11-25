@@ -6,37 +6,130 @@
   <% @var0 == 0 or raise %>
   <% @var1 == 1 or raise %>
 
+<h2>#CRUD</h2>
+
+  <ul>
+    <li><%= link_to 'New', {action: 'new'} %></li>
+    <li><%= link_to 'Index', {action: 'index'} %></li>
+    <li><%= link_to 'Show', {action: 'show', id: '1'} %></li>
+    <li><%= link_to 'Edit', {action: 'edit', id: '1'} %></li>
+  </ul>
+
+<h2>#params #routes</h2>
+
+  <p>params = <%= params %></p>
+  <p>Try this URL: <a href="?a=b&c=d&list[]=1&list[]=2&hash0[key0]=val0&hash0[key1]=val1">?a=b&c=d&index[]=1&index[]=2&hash0[key0]=val0&hash0[key1]=val1</a></p>
+
+  <p>Routes and params:</p>
+
+  <ul>
+    <%#
+        Dictionary parameters different from action become URL parameters:
+
+        - `?id=XX` if the matching route does not contain `:id`
+        - part of the url path if it does
+    %>
+    <li><%= link_to 'URL params', {action: 'url_params', id: '1'} %></li>
+    <li><%= link_to 'URL params keyval', {action: 'url_params_keyval', id: '1'} %></li>
+
+    <%#
+        By default url parameters such as `:id` in routes match only alphanumeric characters.
+
+        This route customized it to match only `/[abc]/`.
+    %>
+    <li><%= link_to 'URL params abc', {action: 'url_params_abc', id: 'abac'} %></li>
+
+    <%# This would generate a routing error. %>
+    <%#<li><%= link_to 'URL params abc fail', {action: 'url_params_abc', id: 'ada'} </li>%>
+  </ul>
+
+  <%#
+  Contains request information such as the current action, controller, and GET/POST parameters.</p>
+    Only the a=b form is standard for URLs key value parameteres.
+    It is rails tht parses lists and hashes.
+  %>
+
+<h2>#request.env</h2>
+
+  <%#
+    The entire GCI info.
+  %>
+
+  <ul>
+    <% request.env.each do |k, v| %>
+      <li><%= k %> = <%= v %></li>
+    <% end %>
+  </ul>
+
+<h2>#cookies</h2>
+
+  <ul>
+    <% cookies.each do |k, v| %>
+      <li><%= k %> = <%= v %></li>
+    <% end %>
+  </ul>
+
+<h2>#ajax</h2>
+
+  <h3>manual ajax</h3>
+
+    <script>
+      var xmlhttp = new XMLHttpRequest()
+      function ajax_handler() {
+        if (xmlhttp.status == 200) {
+          document.getElementById("ajax-target").innerHTML += '<li>xmlhttp.readyState = '
+            + xmlhttp.readyState + ', time = ' + xmlhttp.responseText + '</li>';
+        }
+      }
+      function ajax_send() {
+        xmlhttp.open("GET", "controller0/ajax-test", true);
+        xmlhttp.onreadystatechange = ajax_handler;
+        xmlhttp.send();
+      }
+    </script>
+
+    <p onclick="ajax_send()">Click me!</p>
+
+    <ul id="ajax-target">
+    </ul>
+
+  <h3>rails helped ajax</h3>
+
+    <p>TODO</p>
+
+<h2>#Rails.env</h2>
+
+  <%#
+  Current environment: production, development, test, etc.
+  %>
+
+  <p>Rails.env = <%= Rails.env %></p>
+
+  <p>Rails.root = <%= Rails.root %></p>
+
+<h2>#button_to</h2>
+
+  <%= button_to 'BROKEN New', @get, {action: 'new'} %>
+
 <h2>#before_filter_do</h2>
 
 <p>before_filter_do = <%= @before_filter_do %></p>
 
-<h2>#link_to</h2>
+<h2>#flash</h2>
 
-  <ul>
-    <li><%= link_to 'New', {action: 'new'} %></li>
-    <li><%= link_to 'List', {action: 'list'} %></li>
-    <%#Dictionary parameters different from action become URL parameters `?id=XX`%>
-    <li><%= link_to 'Show', {action: 'show', id: '1'} %></li>
-    <li><%= link_to 'Edit', {action: 'edit', id: '1'} %></li>
-    <%#A confirm named param can also be passed. Useful for delete. %>
-    <li><%= link_to 'List Confirm', {action: 'list'}, data: {confirm: 'Are you sure you want to list?!?!'} %></li>
-  </ul>
+  <p><%= link_to 'Redirect to myself', {action: 'redirect_to_action0'} %>
+
+  <p class="notice">notice now = <%= notice %></p>
+  <p class="alert">alert now = <%= alert %></p>
 
 <h2>#render #partials</h2>
 
-  <p>Insert another template at current point.</p>
-  <p>The template file gets an underline appended!</p>
+  <%#
+    Insert another template at current point.
+    The template file gets an underline appended!
+  %>
+
   <%= render "partial.html.erb" %>
-
-<h2>#params</h2>
-
-  <p>params = <%= @params %></p>
-  <p>Try this URL: <a href="?a=b&c=d&list[]=1&list[]=2&hash0[key0]=val0&hash0[key1]=val1">?a=b&c=d&list[]=1&list[]=2&hash0[key0]=val0&hash0[key1]=val1</a></p>
-  <p>Only the a=b form is standard for URLs. It is rails tht parses lists and hashes.</p>
-
-<h2>#Rails.env</h2>
-
-  <p>Rails.env = <%= @env %></p>
 
 <h2>#forms</h2>
 
@@ -64,21 +157,6 @@
   <%= submit_tag 'Create' %>
   <% end %>
 
-<h2>#cookies</h2>
-
-  <ul>
-    <% cookies.each do |k, v| %>
-      <li><%= k %> = <%= v %></li>
-    <% end %>
-  </ul>
-
-<h2>#flash</h2>
-
-  <p><%= link_to 'Redirect to myself', {action: 'redirect_to_action0'} %>
-
-  <p class="notice">notice now = <%= notice %></p>
-  <p class="alert">alert now = <%= alert %></p>
-
 <h2>#action mailer</h2>
 
   <p>For this to work, first configure your SMTP.</p>
@@ -88,6 +166,21 @@
     <%= submit_tag 'Send' %>
   <% end %>
 
+<h2>#i18n</h2>
+
+  <p>I18n.locale = <%= I18n.locale %></p>
+
+  <p>I18n.t :hello = <%= I18n.t :hello %></p>
+
+  <%# t alias is available inside views. %>
+  <p>t :hello = <%= t :hello %></p>
+
+  <%#
+    Path where locale files will be searched for.
+    Restart the server after adding new locale files.
+  %>
+  <p>I18n.load_path = <%= I18n.load_path %></p>
+
 <h1>#third party</h1>
 
 <h2>#devise #omniauth</h2>
@@ -95,12 +188,12 @@
   <% if user_signed_in? %>
     <p>current_user.email = <%= current_user.email %></p>
     <p><%= link_to 'Edit profile', edit_user_registration_path %> |
-    <%= link_to "Logout", destroy_user_session_path, method: :delete  %></p>
+    <%= link_to "Logout", destroy_user_session_path, method: :destroy  %></p>
   <% else %>
     <p>Not logged in.</p>
     <p><%= link_to "Sign up", new_user_registration_path  %> |
     <%= link_to "Login", new_user_session_path %></p>
-    <%= link_to "Sign in with Facebook", user_omniauth_authorize_path(:facebook) %>
+    <%= link_to "BROKEN Sign in with Facebook", user_omniauth_authorize_path(:facebook) %>
   <% end %>
 
 <h2>#faker</h2>

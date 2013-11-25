@@ -1,4 +1,4 @@
-<h1>Controller0#list</h1>
+<h1>Controller0#index</h1>
 <% if @model0s.blank? %>
     <p>None</p>
 <% else %>
@@ -7,8 +7,8 @@
         <li>
             <%= link_to c.string_col, {action: 'show', id: c.id} -%>
             <b> <%= link_to 'Edit', {action: 'edit', id: c.id} %></b>
-            <b> <%= link_to "Delete", {action: 'delete', id: c.id},
-                confirm: "Are you sure you want to delete this item?" %></b>
+            <b> <%= link_to "Destroy", {action: 'destroy', id: c.id},
+                confirm: "Are you sure you want to destroy this item?" %></b>
         </li>
     <% end %>
     </ul>
