@@ -15,7 +15,7 @@
     <li><%= link_to 'Edit', {action: 'edit', id: '1'} %></li>
   </ul>
 
-<h2>#params #routes</h2>
+<h2>#params #routes #link_to</h2>
 
   <p>params = <%= params %></p>
   <p>Try this URL: <a href="?a=b&c=d&list[]=1&list[]=2&hash0[key0]=val0&hash0[key1]=val1">?a=b&c=d&index[]=1&index[]=2&hash0[key0]=val0&hash0[key1]=val1</a></p>
@@ -41,6 +41,9 @@
 
     <%# This would generate a routing error. %>
     <%#<li><%= link_to 'URL params abc fail', {action: 'url_params_abc', id: 'ada'} </li>%>
+
+    <%# If action is not given it defaults to current action. %>
+    <li><%= link_to 'Myself' %></li>
   </ul>
 
   <%#
@@ -153,8 +156,8 @@
   <%#= collection_select(:model0, :model1_id, @model1s, :id, :string_col) %>
 
   <%= form_tag :action => 'create' do %>
-  <p><label for="model0_string_col">String Column</label>:
-  <%= submit_tag 'Create' %>
+    <p><label for="model0_string_col">String Column</label>:
+    <%= submit_tag 'Create' %>
   <% end %>
 
 <h2>#action mailer</h2>
@@ -167,6 +170,8 @@
   <% end %>
 
 <h2>#i18n</h2>
+
+  <p><%= link_to 'en', {locale: 'en'} %> | <%= link_to 'zh', {locale: 'zh'} %></p>
 
   <p>I18n.locale = <%= I18n.locale %></p>
 

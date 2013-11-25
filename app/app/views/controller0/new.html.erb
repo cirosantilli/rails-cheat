@@ -1,7 +1,29 @@
 <h1>Controller0#new</h1>
+
 <%= render "model0_form_errors.html.erb" %>
+
+<h2>form_tag version: (more general and repetitive)</h2>
 <%= form_tag action: 'create' do %>
   <%= render "model0_form_fields.html.erb" %>
   <%= submit_tag 'Create' %>
 <% end %>
+
+<h2>form_for version (preferred)</h2>
+<%# TODO how to render? %>
+<%= form_for @model0, url: {action: "create"} do |f| %>
+  <p>
+    <%= f.label :string_col, 'String col:' %>
+    <%= f.text_field :string_col %>
+  </p>
+  <p>
+    <%= f.label :integer_col, 'Integer col:' %>
+    <%= f.text_field :integer_col %>
+  </p>
+  <p>
+    <%= f.label :model1_id, 'Model 1:' %>
+    <%= f.collection_select :model1_id, @model1s, :id, :string_col %></p>
+  </p>
+  <%= f.submit "Create" %>
+<% end %>
+
 <%= link_to 'Back', {action: 'index'} %>

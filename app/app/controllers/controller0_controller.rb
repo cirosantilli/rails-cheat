@@ -242,7 +242,15 @@ class Controller0Controller < ApplicationController
       before_action :set_locale
 
       def set_locale
+        # Set the actual locale based on parsed params.
         I18n.locale = params[:locale] || I18n.default_locale
+
+        # link_to links will keep current locale.
+        if params.has_key? :locale
+          Rails.application.routes.default_url_options[:locale] = I18n.locale 
+        else
+          Rails.application.routes.default_url_options.delete(:locale)
+        end
       end
 
   def mail
