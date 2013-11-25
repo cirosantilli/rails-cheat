@@ -1,4 +1,5 @@
 class Controller0Controller < ApplicationController
+
   def action0
 
     ##blank
@@ -61,6 +62,10 @@ class Controller0Controller < ApplicationController
 
           #redirect_to :action => 'list'
 
+        # Return to the last page:
+
+          #redirect_to(:back)
+
       ##respond_to
 
         # Allows to generate different formats of response depending on the `Accept-Type` HTTP header of the request.
@@ -116,6 +121,7 @@ class Controller0Controller < ApplicationController
 
         flash.now[:notice] = "notice0"
         flash.now[:alert] = "alert0"
+        flash.now[:something] = "something0"
 
       # Flash from now until the next page or redirection:
 
@@ -136,6 +142,10 @@ class Controller0Controller < ApplicationController
     ##logger
 
         Rails.logger.info('controller0 log test')
+
+    ##file upload
+
+        @uploaded_files = Dir.entries(File.join(upload_dir)).map{|x| File.basename(x)}.delete_if{|x| x == '.' or x == '..'}
   end
 
   def redirect_to_action0
@@ -270,6 +280,36 @@ class Controller0Controller < ApplicationController
     # Set layout for entire controller:
 
       #layout 'standard'
+
+  ##file upload
+
+      def upload_dir
+        Rails.root.join('public', 'uploads')
+      end
+
+      def file_upload
+        max_size = 1000
+        file = params[:file]
+        if file.size > 1000
+          flash[:file_too_large] = "File too large. Max size: #{max_size}."
+        #TODO control maximum directory size
+        #TODO deal with .gitkeep
+        else
+          File.open(File.join(upload_dir, file.original_filename), 'w') do |f|
+            f.write(file.read)
+          end
+        end
+        redirect_to :back
+      end
+
+      def file_delete
+        File.unlink(File.join(upload_dir, File.basename(params[:id])))
+        redirect_to :back
+      end
+
+      def file_download
+        send_file File.join(upload_dir, params[:id])
+      end
 
   ##devise
 

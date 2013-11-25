@@ -122,8 +122,15 @@
 
   <p><%= link_to 'Redirect to myself', {action: 'redirect_to_action0'} %>
 
-  <p class="notice">notice now = <%= notice %></p>
-  <p class="alert">alert now = <%= alert %></p>
+  <p>notice now = <%= notice %></p>
+  <p>alert now = <%= alert %></p>
+
+  <%#
+      Only certain standard flashes become local variables.
+
+      For other flashes in general it is necessary to use the hash:
+  %>
+  <p>flash[:something] = <%= flash[:something] %></p>
 
 <h2>#render #partials</h2>
 
@@ -155,11 +162,6 @@
   <%#dropdown selection on one to many relation%>
   <%#= collection_select(:model0, :model1_id, @model1s, :id, :string_col) %>
 
-  <%= form_tag :action => 'create' do %>
-    <p><label for="model0_string_col">String Column</label>:
-    <%= submit_tag 'Create' %>
-  <% end %>
-
 <h2>#action mailer</h2>
 
   <p>For this to work, first configure your SMTP.</p>
@@ -180,11 +182,36 @@
   <%# t alias is available inside views. %>
   <p>t :hello = <%= t :hello %></p>
 
+  <%# What happens when something is not translated. %>
+  <p>I18n.t "Not translated!" = <%= I18n.t "Not translated!" %></p>
+
+  <%# Use key as default if missing. %>
+  <p>I18n.t :missing, default: "Not translated!" = <%= I18n.t :missing, default: "Not translated!" %></p>
+
   <%#
     Path where locale files will be searched for.
     Restart the server after adding new locale files.
   %>
   <p>I18n.load_path = <%= I18n.load_path %></p>
+
+<h2>#file upload</h2>
+
+  <%= form_tag({action: :file_upload}, multipart: true) do %>
+    <% if flash[:file_too_large] %>
+      <p><%= flash[:file_too_large] %></p>
+    <% end %>
+    <p><%= file_field_tag 'file', required: true %></p>
+    <%= submit_tag 'Upload' %>
+  <% end %>
+
+  <% if @uploaded_files.any? %>
+    <p>Current files:</p>
+    <ul>
+      <% @uploaded_files.each do |f| %>
+        <li><%= link_to f, {action: 'file_download', id: f} %> <b><%= link_to 'Delete', {action: 'file_delete', id: f} %></b></li>
+      <% end %>
+    </ul>
+  <% end %>
 
 <h1>#third party</h1>
 

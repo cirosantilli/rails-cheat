@@ -16,3 +16,6 @@
 /tmp
 /vendor/bundle
 /config/initializers/smtp_settings.rb
+
+/public/uploads/*
+!/public/uploads/.gitkeep

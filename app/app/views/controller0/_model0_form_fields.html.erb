@@ -1,9 +1,26 @@
-<% if @model0.errors.has_key? :string_col %>
-  <p>Errors for this field: <%= @model0.errors[:string_col].join(', ') %></p>
-<% end %>
-<p><label for="model0_string_col">String Column</label>:
-<%= text_field 'model0', 'string_col' %></p>
-<p><label for="model0_integer_col">Integer Column</label>:
-<%= text_field 'model0', 'integer_col' %></p>
-<p><label for="model0_model1_id">Model 1</label>:
-<%= collection_select(:model0, :model1_id, @model1s, :id, :string_col) %></p>
+<table>
+  <tr>
+    <td><%= label :model0, :string_col, "String Column" %></td>
+    <td><%= text_field 'model0', 'string_col' %></td>
+    <% if @model0.errors.has_key? :string_col %>
+      <td>
+        Errors for this field:
+        <% if not @model0.errors[:string_col].empty? %>
+          <ul>
+          <% @model0.errors[:string_col].each do |e| %>
+            <li><%= e %></li>
+          <% end %>
+          </ul>
+        <% end %>
+      </td>
+    <% end %>
+  </tr>
+  <tr>
+    <td><%= label :model0, :integer_col, "Integer Column" %></td>
+    <td><%= text_field 'model0', 'integer_col' %></td>
+  </tr>
+  <tr>
+    <td><%= label :model0, :model1_id, "Model 1" %></td>
+    <td><%= collection_select :model0, :model1_id, @model1s, :id, :string_col %></td>
+  </tr>
+</table>

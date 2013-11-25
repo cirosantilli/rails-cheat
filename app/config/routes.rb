@@ -51,6 +51,9 @@ App::Application.routes.draw do
           get "redirect-to-action0" => :redirect_to_action0
           get "ajax-test" => :ajax_test
           get "action1" => :action1
+          post "file_upload" => :file_upload
+          get "file_download/:id" => :file_download
+          get "file_delete/:id" => :file_delete
           post "mail" => :mail
 
       ## URL params
