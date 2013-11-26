@@ -142,10 +142,6 @@ class Controller0Controller < ApplicationController
     ##logger
 
         Rails.logger.info('controller0 log test')
-
-    ##file upload
-
-        @uploaded_files = Dir.entries(File.join(upload_dir)).map{|x| File.basename(x)}.delete_if{|x| x == '.' or x == '..'}
   end
 
   def redirect_to_action0
@@ -283,27 +279,46 @@ class Controller0Controller < ApplicationController
 
   ##file upload
 
+      def file_upload
+        @uploaded_files = Dir.entries(File.join(upload_dir)).map{|x| File.basename(x)}.delete_if{|x| x == '.' or x == '..'}
+        @upload_total = UploadTotal.find(1).upload_total
+      end
+
       def upload_dir
         Rails.root.join('public', 'uploads')
       end
 
-      def file_upload
-        max_size = 1000
-        file = params[:file]
-        if file.size > 1000
-          flash[:file_too_large] = "File too large. Max size: #{max_size}."
-        #TODO control maximum directory size
+      def do_file_upload
         #TODO deal with .gitkeep
+        max_size = 500000
+        total_upload_max = 1000000
+        file = params[:file]
+        file_size = file.size
+        if file_size > max_size
+          flash[:upload_error] = "Error: File too large. Max size = #{max_size}B. Given size = #{file_size}."
         else
-          File.open(File.join(upload_dir, file.original_filename), 'w') do |f|
-            f.write(file.read)
+          upload_total = UploadTotal.find(1)
+          new_upload_total = upload_total.upload_total + file_size
+          if new_upload_total > total_upload_max
+            flash[:upload_error] = "Error: Total upload limit reached. Limit = #{total_upload_max}B."
+          else
+            File.open(File.join(upload_dir, file.original_filename), 'wb') do |f|
+              f.write(file.read)
+            end
+            upload_total.upload_total = new_upload_total
+            upload_total.save
           end
         end
         redirect_to :back
       end
 
       def file_delete
-        File.unlink(File.join(upload_dir, File.basename(params[:id])))
+        file_path = File.join(upload_dir, File.basename(params[:id]))
+        file_size = File.size(file_path)
+        File.unlink(file_path)
+        upload_total_row = UploadTotal.find(1)
+        upload_total_row.upload_total -= file_size
+        upload_total_row.save
         redirect_to :back
       end
 

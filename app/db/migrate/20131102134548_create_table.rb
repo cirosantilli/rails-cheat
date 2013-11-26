@@ -6,6 +6,7 @@ class CreateTable < ActiveRecord::Migration
   # There are two possibilities:
   #
   # - define only the `change` method.
+  #
   #    Only possible for migration in which the inverse is unambiguous (ex: create / drop).
   #
   #    In those cases, RoR is able to determine the inverse without us specifying anything.
@@ -49,11 +50,12 @@ class CreateTable < ActiveRecord::Migration
 
     # It is possible to create some elements here already,
     # however this is not recommended since those elements
-    # will not be present on the `db/schema.rb`.
+    # will not be present on the `db/schema.rb`,
+    # nor no the `db/seeds.rb`.
     #
     # Use schemas or `db/seeds.rb` for that instead.
     #
-    #Model0.create string_col: 'abc', integer_col: 123
+    Model0.create string_col: 'abc', integer_col: 123
     #Model0.create string_col: 'def', integer_col: 456
 
     #Model1.create string_col: '0'

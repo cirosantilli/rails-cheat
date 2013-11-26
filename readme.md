@@ -235,6 +235,18 @@ adds a table addition to the generated template. Example:
 will create a migration template that adds
 a string column named `column_name` to table TableName.
 
+Other standard migration generate names follow.
+
+Remove column from table:
+
+    rails generate migration RemovePartNumberFromProducts part_number:string
+
+Create a new table:
+
+    rails generate migration CreateProducts name:string part_number:string
+
+You will probably want to leave this to a `generate model` command.
+
 List all migrations, including where we currently are:
 
     rake db:status

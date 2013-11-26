@@ -1,0 +1,24 @@
+<% provide(:title, 'File Upload') %>
+
+<h1>Controller0#file_upload</h1>
+
+<%= form_tag({action: :do_file_upload}, multipart: true) do %>
+  <% if flash[:upload_error] %>
+    <p><%= flash[:upload_error] %></p>
+  <% end %>
+  <p><%= file_field_tag 'file', required: true %></p>
+  <%= submit_tag 'Upload' %>
+<% end %>
+
+<% if @uploaded_files.any? %>
+  <p>Total memory used: <%= @upload_total %></p>
+  <p>Current files:</p>
+  <ul>
+    <% @uploaded_files.each do |f| %>
+      <li>
+        <%= link_to f, {action: 'file_delete', id: f} %>
+        <%= link_to 'Delete', {action: 'file_delete', id: f}, method: :delete %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>

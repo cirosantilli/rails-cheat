@@ -15,6 +15,10 @@
     <li><%= link_to 'Edit', {action: 'edit', id: '1'} %></li>
   </ul>
 
+<h2>#file upload</h2>
+
+  <p><%= link_to 'File Upload', {action: 'file_upload'} %></p>
+
 <h2>#params #routes #link_to</h2>
 
   <p>params = <%= params %></p>
@@ -44,6 +48,21 @@
 
     <%# If action is not given it defaults to current action. %>
     <li><%= link_to 'Myself' %></li>
+
+    <%#
+    #method
+
+      link_to always generates anchors and HTML does not have out-of-the box method choice for anchors,
+      however rails does support it by adding:
+
+      - the standard attribute `rel="nofollow"` so that the link is not followed when clicked upon
+      - the rails specifiec attribute `data-method="delete"`
+
+      It works even without javascript.
+
+      To get a plain HTML solution, use `button_to instead.
+    %>
+    <li><%= link_to 'file_download', {action: 'url_params_abc', id: 'abac'} %></li>
   </ul>
 
   <%#
@@ -193,25 +212,6 @@
     Restart the server after adding new locale files.
   %>
   <p>I18n.load_path = <%= I18n.load_path %></p>
-
-<h2>#file upload</h2>
-
-  <%= form_tag({action: :file_upload}, multipart: true) do %>
-    <% if flash[:file_too_large] %>
-      <p><%= flash[:file_too_large] %></p>
-    <% end %>
-    <p><%= file_field_tag 'file', required: true %></p>
-    <%= submit_tag 'Upload' %>
-  <% end %>
-
-  <% if @uploaded_files.any? %>
-    <p>Current files:</p>
-    <ul>
-      <% @uploaded_files.each do |f| %>
-        <li><%= link_to f, {action: 'file_download', id: f} %> <b><%= link_to 'Delete', {action: 'file_delete', id: f} %></b></li>
-      <% end %>
-    </ul>
-  <% end %>
 
 <h1>#third party</h1>
 

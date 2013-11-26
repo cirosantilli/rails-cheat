@@ -22,8 +22,8 @@ App::Application.routes.draw do
 
       #get "url" => 'controller#action'
 
-      #scope "prefix", controller: :controller do
-        #get "url" => :action
+      #scope "prefix", controller: :controller, id: /[^\/]/ do
+        #get "url/:id" => :action
       #end
 
     # Optional part:
@@ -51,9 +51,6 @@ App::Application.routes.draw do
           get "redirect-to-action0" => :redirect_to_action0
           get "ajax-test" => :ajax_test
           get "action1" => :action1
-          post "file_upload" => :file_upload
-          get "file_download/:id" => :file_download
-          get "file_delete/:id" => :file_delete
           post "mail" => :mail
 
       ## URL params
@@ -77,6 +74,14 @@ App::Application.routes.draw do
         # TODO Automatically generate exactly all above 7 CRUD operations:
         #resource :controller0, path: 'model0'
 
+      ##file upload
+
+        scope "file_upload", id: /[^\/]+/ do
+          get "" => :file_upload
+          post "" => :do_file_upload
+          get ":id" => :file_download
+          delete ":id" => :file_delete
+        end
     end
   end
 

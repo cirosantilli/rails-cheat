@@ -51,6 +51,8 @@ class Model0 < ActiveRecord::Base
 
       validates :integer_col,
         numericality: true
+        #inclusion: 1..10
+        #numericality: { greater_than: 0, less_than_or_equal_to: :another_field }
 
       #validates_associated :model1
 

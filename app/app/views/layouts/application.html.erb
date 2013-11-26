@@ -3,14 +3,20 @@ This is the default layout fo the application.
 
 #yield
 
-  Yield can be called with parameters like title.
+  Yield can be called with any parameters such as `:title`.
 
   Those can be provided from individual templates via `provide`.
 %>
 <!DOCTYPE html>
 <html>
 <head>
-  <title><%= yield(:title) %></title>
+  <title>
+    <% title = yield :title
+       if not title.empty? %>
+      <%= title  + ' -'%>
+    <% end %>
+    Rails Cheat
+  </title>
   <%#
   #stylesheet_link_tag
 
