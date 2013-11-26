@@ -214,9 +214,19 @@ Create db, load schema and seed data all in one:
 
     rake db:setup
 
+It's weird, but at Rails 4 this also drops the `db` first just like `db:reset`.
+
 This is a good option to start a database to its working condition once
 migrations have already made `db/schema.rb` be up to date, for example
 to reset a development database after a `db:drop`.
+
+Its weird, but as of 2013 this seems to also drop first!
+
+Same as setup, but drop first:
+
+    rake db:reset
+
+Great to turn a development database to its initial state.
 
 ##dbconsole
 

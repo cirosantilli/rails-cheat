@@ -4,8 +4,11 @@
 <p>integer_col = <%= @model0.integer_col %></p>
 <p>model1_id = <%= @model0.model1_id %></p>
 <p>
-  <b><%= link_to 'Edit', {action: 'edit', id: @model0.id} %></b>
-  <b><%= link_to "Destroy", {action: 'destroy', id: @model0.id},
-    confirm: "Are you sure you want to destroy this item?" %></b>
+  <%= link_to 'Edit', {action: 'edit', id: @model0.id} %>
+  <%= link_to "Destroy",
+      {action: 'destroy', id: @model0.id},
+      data: { confirm: "Are you sure you want to destroy this item?" },
+      method: :delete
+  %>
 </p>
 <p><%= link_to 'Back', {action: 'index'} %></p>

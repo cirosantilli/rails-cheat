@@ -6,9 +6,12 @@
     <% @model0s.each do |c| %>
         <li>
             <%= link_to c.string_col, {action: 'show', id: c.id} -%>
-            <b> <%= link_to 'Edit', {action: 'edit', id: c.id} %></b>
-            <b> <%= link_to "Destroy", {action: 'destroy', id: c.id},
-                confirm: "Are you sure you want to destroy this item?" %></b>
+            <%= link_to 'Edit', {action: 'edit', id: c.id} %>
+            <%= link_to "Destroy",
+              {action: 'destroy', id: c.id},
+              data: { confirm: "Are you sure you want to destroy this item?" },
+              method: :delete
+            %>
         </li>
     <% end %>
     </ul>

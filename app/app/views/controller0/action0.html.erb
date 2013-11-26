@@ -49,6 +49,9 @@
     <%# If action is not given it defaults to current action. %>
     <li><%= link_to 'Myself' %></li>
 
+    <%# ##confirm %>
+    <li><%= link_to 'Myself Confirm', {}, data: { confirm: "Are you sure?!?" } %></li>
+
     <%#
     #method
 
@@ -62,7 +65,7 @@
 
       To get a plain HTML solution, use `button_to instead.
     %>
-    <li><%= link_to 'file_download', {action: 'url_params_abc', id: 'abac'} %></li>
+    <li><%= link_to 'file_download', {action: 'url_params_abc', id: 'abac'}, method: :delete %></li>
   </ul>
 
   <%#

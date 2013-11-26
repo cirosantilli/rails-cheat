@@ -41,17 +41,19 @@ development:
   pool: 5
   password:
 " > config/database.yml
-first="false"
 if [ ! -d .git ]; then
     git init
-    first="true"
+    if [ -z "$appname" ]; then
+        heroku create
+    else
+        heroku create "$appname"
+    fi
+    # Set this environment variable to tell the app that we are on heroku.
+    heroku config:set HEROKU=true
 fi
 git add .
 git commit -am "deploy $(date "+%Y-%m-%d-%H-%M-%S")"
-if $first; then
-    heroku create "$appname"
-fi
 git push heroku master
-heroku ps:scale web=1
 heroku run rake setup
+heroku ps:scale web=1
 heroku open

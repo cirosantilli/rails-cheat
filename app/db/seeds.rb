@@ -7,6 +7,6 @@ if Rails.env.development?
     Model1.create string_col: '1'
     Model1.create string_col: '2'
     Model1.create string_col: '3'
-
-    UploadTotal.create id: 1, upload_total:0
 end
+
+UploadTotal.create id: 1, upload_total: 0
