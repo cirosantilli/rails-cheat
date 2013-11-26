@@ -6,10 +6,7 @@ ruby '2.0.0'
 gem 'rails', '4.0.1'
 
 # DBMS:
-
-#gem 'mysql'
-gem 'sqlite3', '1.3.8'
-#gem 'pg'
+instance_eval(File.read(File.join(File.dirname(__FILE__), 'Gemfile_dbms')))
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '4.0.0'

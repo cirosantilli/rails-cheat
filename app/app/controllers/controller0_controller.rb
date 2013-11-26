@@ -224,6 +224,9 @@ class Controller0Controller < ApplicationController
 
     # Action taken before doing any action.
 
+    # To make a fileter for all controllers, place it in `application_controller.rb`,
+    # which is the base class of every controller.
+
     # Can for example redirect user to another page.
 
       before_filter :before_filter_do, unless: :before_filter_dont

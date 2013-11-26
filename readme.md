@@ -1,3 +1,14 @@
+Information and cheats on Rails.
+
+Live version of the application app at: <http://cirosantilli-rails-cheat.herokuapp.com/>
+
+You can deploy your own instance instantly with:
+
+    ./heroku-deploy.sh appname
+
+Certain features of the app may break on that deployment such as file uploads due to the ephemeral FS.
+This could be corrected by using something like FTP or AWS.
+
 #ubuntu install
 
 Install Rails on Ubuntu with RVM:
@@ -13,11 +24,14 @@ Will also need nodejs:
 
 #config
 
-- `config/environments`: environment specific configs go under .
+- `application.rb` and environments under `environments`.
 
-    Ex: `config/environments/production.rb`.
+    Basic configuration of Rails built-in things.
 
-- `config/initializers`: TODO
+- `config/initializers`:
+
+    Configurations of things which are not built-in rails,
+    such as installed gems.
 
 #rails command
 
@@ -55,6 +69,12 @@ Delete files created with generate:
 Shortcut:
 
     rails d controller controller-name
+
+#rake
+
+`rake` is the standard way to create new commands to be used interactively.
+
+To create a new rake task add a `.rake` file with any name under `lib/tasks` in Rakefile format.
 
 #controller
 
