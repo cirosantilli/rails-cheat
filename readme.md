@@ -289,6 +289,10 @@ Go back to last migration:
 
     rake db:rollback
 
+##fixture
+
+TODO vs seed.
+
 #scaffold
 
 Automatically generates a base CRUD interface for a model.
@@ -368,11 +372,15 @@ Create a `.example` version and Gitignore it to protect the password.
 
 #lib
 
-Contains Ruby libriries to be imported.
+Is put on the Ruby require path.
 
 ##lib/tasks
 
 All `.rake` files in this dir are searched for rake commands.
+
+#initializers
+
+Are automatically required on all files of the application.
 
 #devise
 
