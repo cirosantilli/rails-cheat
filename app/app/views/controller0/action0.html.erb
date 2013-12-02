@@ -1,12 +1,10 @@
 <% provide(:title, 'controller0') %>
 
-<h1>Controller0#action0</h1>
+<%= h "Controller0#action0", 2 %>
 
   <p>Find me in app/views/controller0/action0.html.erb</p>
-  <% @var0 == 0 or raise %>
-  <% @var1 == 1 or raise %>
 
-<h2>#CRUD</h2>
+<%= h "#CRUD", 2 %>
 
   <ul>
     <li><%= link_to 'New', {action: 'new'} %></li>
@@ -15,11 +13,23 @@
     <li><%= link_to 'Edit', {action: 'edit', id: '1'} %></li>
   </ul>
 
-<h2>#file upload</h2>
+<%= h "#accessible variables and methods", 2 %>
+
+  <% @var0 == 0 or raise %>
+  <% @var1 == 1 or raise %>
+  <% not defined? @after_render or raise %>
+  <% @arr[0] += 1 %>
+
+  <%= h "#named helpers", 2 %>
+    <p>root_url = <%= root_url %></p>
+    <p>root_path = <%= root_path %></p>
+    <p>action0_path = <%= action0_path %></p>
+
+<%= h "#file upload", 2 %>
 
   <p><%= link_to 'File Upload', {action: 'file_upload'} %></p>
 
-<h2>#params #routes #link_to</h2>
+<%= h "#params #routes #link_to", 2 %>
 
   <p>params = <%= params %></p>
   <p>Try this URL: <a href="?a=b&c=d&list[]=1&list[]=2&hash0[key0]=val0&hash0[key1]=val1">?a=b&c=d&index[]=1&index[]=2&hash0[key0]=val0&hash0[key1]=val1</a></p>
@@ -27,8 +37,14 @@
   <p>Routes and params:</p>
 
   <ul>
+
     <%#
-        Dictionary parameters different from action become URL parameters:
+        Controller is by default the current controller. One can be given via the `controller:` param.
+    %>
+    <p><%= link_to "Another Controller", { controller: 'users', action: 'index' } %></p>
+
+    <%#
+        Dictionary parameters different from action become URL parameters
 
         - `?id=XX` if the matching route does not contain `:id`
         - part of the url path if it does
@@ -74,19 +90,46 @@
     It is rails tht parses lists and hashes.
   %>
 
-<h2>#request.env</h2>
+<%= h "#request", 2 %>
 
-  <%#
-    The entire GCI info.
-  %>
+  <p>original_url = <%= request.original_url %></p>
+  <p>url =          <%= request.url %></p>
+  <p>host =         <%= request.host %></p>
+  <%# takes as arguments the number of domains to consider. Default: 2 %>
+  <p>domain =       <%= request.domain %></p>
+  <p>format =       <%= request.format %></p>
+  <p>method =       <%= request.method %></p>
+  <p>headers =      <%= request.headers %></p>
+  <p>port =         <%= request.port %></p>
+  <p>protocol =     <%= request.protocol %></p>
+  <p>query_string = <%= request.query_string %></p>
+  <%# IP that made the request %>
+  <p>remote_ip =    <%= request.remote_ip %></p>
+  <p>path_parameters =    <%= request.path_parameters %></p>
+  <p>query_parameters =    <%= request.query_parameters %></p>
+  <%# post body related: %>
+  <p>request_parameters =    <%= request.request_parameters %></p>
 
+  <p>request.env = </p>
   <ul>
     <% request.env.each do |k, v| %>
       <li><%= k %> = <%= v %></li>
     <% end %>
   </ul>
 
-<h2>#cookies</h2>
+<%= h "#response", 2 %>
+
+  <table>
+    <tr><td>status</td><td><%= response.status %></td><tr>
+    <%# where the user will be redirected to %>
+    <tr><td>location</td><td><%= response.location %></td><tr>
+    <tr><td>content_type</td><td><%= response.content_type %></td><tr>
+    <tr><td>charset</td><td><%= response.charset %></td><tr>
+    <tr><td>headers</td><td><%= response.headers %></td><tr>
+    <tr><td>body</td><td><%= response.body %></td><tr>
+  </table>
+
+<%= h "#cookies", 2 %>
 
   <ul>
     <% cookies.each do |k, v| %>
@@ -94,9 +137,9 @@
     <% end %>
   </ul>
 
-<h2>#ajax</h2>
+<%= h "#ajax", 2 %>
 
-  <h3>manual ajax</h3>
+  <%= h "manual ajax", 3 %>
 
     <script>
       var xmlhttp = new XMLHttpRequest()
@@ -118,11 +161,11 @@
     <ul id="ajax-target">
     </ul>
 
-  <h3>rails helped ajax</h3>
+  <%= h "rails helped ajax", 3 %>
 
     <p>TODO</p>
 
-<h2>#Rails.env</h2>
+<%= h "#Rails", 2 %>
 
   <%#
   Current environment: production, development, test, etc.
@@ -132,15 +175,17 @@
 
   <p>Rails.root = <%= Rails.root %></p>
 
-<h2>#button_to</h2>
+  <p>Rails.logger.level = <%= Rails.logger.level %></p>
 
-  <%= button_to 'BROKEN New', @get, {action: 'new'} %>
+<%= h "#button_to", 2 %>
 
-<h2>#before_filter_do</h2>
+  <%= button_to 'TODO New', @get, {action: 'new'} %>
 
-<p>before_filter_do = <%= @before_filter_do %></p>
+<%= h "#tag", 2 %>
 
-<h2>#flash</h2>
+  <%= tag 'p' %>
+
+<%= h "#flash", 2 %>
 
   <p><%= link_to 'Redirect to myself', {action: 'redirect_to_action0'} %>
 
@@ -154,7 +199,7 @@
   %>
   <p>flash[:something] = <%= flash[:something] %></p>
 
-<h2>#render #partials</h2>
+<%= h "#render #partials", 2 %>
 
   <%#
     Insert another template at current point.
@@ -163,7 +208,7 @@
 
   <%= render "partial.html.erb" %>
 
-<h2>#forms</h2>
+<%= h "#forms", 2 %>
 
   <p><%= text_field 'model0', 'string_col' %></p>
   <p><input id="model0_string_col" name="model0[string_col]" type="text" /></p>
@@ -184,16 +229,18 @@
   <%#dropdown selection on one to many relation%>
   <%#= collection_select(:model0, :model1_id, @model1s, :id, :string_col) %>
 
-<h2>#action mailer</h2>
+<%= h "#action mailer #email #mail", 2 %>
 
   <p>For this to work, first configure your SMTP.</p>
   <%= form_tag action: 'mail' do %>
-    <p><label for="user_address">Send emails to</label>:
-    <%= email_field 'user', 'address' %></p>
+    <p>
+      <%= label :user, :address, "Send emails to" %>:
+      <%= email_field 'user', 'address' %>
+    </p>
     <%= submit_tag 'Send' %>
   <% end %>
 
-<h2>#i18n</h2>
+<%= h "#i18n", 2 %>
 
   <p><%= link_to 'en', {locale: 'en'} %> | <%= link_to 'zh', {locale: 'zh'} %></p>
 
@@ -204,11 +251,20 @@
   <%# t alias is available inside views. %>
   <p>t :hello = <%= t :hello %></p>
 
-  <%# What happens when something is not translated. %>
-  <p>I18n.t "Not translated!" = <%= I18n.t "Not translated!" %></p>
+  <%#
+      At Rails 4.0, when something is not translated an exception is raised and trash apears on the screen.
+
+      It is however possible to modify the exception handler to not print trash and print the exact input string instead
+      as shown here
+
+      <http://guides.rubyonrails.org/i18n.html#using-different-exception-handlers>
+
+      Put that code into an initializer.
+  %>
+  <p>t "Not translated!" = <%= t "Not translated!" %></p>
 
   <%# Use key as default if missing. %>
-  <p>I18n.t :missing, default: "Not translated!" = <%= I18n.t :missing, default: "Not translated!" %></p>
+  <p>t :missing, default: "Not translated!" = <%= t :missing, default: "Not translated!" %></p>
 
   <%#
     Path where locale files will be searched for.
@@ -216,22 +272,33 @@
   %>
   <p>I18n.load_path = <%= I18n.load_path %></p>
 
-<h1>#third party</h1>
+<%= h "#third party" %>
 
-<h2>#devise #omniauth</h2>
+  <p><%= link_to "Haml", {action: :haml} %></p>
 
+<%= h "#custom helpers", 2 %>
+
+<%#= toc %>
+<%= h "header 1" %>
+<%= h "header 2", 2 %>
+
+<%= h "#users #devise #omniauth", 2 %>
+
+  <p><%= link_to "Users Index", { controller: 'users', action: 'index' } %></p>
   <% if user_signed_in? %>
     <p>current_user.email = <%= current_user.email %></p>
     <p><%= link_to 'Edit profile', edit_user_registration_path %> |
-    <%= link_to "Logout", destroy_user_session_path, method: :destroy  %></p>
+    <%= link_to "Logout", destroy_user_session_path, method: :delete %></p>
   <% else %>
     <p>Not logged in.</p>
-    <p><%= link_to "Sign up", new_user_registration_path  %> |
-    <%= link_to "Login", new_user_session_path %></p>
-    <%= link_to "BROKEN Sign in with Facebook", user_omniauth_authorize_path(:facebook) %>
+    <p>
+      <%= link_to "Login", new_user_session_path %> |
+      <%= link_to "Sign up", new_user_registration_path %>
+    </p>
+    <%= link_to "TODO Sign in with Facebook", user_omniauth_authorize_path(:facebook) %>
   <% end %>
 
-<h2>#faker</h2>
+<%= h "#faker", 2 %>
 
   <ul>
     <li>name = <%= Faker::Name.name %></li>
@@ -241,3 +308,9 @@
     <li>words = <%= Faker::Lorem.words(2) %></li>
     <li>paragraphs = <%= Faker::Lorem.paragraphs(2) %></li>
   </ul>
+
+<%= h "#breadcrumbs_on_rails", 2 %>
+
+  <p>TODO</p>
+
+  <%= render_breadcrumbs %>

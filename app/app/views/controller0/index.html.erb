@@ -1,19 +1,26 @@
 <h1>Controller0#index</h1>
 <% if @model0s.blank? %>
-    <p>None</p>
+  <p>None</p>
 <% else %>
-    <ul id="model0s">
-    <% @model0s.each do |c| %>
-        <li>
-            <%= link_to c.string_col, {action: 'show', id: c.id} -%>
-            <%= link_to 'Edit', {action: 'edit', id: c.id} %>
-            <%= link_to "Destroy",
-              {action: 'destroy', id: c.id},
-              data: { confirm: "Are you sure you want to destroy this item?" },
-              method: :delete
-            %>
-        </li>
-    <% end %>
-    </ul>
+  <ul>
+  <% @model0s.each do |c| %>
+    <li>
+      <%= link_to c.string_col, { action: 'show', id: c.id } %>
+      <%= link_to 'Edit', { action: 'edit', id: c.id } %>
+      <%= link_to 'Delete',
+        { action: 'destroy', id: c.id },
+        data: { confirm: 'Are you sure you want to destroy this item?' },
+        method: :delete
+      %>
+    </li>
+  <% end %>
+  </ul>
+  <div>
+    <% if @page >= 3 %><%= link_to "<<", {page: 1, per_page: @per_page} %> |<% end %>
+    <% if @page != 1 %><%= link_to "<", {page: @page - 1, per_page: @per_page} %> |<% end %>
+    <%= @page %>
+    <% if @page != @npages %> | <%= link_to ">", {page: @page + 1, per_page: @per_page} %><% end %>
+    <% if @page <= @npages - 2 %> | <%= link_to ">>", {page: @page + 1, per_page: @per_page} %><% end %>
+  </div>
 <% end %>
-<p><%= link_to "Create new Model0", {:action => 'new' }%></p>
+<p><%= link_to "Create new Model0", { action: 'new' } %></p>

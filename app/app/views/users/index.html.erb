@@ -1,0 +1,14 @@
+<% provide(:title, t "Users") %>
+<h1><%= t "Users" %></h1>
+<% if @users.blank? %>
+  <p>None</p>
+<% else %>
+  <ul>
+  <% @users.each do |x| %>
+    <li>
+      <%= link_to x.email, { action: 'show', id: x.id } %>
+    </li>
+  <% end %>
+  </ul>
+<% end %>
+<p><%= link_to t "Sign up", new_user_registration_path %></p>

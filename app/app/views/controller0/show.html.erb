@@ -5,9 +5,9 @@
 <p>model1_id = <%= @model0.model1_id %></p>
 <p>
   <%= link_to 'Edit', {action: 'edit', id: @model0.id} %>
-  <%= link_to "Destroy",
+  <%= link_to 'Delete',
       {action: 'destroy', id: @model0.id},
-      data: { confirm: "Are you sure you want to destroy this item?" },
+      data: { confirm: "Are you sure you want to delete this item?" },
       method: :delete
   %>
 </p>

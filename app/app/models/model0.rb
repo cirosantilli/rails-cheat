@@ -44,9 +44,9 @@ class Model0 < ActiveRecord::Base
 
       validates :string_col,
         presence: true,
-        uniqueness: {message: "custom message: must be unique"},
-        length: {minimum: 2, maximum:4, message: "custom message: length must be between 2 and 4" },
-        format: {with: /a.*/, message: "custom message: must start with the letter a"}
+        uniqueness: {message: "custom message: must be unique"}
+        #length: {minimum: 2, maximum:4, message: "custom message: length must be between 2 and 4" },
+        #format: {with: /a.*/, message: "custom message: must start with the letter a"}
         #format: /a.*/
 
       validates :integer_col,

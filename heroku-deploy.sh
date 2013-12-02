@@ -31,6 +31,7 @@ dest="heroku.tmp"
 mkdir -p "$dest"
 cp -fru -t "$dest" app/* app/.[^.]* #app/..?*
 cd "$dest"
+sed -ri 's/.*smtp_settings\.rb.*//' .gitignore
 echo "gem 'pg'" > Gemfile_dbms
 bundle install
 echo "

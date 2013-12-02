@@ -1,0 +1,30 @@
+%h1 haml
+%p p
+%p ul:
+%ul
+  %li a
+  %li b
+%p a
+%p multiline:
+%p
+  a
+  b
+no tag
+%p div is default tag if id or class are given
+.class0 inside div
+.class.with.spaces inside div
+#id0 inside div
+%h2 attrs
+%div{a: "b" + "0", c:"d"} a b
+%div(a: b c: d) a b
+%h2 ruby
+%p= "a"
+%p multiline:
+%p
+  = "a"
+  = "b"
+%p mix code and html:
+%p
+  a
+  = "b"
+-# comment

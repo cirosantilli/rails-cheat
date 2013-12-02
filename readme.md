@@ -95,6 +95,12 @@ automatically corresponds to the `erb` file `app/views/controller0/action0.html.
 Any instance variable defined in the function as `@var0`
 becomes available to its corresponding `erb` as `@var0`.
 
+#helper
+
+Helpers are usually method that output HTML and which are used in views.
+
+They should be defined under `app/helpers`.
+
 #routes
 
 Determine which action to take for each URL.
@@ -374,13 +380,26 @@ Create a `.example` version and Gitignore it to protect the password.
 
 Is put on the Ruby require path.
 
+Does not work for:
+
+- config files
+
 ##lib/tasks
 
 All `.rake` files in this dir are searched for rake commands.
 
 #initializers
 
-Are automatically required on all files of the application.
+Are automatically required on many files of the application including:
+
+- views
+- controllers.
+
+Is not automatically required for:
+
+- config files
+
+Initializers are not put on the require path.
 
 #devise
 
@@ -421,3 +440,11 @@ rake db:migrate
 Restart rails.
 
 ##omniauth
+
+#foreman
+
+Tool that starts many processes at once, for example one main web process + many works.
+
+Advantages over a plain script:
+
+- one C-C and SIGTERM is sent to all the processes invoked

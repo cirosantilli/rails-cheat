@@ -44,6 +44,12 @@ App::Application.routes.draw do
 
           root 'controller0#action0'
 
+      # If inside a namespace, sets the root for the namespace.
+
+          #namespace :admin do
+            #root to: "admin#index"
+          #end
+
     scope "controller0", controller: :controller0 do
 
           get "" => :action0
@@ -74,6 +80,9 @@ App::Application.routes.draw do
         # TODO Automatically generate exactly all above 7 CRUD operations:
         #resource :controller0, path: 'model0'
 
+        # Generate only some of the above actions
+        #resources :controller0, only: [:index, :show]
+
       ##file upload
 
         scope "file_upload", id: /[^\/]+/ do
@@ -82,18 +91,23 @@ App::Application.routes.draw do
           get ":id" => :file_download
           delete ":id" => :file_delete
         end
+
+      ##haml
+
+          get "haml" => :haml
+
     end
   end
 
-
   ##devise
 
-    # Cannot be inside a scope?
+    # Cannot be inside a scope. TODO workaround.
 
     # - model: which model defies the user.
     # - path: login path relative to root. Default: `users`
 
       devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
+      resources :users, :only => [:index, :show]
       #devise_for :users, path: "auth"
 
   # Example of regular route:

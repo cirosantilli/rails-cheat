@@ -39,5 +39,9 @@ module App
         # missing translations in german will fallback to french ('de' => 'fr')
 
           #config.i18n.fallbacks = {'es' => 'en', 'fr' => 'en', 'de' => 'fr'}
+
+    ##assets
+
+        #config.assets.initialize_on_precompile = false
   end
 end

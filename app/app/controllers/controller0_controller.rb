@@ -18,18 +18,45 @@ class Controller0Controller < ApplicationController
         @var0 = 0
         @var1 = 1
 
-    ##db functions
+    ##active record methods
 
       ##find
 
+      ##all
+
           @model0s = Model0.all
+
+      ##create
+
+        # Unlike new, immediately creates the element on the database.
 
       ##save
 
-        # Saves a model instance to the database.
+        # Saves a model instance to the database, usually one that was created with new.
 
           #@model0 = Model0.new(model0_params)
           #@model0.save
+
+      ##save! vs save
+
+        # `save!` does validations, `save` does not.
+
+      ##count
+
+          #Model0.count
+          #Model0.all.count
+
+      ##order
+
+          #Model0.order(:id)
+          #Model0.order(id: :asc)
+          #Model0.order(id: :desc)
+
+      ##limit ##offset
+
+        # Pagination friends.
+
+          #Model0.all.limit(5).offset(10)
 
     ##actions
 
@@ -55,6 +82,18 @@ class Controller0Controller < ApplicationController
         # Give the body on a string. Pass it through erb before returning:
 
           #render text: '<h1><%= 1 %></h1>'
+
+        # Render and/or redirect can only be called once on the controller. Error:
+
+          #render
+          #render
+
+        # Only variables defined before the render / redirect are visible on the template.
+
+          @arr = [0]
+          render
+          @arr == [1] or raise
+          @after_render = 1
 
       ##redirect_to
 
@@ -142,6 +181,22 @@ class Controller0Controller < ApplicationController
     ##logger
 
         Rails.logger.info('controller0 log test')
+
+    ##breadcrumbs_on_rails
+
+        add_breadcrumb "action0", action0_path
+
+    ##response
+
+      # The counterpart of the request object.
+
+      # Checks and possibly modifies the current state of the response.
+
+      # Unlike the request, the response should almost never be used.
+
+    ##before_filter
+
+        @before_filter_do == 1 or raise
   end
 
   def redirect_to_action0
@@ -173,7 +228,11 @@ class Controller0Controller < ApplicationController
   # Typcial CRUD actions:
 
     def index
-      @model0s = Model0.all
+      @per_page = params.fetch('per_page', 25).to_i
+      @page = params.fetch('page', 1).to_i
+      pages = Model0.all.order(:id)
+      @npages = (pages.count - 1) / @per_page + 1
+      @model0s = pages.limit(@per_page).offset(@per_page*(@page-1))
     end
 
     # Detail on on one item.
@@ -220,7 +279,12 @@ class Controller0Controller < ApplicationController
         redirect_to action: 'index'
     end
 
-  ##before_filter
+  ##before_filter ##before_action
+
+    # Synonyms. `before_action` was introduced in Rails 4,
+    # but before_filter is not yet deprecated as of Rails 4.1.
+    #
+    # But it may be some day, and `before_action` makes more sense.
 
     # Action taken before doing any action.
 
@@ -246,21 +310,12 @@ class Controller0Controller < ApplicationController
         false
       end
 
-  ##i18n
-
-      before_action :set_locale
-
-      def set_locale
-        # Set the actual locale based on parsed params.
-        I18n.locale = params[:locale] || I18n.default_locale
-
-        # link_to links will keep current locale.
-        if params.has_key? :locale
-          Rails.application.routes.default_url_options[:locale] = I18n.locale 
-        else
-          Rails.application.routes.default_url_options.delete(:locale)
-        end
+      def before_filter_skip
+        @before_filter_do = 2
       end
+
+      before_filter :before_filter_skip
+      skip_before_filter :before_filter_skip
 
   def mail
       MyMailer.email0(params[:user][:address]).deliver
@@ -335,11 +390,18 @@ class Controller0Controller < ApplicationController
 
         #before_filter :authenticate_user!
 
+  ##haml
+
+      def haml
+        @a = 1
+      end
+
   private
 
     # This determines which parameters can be sent through POST methods.
     # It is mandatory to whitelist possible parameters or they won't work.
     # Otherwise, end users could do naughty things like attempt to set an ID.
+    #
     def model0_params
       params.require(:model0).permit(:string_col, :integer_col, :model1_id)
     end
