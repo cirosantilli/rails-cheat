@@ -1,4 +1,4 @@
-# This object can be obtained via `model0s(:m0)`
+# This object can be obtained via `model0s(:model0_0)`
 model0_0:
   string_col: a0
   integer_col: 0

@@ -11,6 +11,8 @@ class CreateTable < ActiveRecord::Migration
   #
   #    In those cases, RoR is able to determine the inverse without us specifying anything.
   #
+  #   Methods which can currently be reverted are listed at: <http://guides.rubyonrails.org/migrations.html#using-the-change-method>
+  #
   # - define both `up` and `down` methods.
   #    Always works, but you write more.
   #
@@ -63,4 +65,15 @@ class CreateTable < ActiveRecord::Migration
     #Model1.create string_col: '2'
     #Model1.create string_col: '3'
   end
+
+  ##change_column_default
+
+      #def up
+        #change_column_default :profiles, :show_attribute, true
+      #end
+
+      #def down
+        ## Remove the default:
+        #change_column_default :profiles, :show_attribute, nil
+      #end
 end

@@ -11,7 +11,7 @@ This could be corrected by using something like FTP or AWS.
 
 #ubuntu install
 
-Install Rails on Ubuntu with RVM:
+Install Rails on Ubuntu with ruby RVM:
 <https://www.digitalocean.com/community/articles/how-to-install-ruby-on-rails-on-ubuntu-12-04-lts-precise-pangolin-with-rvm>
 
 Should work for most other Linux distros as well.
@@ -262,6 +262,7 @@ Migration templates can be generated with:
     rails generate migration MigrationName
 
 Certain migration names are special and lead to better template creation.
+They are also more standard, so use them whenever possible.
 
 For example, any name of the form `Add<column_name>To<table_name>` already
 adds a table addition to the generated template. Example:
@@ -271,7 +272,7 @@ adds a table addition to the generated template. Example:
 will create a migration template that adds
 a string column named `column_name` to table TableName.
 
-Other standard migration generate names follow.
+Other standard migration generate include:
 
 Remove column from table:
 
@@ -317,9 +318,11 @@ Run all the tests:
 
     rake test
 
-To run the tests do:
+Run the only tests on `tests/models/model0_test.rb` do either of:
 
-    rake test tests/models/${MODEL_NAME}.rb
+    rake test model0
+    rake test tests/models/model0
+    rake test tests/models/model0.rb
 
 Run all unit tests:
 

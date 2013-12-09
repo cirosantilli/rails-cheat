@@ -10,13 +10,23 @@
   a
   b
 no tag
-%p div is default tag if id or class are given
-.class0 inside div
-.class.with.spaces inside div
-#id0 inside div
+- if true
+  %p true
+- else
+  %p false
 %h2 attrs
 %div{a: "b" + "0", c:"d"} a b
 %div(a: b c: d) a b
+%p
+  Class and id have special forms.
+  Div is default tag if id or class are given.
+.class0 inside div
+.class.with.spaces inside div
+#id0 id0
+#id1.class1{a: "b"} id1 class1 a=b
+.class2#id2{a: "b"} id1 class1 a=b
+%p Non special synatx attributes must come last:
+%div{a: "b"}.class1#id1-fail id1 class1
 %h2 ruby
 %p= "a"
 %p multiline:

@@ -22,6 +22,24 @@ class Controller0Controller < ApplicationController
 
       ##find
 
+        # Retreive a single item by its primary ID.
+
+      ##take ##limit
+
+        # SELECT * FROM table LIMIT N
+
+        # Default is `N = 1`.
+
+        # `nil` if non found.
+
+      ##find_by
+
+        # Same as `where.take`
+
+      ##where
+
+        # Returns a list of rows matching a criteria.
+
       ##all
 
           @model0s = Model0.all
@@ -339,7 +357,7 @@ class Controller0Controller < ApplicationController
 
       def file_upload
         @uploaded_files = Dir.entries(File.join(upload_dir)).map{|x| File.basename(x)}.delete_if{|x| x == '.' or x == '..'}
-        @upload_total = UploadTotal.find(1).upload_total
+        @upload_total = UploadTotal.take.upload_total
       end
 
       def upload_dir
@@ -355,7 +373,7 @@ class Controller0Controller < ApplicationController
         if file_size > max_size
           flash[:upload_error] = "Error: File too large. Max size = #{max_size}B. Given size = #{file_size}."
         else
-          upload_total = UploadTotal.find(1)
+          upload_total = UploadTotal.take
           new_upload_total = upload_total.upload_total + file_size
           if new_upload_total > total_upload_max
             flash[:upload_error] = "Error: Total upload limit reached. Limit = #{total_upload_max}B."
@@ -374,7 +392,7 @@ class Controller0Controller < ApplicationController
         file_path = File.join(upload_dir, File.basename(params[:id]))
         file_size = File.size(file_path)
         File.unlink(file_path)
-        upload_total_row = UploadTotal.find(1)
+        upload_total_row = UploadTotal.take
         upload_total_row.upload_total -= file_size
         upload_total_row.save
         redirect_to :back
