@@ -6,7 +6,7 @@ module ApplicationHelper
     link_open = ""
     link_close = ""
     if id_callback == nil
-      id_callback = lambda {|inner, n=1| inner.tr('^A-Za-z0-9', '-')}
+      id_callback = lambda {|inner, n=1| inner.tr('^A-Za-z0-9', '-').downcase}
     end
     if id
       id = id_callback.call(inner, n)

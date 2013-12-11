@@ -82,6 +82,17 @@ Controllers take user inputs (HTTP requests) and return the expected data page.
 
 Controllers are classes. They live under `app/controller`.
 
+Generate a controller template:
+
+    rails generate controller Controller0
+
+Also generates tests, assets, helpers.
+
+Generate a controller inside a namespace:
+
+    rails generate controller Namespace0::Controller0
+    rails generate controller namespace0/controller0
+
 #action
 
 Actions are controller methods.
@@ -298,7 +309,9 @@ Go back to last migration:
 
 ##fixture
 
-TODO vs seed.
+Fixtures are data to be used in tests.
+
+In rails 4 they are located under `test/fixtures/`.
 
 #scaffold
 
@@ -307,6 +320,13 @@ Automatically generates a base CRUD interface for a model.
     rails generate scaffold ModelName
 
 #tests
+
+The default testing library is minitest, which was introduced in the Ruby 1.9 stdlib.
+It is a gem requisite of the activesupport gem.
+`ActiveSupport::TestCase` extends the standard `Test::Unit::TestCase`.
+There are also rails classes which inherit from `ActiveSupport::TestCase` and offer more
+test methods, such as `ActionController::TestCase` which offers useful methods like `get`
+and `assert_routing`.
 
 Load test data on the test db.
 
@@ -318,11 +338,23 @@ Run all the tests:
 
     rake test
 
+Run only controller ony type of tests under `tests/XXX/`
+
+    rake test:controllers
+    rake test:models
+    rake test:integration
+
 Run the only tests on `tests/models/model0_test.rb` do either of:
 
     rake test model0
     rake test tests/models/model0
     rake test tests/models/model0.rb
+
+Run a single test function from a test file:
+
+    rake test tests/models/model0.rb test_name_of_the_test
+
+Where `name_of_the_test` is the test name with spaces replaced by underlines.
 
 Run all unit tests:
 
@@ -335,14 +367,6 @@ Run all functional tests:
 Run all integration tests:
 
     rake test:integration
-
-Run all tests in a given file:
-
-    rake test TEST=test/models/model0_test.rb
-
-Run a single test method:
-
-    ruby -I"lib:test" test/models/model0_test.rb -n name_of_the_method"
 
 Run all tests matching a given regexp in given file:
 

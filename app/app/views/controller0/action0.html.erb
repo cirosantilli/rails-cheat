@@ -21,9 +21,13 @@
   <% @arr[0] += 1 %>
 
   <%= h "#named helpers", 2 %>
-    <p>root_url = <%= root_url %></p>
-    <p>root_path = <%= root_path %></p>
-    <p>action0_path = <%= action0_path %></p>
+    <ul>
+      <li>root_url = <%= root_url %></li>
+      <li>root_path = <%= root_path %></li>
+      <li>namespace0_root_path = <%= namespace0_root_path %></li>
+      <li>action0_path = <%= action0_path %></li>
+      <li>action1_path = <%= action1_path %></li>
+    </ul>
 
 <%= h "#file upload", 2 %>
 
@@ -38,10 +42,15 @@
 
   <ul>
 
+    <li><%= link_to "Site Root", root_path %></li>
+
     <%#
         Controller is by default the current controller. One can be given via the `controller:` param.
     %>
-    <p><%= link_to "Another Controller", { controller: 'users', action: 'index' } %></p>
+    <li><%= link_to "Another Controller", { controller: 'users', action: 'index' } %></li>
+
+    <li><%= link_to "Another Namespace", { controller: 'namespace0/controller0', action: 'action0' } %></li>
+    <li><%= link_to "Another Namespace Root", namespace0_root_path %></li>
 
     <%#
         Dictionary parameters different from action become URL parameters

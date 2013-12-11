@@ -404,9 +404,11 @@ class Controller0Controller < ApplicationController
 
   ##devise
 
-    # This redirects unauthenticated users to the login:
+    # This redirects any unauthenticated users to the login:
 
         #before_filter :authenticate_user!
+
+    # If not present, login is not mandatory.
 
   ##haml
 

@@ -8,13 +8,22 @@ App::Application.routes.draw do
 
   ##scope
 
-    # Everything inside the scope do end block gets the scope url prefix.
+    # Everything inside the scope do end block gets the scope URL prefix.
 
     # Can also set the controller for all routes inside the scope.
 
   ##namespace
 
-    #TODO vs scope
+    # URLs are prefixed by the namespace like in scope, but in addition
+    # controllers, views and other controller related resources
+    # must be put under a `namespace0/` subdirectory.
+
+    # The controller itself must go under the `Namespace0::` module.
+
+      namespace :namespace0 do
+        get 'action0' => 'controller0#action0'
+        root to: 'controller0#action0'
+      end
 
   ##get
 
@@ -44,7 +53,7 @@ App::Application.routes.draw do
 
           root 'controller0#action0'
 
-      # If inside a namespace, sets the root for the namespace.
+      # If inside a namespace, sets the root for the namespace only:
 
           #namespace :admin do
             #root to: "admin#index"
@@ -75,6 +84,17 @@ App::Application.routes.draw do
           get ":id/edit" => :edit
           put ":id" => :update
           delete ":id" => :destroy
+
+          ##member
+
+            # Add member actions to the current resource
+
+            # This example would recognize an URL of type `model0/:id/preview`
+            # And redirect it to the `preview` action in current controller.
+
+              #member do
+                #get 'preview'
+              #end
         end
 
         # TODO Automatically generate exactly all above 7 CRUD operations:
