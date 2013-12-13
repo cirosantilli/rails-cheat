@@ -1,3 +1,10 @@
 <% provide(:title, 'namespace0') %>
 
-<%= h "namespace0/Controller0#action0", 2 %>
+<h1>namespace0/Controller0#action0</h1>
+
+<%# For links to the same namespace as the current,
+  the namespace can be ommited before the controller. %>
+<p><%= link_to "Same namespace", {controller: "controller0", action: "action0"}%></p>
+
+<%# To link to the toplevel namespace start the controller name with as slash: %>
+<p><%= link_to "Toplevel namespace", {controller: "/controller0", action: "action0"}%></p>
