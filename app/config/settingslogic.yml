@@ -1,0 +1,21 @@
+defaults: &defaults
+  group0:
+    s0: 0
+    s1: 1
+  erb: <%= 1 + 1 %>
+  # Defaults to 1: 1
+  default_yml: def
+
+development:
+  <<: *defaults
+  setting_dev_only: 1
+  # Overrides the default
+  setting_default_yml: dev
+
+production:
+  <<: *defaults
+  setting_prod_only: 1
+
+
+test:
+  <<: *defaults

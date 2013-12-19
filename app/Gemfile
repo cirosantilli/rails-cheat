@@ -59,3 +59,6 @@ gem 'faker'
 gem 'breadcrumbs_on_rails'
 
 gem 'haml-rails'
+
+# Custom settings:
+gem 'settingslogic'

@@ -323,3 +323,20 @@
   <p>TODO</p>
 
   <%= render_breadcrumbs %>
+
+<%# h "#settingslogic", 2 %>
+
+  <% Settings.group0.s0 == 0 or raise %>
+  <% Settings['group0']['s0'] == 0 or raise %>
+  <% Settings.group0.s1 == 1 or raise %>
+  <% Settings.erb == 2 or raise %>
+  <% (0 == Settings['not_defined'] || 0) or raise %>
+
+  <%#
+    # May raise depending on the `suppress_errors` option, so don't rely on it,
+    # use the map version instead.
+    Settings.not_defined
+  %>
+
+  <%# Give a default value at usage time if value not set. %>
+  <% (0 == Settings['not_defined'] || 0) or raise %>

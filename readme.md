@@ -295,9 +295,13 @@ Create a new table:
 
 You will probably want to leave this to a `generate model` command.
 
-List all migrations, including where we currently are:
+List all migrations, indicating which ones have been applied or not:
 
     rake db:status
+
+Get the current migration timestamp:
+
+    rake db:version
 
 Apply all migrations up to the most recent:
 
@@ -475,3 +479,10 @@ Tool that starts many processes at once, for example one main web process + many
 Advantages over a plain script:
 
 - one C-C and SIGTERM is sent to all the processes invoked
+
+#settings logic
+
+Files:
+
+- config/settingslogic.yml
+- config/initializers/01_settingslogic.rb
