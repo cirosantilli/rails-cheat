@@ -21,4 +21,4 @@ end
 
 # Default values if not specified in the yml:
 
-#TODO
+Settings['not_in_yml'] ||= 1

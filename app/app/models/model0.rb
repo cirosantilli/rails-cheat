@@ -7,17 +7,6 @@ class Model0 < ActiveRecord::Base
 
   ##associations
 
-    # <http://guides.rubyonrails.org/association_basics.html>
-
-    # All possible associations:
-    #
-    # - has_one. One to one relations. The other side has a belongs_to.
-    # - belongs_to: One to many on the one side. The other side usually has `has_many`.
-    # - has_many. One to many on the many side. The other side usually has a `belongs_to`
-    # - has_many :through. Typical many to many.
-    # - has_one :through
-    # - has_and_belongs_to_many
-
       belongs_to :model1 #has a single model1
       #has_many :model1  #has many model1
 

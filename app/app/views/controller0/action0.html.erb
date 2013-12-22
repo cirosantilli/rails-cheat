@@ -340,3 +340,5 @@
 
   <%# Give a default value at usage time if value not set. %>
   <% (0 == Settings['not_defined'] || 0) or raise %>
+
+  <% Settings.not_in_yml == 1 or raise %>

@@ -3,7 +3,7 @@ if Rails.env.development?
     n = 100
 
     (1..n).each do |i|
-      Model1.create string_col: i.to_s
+      Model1.create string_col: "t#{i}"
       print '.'
     end
 
@@ -12,7 +12,7 @@ if Rails.env.development?
     (1..n).each do |i|
       Model0.create string_col: "s#{i}",
         integer_col: i,
-        model1_id: model1_ids.sample
+        model1_id: i
       print '.'
     end
 

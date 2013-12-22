@@ -76,6 +76,10 @@ Shortcut:
 
 To create a new rake task add a `.rake` file with any name under `lib/tasks` in Rakefile format.
 
+Useful tasks which did not fit anywhere else:
+
+- `tmp:clear` and `log:clear`. May greatly reduce directory sizes.
+
 #controller
 
 Controllers take user inputs (HTTP requests) and return the expected data page.
@@ -199,6 +203,8 @@ Once the database connection is configured, create current database (`Rails.env`
 
     rake db:create
 
+This only creates an empty database without any tables.
+
 Create all databases (e.g. development, test and produciton):
 
     rake db:create:all
@@ -207,19 +213,25 @@ Create only the production database:
 
     RAILS_ENV=production rake db:create
 
-This does not automatically migrate. Now you should:
+This does not automatically migrate.
+
+Run each migration, modifying the database, including table creation:
 
     rake db:migrate
 
-This will also update the schema under `db/schema.rb`.
+This will also implies `db:schema:dump`, which reads the database schema
+and stores it under `db/schema.rb`, updating that file.
 
-Load the schema under `db/schema.rb`, creating it on an existing db:
+Create tables on an existing db using `db/schema.rb`:
 
     rake db:schema:load
 
 This is useful after migrations have already been done and `db/schema.rb`
 is already up to date. In that case, this command can be much faster than
-`db:migrate`, since only a single operation is done.
+a migration.
+
+By default this recreates all tables destroying their data, since by default
+schemas have the `force: true` option at creation on migrations and on the schema.
 
 Populate the database with its initial data for a new app installation:
 
@@ -227,19 +239,15 @@ Populate the database with its initial data for a new app installation:
 
 This data is defined under `db/seed.rb`.
 
-Create db, load schema and seed data all in one:
+`db:load:schema` + `db:seed`:
 
     rake db:setup
 
-It's weird, but at Rails 4 this also drops the `db` first just like `db:reset`.
-
 This is a good option to start a database to its working condition once
 migrations have already made `db/schema.rb` be up to date, for example
-to reset a development database after a `db:drop`.
+to reset a development database after a `db:drop`, or after cloning a project.
 
-Its weird, but as of 2013 this seems to also drop first!
-
-Same as setup, but drop first:
+`db:drop` + `db:setup`:
 
     rake db:reset
 

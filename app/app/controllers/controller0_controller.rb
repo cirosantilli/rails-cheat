@@ -20,6 +20,8 @@ class Controller0Controller < ApplicationController
 
     ##active record methods
 
+      # You should understand at least one SQL language like MySQL before using this.
+
       ##find
 
         # Retreive a single item by its primary ID.
@@ -36,9 +38,30 @@ class Controller0Controller < ApplicationController
 
         # Same as `where.take`
 
+          Model0.find_by(id: 1).string_col == 's1' or raise
+          Model0.find_by(id: 1, string_col: 's1').string_col == 's1' or raise
+
+        # Helper find_by_FIELD methods are automatically defined for each table field:
+
+          Model0.find_by_id(1).string_col == 's1' or raise
+          Model0.find_by_string_col('s1').id == 1 or raise
+
+        # Redudant with find_by, so never use to avoid confusion.
+
       ##where
 
-        # Returns a list of rows matching a criteria.
+        # Returns an array like object of rows matching a criteria.
+
+        # Even if here is a single matching object, it is still array like,
+        # so you still need to use the `[]`.
+
+          Model0.where(id: 1)[0].string_col == 's1' or raise
+
+        # Error:
+
+          #Model0.where(id: 1).string_col == 's1' or raise
+
+        # If you are only interested in a single object, consider using `find_by`.
 
       ##all
 
@@ -75,6 +98,34 @@ class Controller0Controller < ApplicationController
         # Pagination friends.
 
           #Model0.all.limit(5).offset(10)
+
+      ##associations
+
+        # <http://guides.rubyonrails.org/association_basics.html>
+
+        ##belongs_to
+
+          # `belogs_to :model1` in Model0, gives it the `model1` method:
+
+            Model0.find_by(string_col: 's1').model1.string_col == 't1' or raise
+
+          # `has_many :model0s` gives the `model0s` method to `Model1`:
+
+            Model1.find_by(string_col: 't1').model0s.take.string_col == 's1' or raise
+
+      ##joins
+
+        # Does SQL joins on data.
+
+        # Requires that the table rows be associated via `belongs_to` family methods.
+
+          Model0.joins(:model1).find_by(model1s: {string_col: 't1'}).string_col == 's1' or raise
+          #                                                          ^
+          #                                                          This is the Model0 string_col.
+
+          Model1.joins(:model0s).find_by(model0s: {string_col: 's1'}).string_col == 't1' or raise
+          #                                                          ^
+          #                                                          This is the Model1 string_col.
 
     ##actions
 
