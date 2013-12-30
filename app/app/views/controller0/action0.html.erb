@@ -25,8 +25,12 @@
       <li>root_url = <%= root_url %></li>
       <li>root_path = <%= root_path %></li>
       <li>namespace0_root_path = <%= namespace0_root_path %></li>
+      <li>namespace0_action0_path = <%= namespace0_action0_path %></li>
       <li>action0_path = <%= action0_path %></li>
       <li>action1_path = <%= action1_path %></li>
+
+      <%#TODO%>
+      <%#<li>model0_path(@model0s.first) = <%= model0_path(@model0s.first) </li>%>
     </ul>
 
 <%= h "#file upload", 2 %>
@@ -41,6 +45,13 @@
   <p>Routes and params:</p>
 
   <ul>
+    <li>link_to "inner", "href" = <%= link_to "inner", "href" %></li>
+    <li>
+      same as above do end version =
+      <%= link_to "href" do %>
+        inner
+      <% end %>
+    </li>
 
     <li><%= link_to "Site Root", root_path %></li>
 
@@ -217,7 +228,7 @@
 
   <%= render "partial.html.erb" %>
 
-<%= h "#forms", 2 %>
+<%= h "#form", 2 %>
 
   <p><%= text_field 'model0', 'string_col' %></p>
   <p><input id="model0_string_col" name="model0[string_col]" type="text" /></p>
@@ -235,8 +246,15 @@
   <%#= email_field(:user, :address) %>
   <%#= color_field(:user, :favorite_color) %>
   <%#= time_field(:task, :started_at) %>
-  <%#dropdown selection on one to many relation%>
+  <%# dropdown selection on one to many relation: %>
   <%#= collection_select(:model0, :model1_id, @model1s, :id, :string_col) %>
+
+<%= h "#image helpers", 2 %>
+
+  <%= image_tag "image", alt: "alt" %>
+  <%= image_tag "image", alt: "alt" %>
+  <%# Searches in assets/images %>
+  <%= image_tag "png.png", alt: "alt", size: "20x30" %>
 
 <%= h "#action mailer #email #mail", 2 %>
 
@@ -323,22 +341,3 @@
   <p>TODO</p>
 
   <%= render_breadcrumbs %>
-
-<%# h "#settingslogic", 2 %>
-
-  <% Settings.group0.s0 == 0 or raise %>
-  <% Settings['group0']['s0'] == 0 or raise %>
-  <% Settings.group0.s1 == 1 or raise %>
-  <% Settings.erb == 2 or raise %>
-  <% (0 == Settings['not_defined'] || 0) or raise %>
-
-  <%#
-    # May raise depending on the `suppress_errors` option, so don't rely on it,
-    # use the map version instead.
-    Settings.not_defined
-  %>
-
-  <%# Give a default value at usage time if value not set. %>
-  <% (0 == Settings['not_defined'] || 0) or raise %>
-
-  <% Settings.not_in_yml == 1 or raise %>

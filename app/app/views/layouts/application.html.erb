@@ -10,6 +10,8 @@ This is the default layout fo the application.
 <!DOCTYPE html>
 <html>
 <head>
+  <%#TODO get that favicon working%>
+  <%= favicon_link_tag %>
   <title>
     <% title = yield :title
        if not title.empty? %>

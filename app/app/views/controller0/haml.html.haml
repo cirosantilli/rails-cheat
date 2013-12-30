@@ -27,14 +27,14 @@ no tag
 .class2#id2{a: "b"} id1 class1 a=b
 %p Non special synatx attributes must come last:
 %div{a: "b"}.class1#id1-fail id1 class1
-%h2 ruby
+%h2 ruby code
 %p= "a"
 %p multiline:
 %p
   = "a"
   = "b"
-%p mix code and html:
 %p
-  a
-  = "b"
+  mix code and html:
+  = "code"
+%p single line code + html: #{"code"}
 -# comment

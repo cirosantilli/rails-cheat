@@ -49,12 +49,11 @@ gem 'unicorn'
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
+# Login:
 gem 'devise'
 gem 'omniauth'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-facebook'
-
-gem 'faker'
 
 gem 'breadcrumbs_on_rails'
 
@@ -62,3 +61,7 @@ gem 'haml-rails'
 
 # Custom settings:
 gem 'settingslogic'
+
+# Dev data:
+gem 'faker'
+#gem 'seed-fu'

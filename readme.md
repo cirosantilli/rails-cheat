@@ -494,3 +494,26 @@ Files:
 
 - config/settingslogic.yml
 - config/initializers/01_settingslogic.rb
+
+#public
+
+Contains files that will be served directly by the server, such as images.
+
+Consider using the assets system for uncompressed javascript and css files to reduce their size.
+
+The url for a file under `public` such as `public/images/png.png` will be `images/png.png`.
+
+#assets
+
+Assets are files which can be served directly by the webserver a modification
+that needs to be done only once while the server is on, for example:
+
+- erb -> html conversion
+- removal of extra spaces from javascript and css to reduce their size
+
+Assets are located under `app/assets`.
+
+In development mode, assets are used directly from the `app/assets` directory
+and compiled every time to ease debugging the application.
+
+In production mode, all assets are compiled only once, and served from `/public/assets/`.

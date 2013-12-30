@@ -8,7 +8,7 @@ class Controller0Controller < ApplicationController
       # Difference from `empty`: works on all objects, including `nil`
       # while empty throws a NoMethodError for nil.
 
-        nil.blank? == true or raise()
+        nil.blank? == true or raise
 
     ##pass variables to templates
 
@@ -17,6 +17,7 @@ class Controller0Controller < ApplicationController
 
         @var0 = 0
         @var1 = 1
+        @model0s = Model0.all
 
     ##active record methods
 
@@ -55,7 +56,21 @@ class Controller0Controller < ApplicationController
         # Even if here is a single matching object, it is still array like,
         # so you still need to use the `[]`.
 
-          Model0.where(id: 1)[0].string_col == 's1' or raise
+        # There are many forms of using `where`.
+
+        # String:
+
+          Model0.where("id = 1 AND string_col = 's1'")[0].string_col == 's1' or raise
+          Model0.where("id = 1 OR id = 2").order(:id).pluck(:string_col) == ['s1', 's2'] or raise
+
+        # Array:
+
+          Model0.where(["id = ? ", 1])[0].string_col == 's1' or raise
+          Model0.where(["id = :id", {id: 1}])[0].string_col == 's1' or raise
+
+        # Hash:
+
+          Model0.where({id: 1})[0].string_col == 's1' or raise
 
         # Error:
 
@@ -98,6 +113,29 @@ class Controller0Controller < ApplicationController
         # Pagination friends.
 
           #Model0.all.limit(5).offset(10)
+
+      ##pluck
+
+        #   Person.pluck(:name)
+        #
+        # is the same as:
+        #
+        #   Person.all.map(&:name)
+        #
+        # except that the first may be faster as it only fetches
+        # required rows from the server.
+        #
+        # Example:
+        #
+        #   Person.pluck(:id)
+        #   # SELECT people.id FROM people
+        #   # => [1, 2, 3]
+        #
+        # Multi row example:
+        #
+        #   Person.pluck(:id, :name)
+        #   # SELECT people.id, people.name FROM people
+        #   # => [[1, 'David'], [2, 'Jeremy'], [3, 'Jose']]
 
       ##associations
 
@@ -266,6 +304,23 @@ class Controller0Controller < ApplicationController
     ##before_filter
 
         @before_filter_do == 1 or raise
+
+    ##settingslogic
+
+        Settings.group0.s0 == 0 or raise
+        Settings['group0']['s0'] == 0 or raise
+        Settings.group0.s1 == 1 or raise
+        Settings.erb == 2 or raise
+        (0 == Settings['not_defined'] || 0) or raise
+
+        # May raise depending on the `suppress_errors` option, so don't rely on it,
+        # use the map version instead.
+        #Settings.not_defined
+
+        # Give a default value at usage time if value not set.
+        (0 == Settings['not_defined'] || 0) or raise
+
+        Settings.not_in_yml == 1 or raise
   end
 
   def redirect_to_action0
