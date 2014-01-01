@@ -505,15 +505,49 @@ The url for a file under `public` such as `public/images/png.png` will be `image
 
 #assets
 
-Assets are files which can be served directly by the webserver a modification
-that needs to be done only once while the server is on, for example:
+The assets pipeline allows to:
 
-- erb -> html conversion
-- removal of extra spaces from javascript and css to reduce their size
+- preprocess files once before letting them being served statically
+
+    - erb -> HTML, SCSS -> CSS, etc. conversions, so you can write your assets in more convenient languages.
+
+    - removal of extra spaces from javascript and CSS to reduce their size
+
+    - concatenation of multiple CSS and Javascript files into a single file
+        so that they load faster.
+
+- improve browser caching by adding MD5 hashes to filenames:
+    <http://stackoverflow.com/questions/10952876/why-should-i-use-the-asset-pipeline-to-serve-images>
+
+    This seems to be the main reason to serve files like images via the assets pipeline even if they
+    don't need to be preprocessed.
 
 Assets are located under `app/assets`.
 
 In development mode, assets are used directly from the `app/assets` directory
 and compiled every time to ease debugging the application.
 
-In production mode, all assets are compiled only once, and served from `/public/assets/`.
+##gitignore
+
+`public/assets` is not present on the default `.gitignore` because:
+
+- it is sometimes necessary to precompile locally and `git add` to deploy to servers like Heroku
+- `public/assets` should not exist in the first place in a development environment,
+    in which one should never run `rake assets:precompile`.
+
+##production
+
+In production mode, all assets should be compiled only once before the app is started,
+and served from `/public/assets/`.
+Files are taken from from under `/app/assets`, processed, and put under `/public`.
+
+By default, you must manually compile the assets before serving them with
+`RAILS_ENV=production bundle exec rake assets:precompile`.
+Do not forget the `RAILS_ENV` or for example debug mode may be on and
+the assets will not be compressed.
+
+By default Rails does not serve files under `public` in production mode as this
+job should be left fot the a webserver such as Apache or NGinx for efficiency reasons.
+
+If you really want Rails to serve those files edit `config.serve_static_assets = true` under
+`config/environment/production.rb`.

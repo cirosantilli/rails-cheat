@@ -37,6 +37,8 @@ end
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
+##END default file
+
 gem 'foreman'
 
 # Use unicorn as the app server

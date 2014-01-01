@@ -10,7 +10,6 @@ This is the default layout fo the application.
 <!DOCTYPE html>
 <html>
 <head>
-  <%#TODO get that favicon working%>
   <%= favicon_link_tag %>
   <title>
     <% title = yield :title
@@ -22,19 +21,17 @@ This is the default layout fo the application.
   <%#
   #stylesheet_link_tag
 
-    Searches for public/stylesheets/ for file to include.
+    Links to `assets/asset_name.css`
   %>
 
-    <%= stylesheet_link_tag "main.css" %>
     <%= stylesheet_link_tag "application", media: "all", "data-turbolinks-track" => true %>
 
   <%#
-  #stylesheet_link_tag
+  #javascript_link_tag
 
-    Searches for public/stylesheets/ for file to include.
+    Links to `assets/asset_name.css`
   %>
 
-    <%= javascript_include_tag "main.js" %>
     <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
 
   <%= csrf_meta_tags %>

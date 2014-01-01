@@ -23,6 +23,18 @@ class Controller0Controller < ApplicationController
 
       # You should understand at least one SQL language like MySQL before using this.
 
+      ##to_sql
+
+        # Shows what the SQL query will look like.
+
+          puts "===================="
+          puts Model0.where(id: [1, 2]).order(:id).to_sql
+
+        # Note how queries are lazy evaluated: the following produces the same as the above:
+
+          q = Model0.where(id: [1, 2])
+          puts q.order(:id).to_sql
+
       ##find
 
         # Retreive a single item by its primary ID.
@@ -71,12 +83,22 @@ class Controller0Controller < ApplicationController
         # Hash:
 
           Model0.where({id: 1})[0].string_col == 's1' or raise
+          Model0.where({id: [1, 2]}).order(:id).pluck(:string_col) == ['s1', 's2'] or raise
 
         # Error:
 
           #Model0.where(id: 1).string_col == 's1' or raise
 
         # If you are only interested in a single object, consider using `find_by`.
+
+        ##or query
+
+          # While it is possible to do an `AND` query without using the messy string method
+          # by using the hash signature,
+          # it is seems that it is not possible to do `OR` queries across multiple columns without plugins
+          # and without a string query: <http://stackoverflow.com/questions/3639656/activerecord-or-query>
+          #
+          # It is possible on a single colum via the hash array construct: `{id: [1, 2]}`.
 
       ##all
 

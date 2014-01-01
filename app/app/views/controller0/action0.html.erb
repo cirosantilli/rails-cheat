@@ -249,13 +249,6 @@
   <%# dropdown selection on one to many relation: %>
   <%#= collection_select(:model0, :model1_id, @model1s, :id, :string_col) %>
 
-<%= h "#image helpers", 2 %>
-
-  <%= image_tag "image", alt: "alt" %>
-  <%= image_tag "image", alt: "alt" %>
-  <%# Searches in assets/images %>
-  <%= image_tag "png.png", alt: "alt", size: "20x30" %>
-
 <%= h "#action mailer #email #mail", 2 %>
 
   <p>For this to work, first configure your SMTP.</p>
@@ -298,6 +291,25 @@
     Restart the server after adding new locale files.
   %>
   <p>I18n.load_path = <%= I18n.load_path %></p>
+
+<%= h "#images", 2 %>
+
+  <p>
+    Relative paths give URLs of type <code>/assets/relpath.png</code> on development,
+    and <code>/assets/relpath-MD5.png</code> on production:
+    <%= image_tag "png.png", alt: "alt", size: "20x30" %>
+  </p>
+
+  <p>
+    Absolute paths create images with that exact path:
+    <%= image_tag "/images/png.png", alt: "alt", size: "20x30" %>.
+
+    Never use this since images should be served through the assets pipeline.
+  </p>
+
+<%= h "#assets", 2 %>
+
+  <div class="controller0-scss">scss</div>
 
 <%= h "#third party" %>
 
