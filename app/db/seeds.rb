@@ -1,5 +1,5 @@
 # Create initial data only for a single environment.
-#if Rails.env.development?
+if Rails.env.development?
     n = 100
 
     (1..n).each do |i|
@@ -24,6 +24,6 @@
       newuser.save!
       print '.'
     end
-#end
+end
 
 UploadTotal.create id: 1, upload_total: 0

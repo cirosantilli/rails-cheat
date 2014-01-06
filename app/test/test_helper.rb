@@ -12,4 +12,25 @@ class ActiveSupport::TestCase
   fixtures :all
 
   # Add more helper methods to be used by all tests here...
+
+  ##DatabaseCleaner setup
+
+    # Typical DatabaseCleaner patterns used here:
+
+      DatabaseCleaner.strategy = :truncation
+
+      #def setup
+        #DatabaseCleaner.start
+        #Model0.create(...)
+      #end
+
+      #def teardown
+        #DatabaseCleaner.clean
+      #end
+
+  #factory_girl
+  include FactoryGirl::Syntax::Methods
+
+  #capybara
+  include Capybara::DSL
 end

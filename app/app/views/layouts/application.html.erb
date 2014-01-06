@@ -21,7 +21,15 @@ This is the default layout fo the application.
   <%#
   #stylesheet_link_tag
 
-    Links to `assets/asset_name.css`
+    - On development mode:
+
+      Links to `assets/asset_name.css` + one link for each files included from there via
+      the special `*= require_tree` comment.
+
+    - On production mode:
+
+      Links to a single `assets/asset_name.css` CSS which in production should be a
+      file concatenated from  all `require` special files.
   %>
 
     <%= stylesheet_link_tag "application", media: "all", "data-turbolinks-track" => true %>
@@ -29,7 +37,7 @@ This is the default layout fo the application.
   <%#
   #javascript_link_tag
 
-    Links to `assets/asset_name.css`
+    Same as CSS.
   %>
 
     <%= javascript_include_tag "application", "data-turbolinks-track" => true %>

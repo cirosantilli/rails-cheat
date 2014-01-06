@@ -1,2 +1,4 @@
-model1_0:
-  string_col: a0
+<% (1..10).each do |n| %>
+model1_<%= n %>:
+  string_col: t<%= n %>
+<% end %>

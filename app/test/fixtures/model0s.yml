@@ -1,20 +1,15 @@
 # This object can be obtained via `model0s(:model0_0)`
-model0_0:
-  string_col: a0
-  integer_col: 0
-  text_col: t0
+model0_1:
+  string_col: s1
+  integer_col: 1
+  text_col: t1
   model1_id: 1
 
-# ERB is OK.
-<% (1..10).each do |n| %>
+# ERB can be used.
+<% (2..10).each do |n| %>
 model0_<%= n %>:
-  string_col: a<%= n %>
+  string_col: s<%= n %>
   integer_col: <%= n %>
   text_col: t<%= n %>
-  model1_id: m<%= n + 1 %>
-<% end %>
-
-<% (1..11).each do |n| %>
-model1_<%= n %>:
-  string_col: a<%= n %>
+  model1_id: m<%= n %>
 <% end %>

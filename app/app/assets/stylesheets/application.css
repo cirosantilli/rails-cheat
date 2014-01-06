@@ -12,7 +12,7 @@
  *= require_tree .
  */
 
-.public-css { color:red; }
+.application-css { color:red; }
 
 /*h1, h2, h3, h4, h5 {*/
     /*border-bottom: 1px solid #00FF00*/

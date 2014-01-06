@@ -19,174 +19,6 @@ class Controller0Controller < ApplicationController
         @var1 = 1
         @model0s = Model0.all
 
-    ##active record methods
-
-      # You should understand at least one SQL language like MySQL before using this.
-
-      ##to_sql
-
-        # Shows what the SQL query will look like.
-
-          puts "===================="
-          puts Model0.where(id: [1, 2]).order(:id).to_sql
-
-        # Note how queries are lazy evaluated: the following produces the same as the above:
-
-          q = Model0.where(id: [1, 2])
-          puts q.order(:id).to_sql
-
-      ##find
-
-        # Retreive a single item by its primary ID.
-
-      ##take ##limit
-
-        # SELECT * FROM table LIMIT N
-
-        # Default is `N = 1`.
-
-        # `nil` if non found.
-
-      ##find_by
-
-        # Same as `where.take`
-
-          Model0.find_by(id: 1).string_col == 's1' or raise
-          Model0.find_by(id: 1, string_col: 's1').string_col == 's1' or raise
-
-        # Helper find_by_FIELD methods are automatically defined for each table field:
-
-          Model0.find_by_id(1).string_col == 's1' or raise
-          Model0.find_by_string_col('s1').id == 1 or raise
-
-        # Redudant with find_by, so never use to avoid confusion.
-
-      ##where
-
-        # Returns an array like object of rows matching a criteria.
-
-        # Even if here is a single matching object, it is still array like,
-        # so you still need to use the `[]`.
-
-        # There are many forms of using `where`.
-
-        # String:
-
-          Model0.where("id = 1 AND string_col = 's1'")[0].string_col == 's1' or raise
-          Model0.where("id = 1 OR id = 2").order(:id).pluck(:string_col) == ['s1', 's2'] or raise
-
-        # Array:
-
-          Model0.where(["id = ? ", 1])[0].string_col == 's1' or raise
-          Model0.where(["id = :id", {id: 1}])[0].string_col == 's1' or raise
-
-        # Hash:
-
-          Model0.where({id: 1})[0].string_col == 's1' or raise
-          Model0.where({id: [1, 2]}).order(:id).pluck(:string_col) == ['s1', 's2'] or raise
-
-        # Error:
-
-          #Model0.where(id: 1).string_col == 's1' or raise
-
-        # If you are only interested in a single object, consider using `find_by`.
-
-        ##or query
-
-          # While it is possible to do an `AND` query without using the messy string method
-          # by using the hash signature,
-          # it is seems that it is not possible to do `OR` queries across multiple columns without plugins
-          # and without a string query: <http://stackoverflow.com/questions/3639656/activerecord-or-query>
-          #
-          # It is possible on a single colum via the hash array construct: `{id: [1, 2]}`.
-
-      ##all
-
-          @model0s = Model0.all
-
-      ##create
-
-        # Unlike new, immediately creates the element on the database.
-
-      ##save
-
-        # Saves a model instance to the database, usually one that was created with new.
-
-          #@model0 = Model0.new(model0_params)
-          #@model0.save
-
-      ##save! vs save
-
-        # `save!` does validations, `save` does not.
-
-      ##count
-
-          #Model0.count
-          #Model0.all.count
-
-      ##order
-
-          #Model0.order(:id)
-          #Model0.order(id: :asc)
-          #Model0.order(id: :desc)
-
-      ##limit ##offset
-
-        # Pagination friends.
-
-          #Model0.all.limit(5).offset(10)
-
-      ##pluck
-
-        #   Person.pluck(:name)
-        #
-        # is the same as:
-        #
-        #   Person.all.map(&:name)
-        #
-        # except that the first may be faster as it only fetches
-        # required rows from the server.
-        #
-        # Example:
-        #
-        #   Person.pluck(:id)
-        #   # SELECT people.id FROM people
-        #   # => [1, 2, 3]
-        #
-        # Multi row example:
-        #
-        #   Person.pluck(:id, :name)
-        #   # SELECT people.id, people.name FROM people
-        #   # => [[1, 'David'], [2, 'Jeremy'], [3, 'Jose']]
-
-      ##associations
-
-        # <http://guides.rubyonrails.org/association_basics.html>
-
-        ##belongs_to
-
-          # `belogs_to :model1` in Model0, gives it the `model1` method:
-
-            Model0.find_by(string_col: 's1').model1.string_col == 't1' or raise
-
-          # `has_many :model0s` gives the `model0s` method to `Model1`:
-
-            Model1.find_by(string_col: 't1').model0s.take.string_col == 's1' or raise
-
-      ##joins
-
-        # Does SQL joins on data.
-
-        # Requires that the table rows be associated via `belongs_to` family methods.
-
-          Model0.joins(:model1).find_by(model1s: {string_col: 't1'}).string_col == 's1' or raise
-          #                                                          ^
-          #                                                          This is the Model0 string_col.
-
-          Model1.joins(:model0s).find_by(model0s: {string_col: 's1'}).string_col == 't1' or raise
-          #                                                          ^
-          #                                                          This is the Model1 string_col.
-
     ##actions
 
       ##render
@@ -538,10 +370,15 @@ class Controller0Controller < ApplicationController
 
     # If not present, login is not mandatory.
 
-  ##haml
+  ##third party
+
+    # The following actions exist to test third party tools.
 
       def haml
         @a = 1
+      end
+
+      def capybara
       end
 
   private

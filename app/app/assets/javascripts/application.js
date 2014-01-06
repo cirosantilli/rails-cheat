@@ -13,6 +13,11 @@
 //= require jquery
 //= require jquery_ujs
 //= require turbolinks
+//
+// Reason for this default `require_tree`: <http://stackoverflow.com/questions/7482192/whats-the-reason-behind-the-default-require-tree-in-asset-pipeline>
+// This can do two different things:
+//
+// - production: concat all files into this file
+// - development: nothing. `_link` methods link to multiple files automatically.
+//
 //= require_tree .
-
-var v = 1

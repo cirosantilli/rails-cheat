@@ -112,9 +112,12 @@ App::Application.routes.draw do
           delete ":id" => :file_delete
         end
 
-      ##haml
+      ##third party
+
+        # The following URLs exist for the test of third party tools:
 
           get "haml" => :haml
+          get "capybara" => :capybara
 
     end
   end

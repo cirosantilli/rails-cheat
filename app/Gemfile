@@ -67,3 +67,12 @@ gem 'settingslogic'
 # Dev data:
 gem 'faker'
 #gem 'seed-fu'
+
+# Tests
+group :development, :test do
+  gem "rspec-rails"
+  gem 'spinach-rails'
+  gem "capybara"
+  gem "factory_girl_rails"
+  gem "database_cleaner"
+end

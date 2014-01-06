@@ -9,14 +9,33 @@ You can deploy your own instance instantly with:
 Certain features of the app may break on that deployment such as file uploads due to the ephemeral FS.
 This could be corrected by using something like FTP or AWS.
 
+#location of the main cheats
+
+Different cheats fit better into different places.
+
+This lists some not necessarily obvious choices:
+
+- `app/controller/controller0_controller.rb`: as many assertions as possible.
+
+- `app/views/controller0/action0.html.erb`: shows on the browser unpredictable outputs,
+    or outputs which are too large to assert on such as helpers.
+
+- `test/controllers/controller0_controller_test.rb`: main tests cheat.
+
+- `test/models/active_record_cheat.rb` contains cheats on active records.
+
+    Those had to be moved to tests instead of controllers since the database
+    state has to be controlled to run tests.
+
 #ubuntu install
 
-Install Rails on Ubuntu with ruby RVM:
+Install Rails on Ubuntu with Ruby RVM:
 <https://www.digitalocean.com/community/articles/how-to-install-ruby-on-rails-on-ubuntu-12-04-lts-precise-pangolin-with-rvm>
 
 Should work for most other Linux distros as well.
 
-The line which has been put on `~/.bash_profile` should be moved to `~/.bashrc`.
+The line which has been put on `~/.bash_profile`
+in the tutorial should be moved to `~/.bashrc` instead.
 
 Will also need nodejs:
 
@@ -323,7 +342,17 @@ Go back to last migration:
 
 Fixtures are data to be used in tests.
 
+By default, the test db is set to be exactly equal to the fixtures before every test function.
+
 In rails 4 they are located under `test/fixtures/`.
+
+As of Jan 2014, it is only possible to define one single fixture data for all tests,
+not different data per test.
+
+This can be done by not using any fixtures, and then creating data manually or
+with external plugins such as Factory Girl.
+
+TODO: prevent fixture from loading for a single test?
 
 #scaffold
 
@@ -333,7 +362,7 @@ Automatically generates a base CRUD interface for a model.
 
 #tests
 
-The default testing library is minitest, which was introduced in the Ruby 1.9 stdlib.
+The default testing library is `minitest`, which was introduced in the Ruby 1.9 stdlib.
 It is a gem requisite of the activesupport gem.
 `ActiveSupport::TestCase` extends the standard `Test::Unit::TestCase`.
 There are also rails classes which inherit from `ActiveSupport::TestCase` and offer more
@@ -414,6 +443,103 @@ SMPT configuration under `config/initializers/smtp_settings.rb`:
     }
 
 Create a `.example` version and Gitignore it to protect the password.
+
+#third party testing libraries
+
+Besides the built-in test classes, there tons of third party test libraries,
+many of which mix with one another.
+
+##rspec
+
+General unit tests. Nothing rails / web framework specific.
+
+TODO vs Minitest (rails 4 default)? Minitest interface seems saner and is default.
+
+Examples of methods if offers:
+
+- `describe`: defines the test
+
+- `it`: defines the test
+
+- `should`, `should_not` is added to all objects. Makes the assertions.
+
+    `expect` + `to` as been added later, and seem to be recommended over `should`
+    as explained at <http://myronmars.to/n/dev-blog/2012/06/rspecs-new-expectation-syntax>
+
+    `expect to` can also take blocks: `expect {raise 1}.to raise_error`
+
+- `before` and `after` are equivalent to Minitest `setup` and `teardown`
+
+Install `Gemfile`:
+
+    group :development, :test do
+        gem 'rspec-rails'
+    end
+
+Generate templates `.rspec` and `spec/spec_helper.rb`.:
+
+    rails generate rspec:install
+
+Tests are located under `spec`.
+
+Tests are run with `rake spec`.
+
+##spinach
+
+##cucumber
+
+##capybara
+
+Offers methods to interact with the application just like an end user
+would from a browser (by default via Selenium):
+
+- `visit`: go to a page.
+
+    The page object can then be accessed with `page`
+
+    TODO is Capybara that offers the `page` object?
+    Where is it defined?
+
+    Once you have the `page`, you can do tests on it such as `page.has_content?('Welcome')`.
+
+- `fill_in`: fill text fields.
+- `click_link`
+
+Recommended location for tests is: `spec/features`
+
+TODO is `X.has_Y?` just a shortcut for `expect(X).to have_Y?`
+
+Good cheatsheet: <https://gist.github.com/zhengjia/428105>
+
+#factory girl
+
+Generates test data.
+
+Advantage over `fixtures` or functions as of 2014:
+
+- possible to create multiple fixtures sets, and use one per test
+- `create`?
+
+Factories are automatically loaded from `(spec|test)/(factories.rb|factories*.rb)`.
+
+If included, may be the source of the following methods in the tests:
+
+    # Returns a User instance that's not saved
+    user = build(:user)
+
+    # Returns a saved User instance
+    user = create(:user)
+
+    # Returns a hash of attributes that can be used to build a User instance
+    attrs = attributes_for(:user)
+
+    # Returns an object with all defined attributes stubbed out
+    stub = build_stubbed(:user)
+
+    # Passing a block to any of the methods above will yield the return object
+    create(:user) do |user|
+    user.posts.create(attributes_for(:post))
+    end
 
 #lib
 
@@ -544,10 +670,9 @@ Files are taken from from under `/app/assets`, processed, and put under `/public
 By default, you must manually compile the assets before serving them with
 `RAILS_ENV=production bundle exec rake assets:precompile`.
 Do not forget the `RAILS_ENV` or for example debug mode may be on and
-the assets will not be compressed.
+the assets will not be compressed or concatenated.
 
 By default Rails does not serve files under `public` in production mode as this
 job should be left fot the a webserver such as Apache or NGinx for efficiency reasons.
-
 If you really want Rails to serve those files edit `config.serve_static_assets = true` under
 `config/environment/production.rb`.

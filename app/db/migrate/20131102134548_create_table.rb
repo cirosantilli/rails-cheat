@@ -48,6 +48,7 @@ class CreateTable < ActiveRecord::Migration
 
     create_table :model1s do |t|
       t.column :string_col, :string, limit: 32, null: false
+      t.column :integer_col, :integer
     end
 
     # It is possible to create some elements here already,
@@ -57,13 +58,7 @@ class CreateTable < ActiveRecord::Migration
     #
     # Use schemas or `db/seeds.rb` for that instead.
     #
-    Model0.create string_col: 'abc', integer_col: 123
-    #Model0.create string_col: 'def', integer_col: 456
-
-    #Model1.create string_col: '0'
-    #Model1.create string_col: '1'
-    #Model1.create string_col: '2'
-    #Model1.create string_col: '3'
+    #Model0.create string_col: 'abc', integer_col: 123
   end
 
   ##change_column_default

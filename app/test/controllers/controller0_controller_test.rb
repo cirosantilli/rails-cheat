@@ -6,7 +6,10 @@ require 'test_helper'
 #
 #     ActionController::TestCase < ActiveSupport::TestCase <  MiniTest::Unit::TestCase 
 #
-# Where `MiniTest::Unit::TestCase` is in the stdlib.
+# Where `MiniTest::Unit::TestCase` is the default Minitest package.
+#
+# By default a template is generated to extend `ActiveSupport::TestCase`
+# to add methods and configs that will be used for all tests of the app.
 #
 class Controller0ControllerTest < ActionController::TestCase
 
@@ -28,26 +31,22 @@ class Controller0ControllerTest < ActionController::TestCase
   end
 
   test "fixtures were loaded" do
-    assert Model0.find_by(string_col: 'a0').integer_col == 0
-  end
-
-  test "fixtures for other tests were also loaded" do
-    assert Model0.find_by(string_col: 'a0') != nil
-  end
-
-  test "retreive fixture named rows" do
-    assert model0s(:model0_0).integer_col == 0
+    # This checks that fixtures were actualy loaded.
+    assert Model0.find_by(string_col: 's1').integer_col == 1
+    assert Model1.find_by(string_col: 't1') != nil
+    # Rows can be named on the fixtures and accessed here as:
+    assert model0s(:model0_1).integer_col == 1
   end
 
   # DB is reset to fixtures between each test function.
 
     test "destroy" do
-      Model0.find_by(string_col: 'a0').destroy
-      assert Model0.find_by(string_col: 'a0') == nil
+      Model0.destroy_all
+      assert Model0.find_by(string_col: 's1') == nil
     end
 
     test "after destroy" do
-      assert Model0.find_by(string_col: 'a0') != nil
+      assert Model0.find_by(string_col: 's1') != nil
     end
 
   # This test uses methods furnished by `ActionController::TestCase`
@@ -74,9 +73,8 @@ class Controller0ControllerTest < ActionController::TestCase
 
         assert_equal(assigns(:var0), 0)
 
-    assert_routing '/', {controller: "controller0", action: "action0"}
-    assert_routing 'controller0/model0/1', {controller: "controller0", action: "show", id: "1"}
-
+      assert_routing '/', {controller: "controller0", action: "action0"}
+      assert_routing 'controller0/model0/1', {controller: "controller0", action: "show", id: "1"}
 
     # The follwoing variables are available:
 
@@ -99,18 +97,30 @@ class Controller0ControllerTest < ActionController::TestCase
       # This method is run before each test method.
       #
       def setup
-        @a = 1
+        @setup = 1
       end
 
       # This method is run after each test method.
       #
       def teardown
-        @a = 0
+        @setup = 0
       end
 
       test "setup" do
-        assert_equal @a, 1
+        assert_equal @setup, 1
       end
+
+      #before :each do
+        #@before = 1
+      #end
+
+      #after :each do
+        #@before = 0
+      #end
+
+      #test "before" do
+        #assert_equal @before, 1
+      #end
 
   ##devise
 

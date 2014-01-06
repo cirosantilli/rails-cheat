@@ -13,9 +13,6 @@
 
 ActiveRecord::Schema.define(version: 20131126102308) do
 
-  ##force true
-
-    # Overwrites existing db.
   create_table "model0s", force: true do |t|
     t.string   "string_col",    limit: 32, null: false
     t.text     "text_col"
@@ -27,7 +24,8 @@ ActiveRecord::Schema.define(version: 20131126102308) do
   end
 
   create_table "model1s", force: true do |t|
-    t.string "string_col", limit: 32, null: false
+    t.string  "string_col",  limit: 32, null: false
+    t.integer "integer_col"
   end
 
   create_table "upload_totals", force: true do |t|
