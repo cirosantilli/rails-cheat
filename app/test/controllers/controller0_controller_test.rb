@@ -131,4 +131,8 @@ class Controller0ControllerTest < ActionController::TestCase
     # sign_out :user         # sign_out(scope)
     # sign_out @user         # sign_out(resource)
 
+  ##recommended tests
+
+    # This lists tests which you should always do in real projects and why.
+
 end

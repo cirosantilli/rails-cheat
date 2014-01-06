@@ -22,7 +22,7 @@ This lists some not necessarily obvious choices:
 
 - `test/controllers/controller0_controller_test.rb`: main tests cheat.
 
-- `test/models/active_record_cheat.rb` contains cheats on active records.
+- `test/models/active_record_test.rb` contains cheats on active records.
 
     Those had to be moved to tests instead of controllers since the database
     state has to be controlled to run tests.
@@ -490,26 +490,20 @@ Tests are run with `rake spec`.
 
 ##capybara
 
-Offers methods to interact with the application just like an end user
-would from a browser (by default via Selenium):
+Offers methods to interact with the application through a browser automation
+(by default via Selenium), such as:
 
-- `visit`: go to a page.
+- finding visible text on the screen (not a direct `body` element search)
+- clicking on a button or link
+- filling a form
 
-    The page object can then be accessed with `page`
-
-    TODO is Capybara that offers the `page` object?
-    Where is it defined?
-
-    Once you have the `page`, you can do tests on it such as `page.has_content?('Welcome')`.
-
-- `fill_in`: fill text fields.
-- `click_link`
-
-Recommended location for tests is: `spec/features`
-
-TODO is `X.has_Y?` just a shortcut for `expect(X).to have_Y?`
+Recommended location for tests are: `test/integration` for Minitest (built-in) tests
+and `spec/features` for RSpec tests.
 
 Good cheatsheet: <https://gist.github.com/zhengjia/428105>
+
+LIke other integration tests, capybara tests can be run with `rake test:integration`,
+which is called by `rake test`.
 
 #factory girl
 

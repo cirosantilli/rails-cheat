@@ -30,7 +30,13 @@ class ActiveSupport::TestCase
 
   #factory_girl
   include FactoryGirl::Syntax::Methods
+end
 
-  #capybara
+#capybara setup
+
+require 'capybara/rails'
+
+class ActionDispatch::IntegrationTest
+  # Make the Capybara DSL available in all integration tests
   include Capybara::DSL
 end

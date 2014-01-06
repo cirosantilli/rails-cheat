@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class ActiveRecordCheatTest < ActiveSupport::TestCase
+class ActiveRecordTest < ActiveSupport::TestCase
   def setup
     # Get rid of fixture data.
     DatabaseCleaner.clean_with(:truncation, only: [:model0s, :model1s])
