@@ -29,14 +29,30 @@ class CreateTable < ActiveRecord::Migration
       #
       #     `:limit` is the maximum length of a string field.
       #
-      t.column :string_col, :string, limit: 32, null: false
+      t.column :string_col, :string
+      #t.column :string_limit_32, :string, limit: 32
       t.column :text_col, :text
       t.column :integer_col, :integer
+      t.column :integer_col2, :integer
+      t.column :integer_col3, :integer
       t.column :float_col, :float
       t.column :timestamp_col, :timestamp
+      #t.column :not_null, :integer, null: false
+
+      ##Default value
+      #
+      # The default is passed to the schema, and used for new objects.
+      #
+      # To create a default from options that can modified after migration,
+      # use `after_initialize` as described at <http://stackoverflow.com/questions/328525/how-can-i-set-default-values-in-activerecord>.
+      #
+      # Note however that those two methods cannot be mixed of this default will always prevail.
+      #
+      #t.column :default1, :integer, default: 1
 
       # Many to one relationship.
       t.column :model1_id, :integer
+
 
     ##timestamps
 

@@ -17,6 +17,8 @@ ActiveRecord::Schema.define(version: 20131126102308) do
     t.string   "string_col",    limit: 32, null: false
     t.text     "text_col"
     t.integer  "integer_col"
+    t.integer  "integer_col2"
+    t.integer  "integer_col3"
     t.float    "float_col"
     t.datetime "timestamp_col"
     t.integer  "model1_id"

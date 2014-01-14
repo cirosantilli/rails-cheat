@@ -12,10 +12,6 @@ class ActiveRecordTest < ActiveSupport::TestCase
     Model1.create(id: 2, integer_col: 2, string_col: 't2')
   end
 
-  def teardown
-    #DatabaseCleaner.clean
-  end
-
   # The following tests don't alter the db,
   # so they can all fit into a single test.
   #

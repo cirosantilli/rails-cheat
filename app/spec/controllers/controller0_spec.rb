@@ -5,8 +5,7 @@ do_fail = false
 
 ##describe
 
-  # Describe without arguments does not affect the test logic in any way,
-  # its only purpose it to document the test and output nice messages if it fails.
+  # TODO can impact tests, or is it string description only?
 
   # Any object can be passed to describe, and the class being tested is often passed.
 
@@ -32,6 +31,11 @@ describe "desc0" do
     end
   end
 
+  describe "abc" do
+    #it { should == "abc" }
+    #it { should != "acb" }
+  end
+
   it "should" do
     # Old and discoraged. Use expect to instead.
 
@@ -44,10 +48,37 @@ describe "desc0" do
   end
 
   it "expect" do
-    expect(1).to eq(1)
-    if do_fail
-      expect(1).to eq(2)
-    end
+
+    ##eq
+
+      # Calls `==`.
+
+        expect(1).to eq(1)
+        if do_fail
+          expect(1).to eq(2)
+        end
+
+    # Cannot use operators with expect to:
+
+        if do_fail
+          expect(1).to == 1
+        end
+
+    ##be
+
+      # TODO what does it do exactly? Seems to work for operators.
+
+        expect(1).to be == 1
+
+    ##define a matcher
+
+        RSpec::Matchers.define :be_eq do |expected|
+          match do |actual|
+            actual == expected
+          end
+        end
+
+        expect(1).to be_eq(1)
   end
 
     ##before ##after

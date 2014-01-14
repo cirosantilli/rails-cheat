@@ -31,9 +31,9 @@ class Model0 < ActiveRecord::Base
     # - presence: if true, field must be present (NOT NULL)
     # - length: minimum, maximum string length
 
-      validates :string_col,
-        presence: true,
-        uniqueness: {message: "custom message: must be unique"}
+      #validates :string_col,
+        #presence: true,
+        #uniqueness: {message: "custom message: must be unique"},
         #length: {minimum: 2, maximum:4, message: "custom message: length must be between 2 and 4" },
         #format: {with: /a.*/, message: "custom message: must start with the letter a"}
         #format: /a.*/

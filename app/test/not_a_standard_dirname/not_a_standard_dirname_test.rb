@@ -2,6 +2,6 @@ require 'test_helper'
 
 class NotAStandardDirnameTest < ActionController::TestCase
   test "fail" do
-    assert false
+    #assert false
   end
 end

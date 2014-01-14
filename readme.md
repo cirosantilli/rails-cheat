@@ -444,104 +444,11 @@ SMPT configuration under `config/initializers/smtp_settings.rb`:
 
 Create a `.example` version and Gitignore it to protect the password.
 
-#third party testing libraries
-
-Besides the built-in test classes, there tons of third party test libraries,
-many of which mix with one another.
-
-##rspec
-
-General unit tests. Nothing rails / web framework specific.
-
-TODO vs Minitest (rails 4 default)? Minitest interface seems saner and is default.
-
-Examples of methods if offers:
-
-- `describe`: defines the test
-
-- `it`: defines the test
-
-- `should`, `should_not` is added to all objects. Makes the assertions.
-
-    `expect` + `to` as been added later, and seem to be recommended over `should`
-    as explained at <http://myronmars.to/n/dev-blog/2012/06/rspecs-new-expectation-syntax>
-
-    `expect to` can also take blocks: `expect {raise 1}.to raise_error`
-
-- `before` and `after` are equivalent to Minitest `setup` and `teardown`
-
-Install `Gemfile`:
-
-    group :development, :test do
-        gem 'rspec-rails'
-    end
-
-Generate templates `.rspec` and `spec/spec_helper.rb`.:
-
-    rails generate rspec:install
-
-Tests are located under `spec`.
-
-Tests are run with `rake spec`.
-
-##spinach
-
-##cucumber
-
-##capybara
-
-Offers methods to interact with the application through a browser automation
-(by default via Selenium), such as:
-
-- finding visible text on the screen (not a direct `body` element search)
-- clicking on a button or link
-- filling a form
-
-Recommended location for tests are: `test/integration` for Minitest (built-in) tests
-and `spec/features` for RSpec tests.
-
-Good cheatsheet: <https://gist.github.com/zhengjia/428105>
-
-LIke other integration tests, capybara tests can be run with `rake test:integration`,
-which is called by `rake test`.
-
-#factory girl
-
-Generates test data.
-
-Advantage over `fixtures` or functions as of 2014:
-
-- possible to create multiple fixtures sets, and use one per test
-- `create`?
-
-Factories are automatically loaded from `(spec|test)/(factories.rb|factories*.rb)`.
-
-If included, may be the source of the following methods in the tests:
-
-    # Returns a User instance that's not saved
-    user = build(:user)
-
-    # Returns a saved User instance
-    user = create(:user)
-
-    # Returns a hash of attributes that can be used to build a User instance
-    attrs = attributes_for(:user)
-
-    # Returns an object with all defined attributes stubbed out
-    stub = build_stubbed(:user)
-
-    # Passing a block to any of the methods above will yield the return object
-    create(:user) do |user|
-    user.posts.create(attributes_for(:post))
-    end
-
 #lib
 
 Is put on the Ruby require path.
 
-Does not work for:
-
-- config files
+Does not work for config files.
 
 ##lib/tasks
 
@@ -559,61 +466,6 @@ Is not automatically required for:
 - config files
 
 Initializers are not put on the require path.
-
-#devise
-
-User signup and authentication.
-
-Gemfile: `gem devise`.
-
-    rails generate devise:install
-    rails generate devise:views
-    rails generate devise User
-
-where `User` is the model that will represent the user.
-
-##email confirmation
-
-Get action mailer working.
-
-`app/models`: uncomment `:confirmable`
-
-Migration file: uncomment the `:confirmable` section.
-
-`config/initializers/devise.rb`:
-
-- config.mailer = 'Devise::Mailer'
-
-##unregistered users
-
-Just don't add:
-
-    before_filter: authenticate!
-
-and unauthenticated users can view pages normally.
-
----
-
-rake db:migrate
-
-Restart rails.
-
-##omniauth
-
-#foreman
-
-Tool that starts many processes at once, for example one main web process + many works.
-
-Advantages over a plain script:
-
-- one C-C and SIGTERM is sent to all the processes invoked
-
-#settings logic
-
-Files:
-
-- config/settingslogic.yml
-- config/initializers/01_settingslogic.rb
 
 #public
 
@@ -670,3 +522,236 @@ By default Rails does not serve files under `public` in production mode as this
 job should be left fot the a webserver such as Apache or NGinx for efficiency reasons.
 If you really want Rails to serve those files edit `config.serve_static_assets = true` under
 `config/environment/production.rb`.
+
+#third party testing libraries
+
+Besides the built-in test classes, there tons of third party test libraries,
+many of which mix with one another.
+
+##rspec
+
+General unit test framework. Alternative to Minitest (default Rails 4).
+
+Not rails / web framework specific.
+
+TODO vs Minitest (rails 4 default)? Minitest interface saner and is default.
+
+Install `Gemfile`:
+
+    group :development, :test do
+        gem 'rspec-rails'
+    end
+
+Generate templates `.rspec` and `spec/spec_helper.rb`.:
+
+    rails generate rspec:install
+
+Tests are located under `/spec/`.
+
+Tests are run with:
+
+    rake spec
+
+It may be possible to run them with:
+
+    cd RAILS_ROOT
+    rspec
+
+but his may have disadvantages: `rake spec` may do more initialization such as DB TODO confirm.
+
+The rspec version may start running faster.
+
+Only run tests from a single file (<http://stackoverflow.com/questions/6116668/rspec-how-to-run-a-single-test>):
+
+    rake spec SPEC=path/to/spec.rb
+
+Only run a single test from a single file:
+
+    rake spec SPEC=path/to/spec.rb SPEC_OPTS="-e \"should be successful and return 3 items\""
+
+##spinach
+
+Unit testing framework, with yet another super mini language
+(the Gherkin language, not a ruby DSL).
+It seems that the goal of that language is to make tests accessible to people
+who do not understand Ruby...
+
+Tests are located under `/features/`.
+
+General config file is `/features/support/env.rb`.
+
+Tests are defined on `.feature` files writen in Gherkin located TODO where.
+
+Step definition (what each part of a feature test does) goes under `steps`
+
+Generate basic spinach files:
+
+    rails generate spinach
+
+Run all the tests:
+
+    RAILS_ENV=test rake spinach
+
+##cucumber
+
+Similar to Spinach, and came before it.
+
+Also uses the Gherkin language.
+
+##capybara
+
+Offers methods to interact with the application through a browser automation
+(by default via Selenium), such as:
+
+- `visit`: go to a page
+- `page.has_text`: finding visible text on the screen (not a direct `body` element search)
+- clicking on a button or link
+- filling a form
+
+Those are useful to test the application from the user point of view.
+
+Can be used with any Unit test framework such as Minitest or RSpec.
+
+Recommended location for tests are: `test/integration` for Minitest (built-in) tests
+and `spec/features` for RSpec tests.
+
+Good cheatsheet: <https://gist.github.com/zhengjia/428105>
+
+LIke other integration tests, capybara tests can be run with `rake test:integration`,
+which is called by `rake test`.
+
+##factory girl
+
+Interface to generates test data.
+
+The default fixtures method is bad because it is not possible to have per test
+data with it.
+
+TODO Advantage over manually using create?
+
+Factories are automatically loaded from `(spec|test)/(factories.rb|factories*.rb)`.
+
+If included, may be the source of the following methods in the tests:
+
+    # Returns a User instance that's not saved
+    user = build(:user)
+
+    # Returns a saved User instance
+    user = create(:user)
+
+    # Returns a hash of attributes that can be used to build a User instance
+    attrs = attributes_for(:user)
+
+    # Returns an object with all defined attributes stubbed out
+    stub = build_stubbed(:user)
+
+    # Passing a block to any of the methods above will yield the return object
+    create(:user) do |user|
+    user.posts.create(attributes_for(:post))
+    end
+
+#guard
+
+Monitors the filesystem for file modifications, and when those happen run certain commands.
+
+Major application: automatically run tests when test files are modified.
+
+To do that, install directly plugin gems which support your types of tests:
+
+- `gem guard-test`
+- `gem guard-rspec`
+- `gem guard-spinach`
+
+##guard test
+
+Install:
+
+    gem guart-test
+
+Then run:
+
+    bundle install
+    guart init test
+
+Start running:
+
+    bundle exec guard
+
+Now just leave guard running and it will redo tests whenever the files are mofidifed.
+
+Guard produces notifications to its stdout and to the desktop notification system.
+
+#devise
+
+User signup and authentication.
+
+Gemfile: `gem devise`.
+
+    rails generate devise:install
+    rails generate devise:views
+    rails generate devise User
+
+where `User` is the model that will represent the user.
+
+##email confirmation
+
+Get action mailer working.
+
+`app/models`: uncomment `:confirmable`
+
+Migration file: uncomment the `:confirmable` section.
+
+`config/initializers/devise.rb`:
+
+- config.mailer = 'Devise::Mailer'
+
+##unregistered users
+
+Just don't add:
+
+    before_filter: authenticate!
+
+and unauthenticated users can view pages normally.
+
+---
+
+rake db:migrate
+
+Restart rails.
+
+##omniauth
+
+#foreman
+
+Tool that starts many processes at once, for example one main web process + many works.
+
+Advantages over a plain script:
+
+- one C-C and SIGTERM is sent to all the processes invoked
+
+Files:
+
+- `Procfile`: main configuration file.
+
+    Bash variable notation like `$PORT` does not imply that the value will be taken from 
+
+- `.env` and `.procfile`: from those files it is possible to set the bashlike variables of `Procfile`.
+
+    TODO what is the difference between them?
+
+    `.procfile` is YAML:
+
+        port: 3001
+
+    `.env` is yet another magic format:
+
+        PORT=3001
+
+#settings logic
+
+Settings manager gem.
+
+Files:
+
+- config/settingslogic.yml
+- config/initializers/01_settingslogic.rb

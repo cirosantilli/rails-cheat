@@ -192,9 +192,7 @@
   %>
 
   <p>Rails.env = <%= Rails.env %></p>
-
   <p>Rails.root = <%= Rails.root %></p>
-
   <p>Rails.logger.level = <%= Rails.logger.level %></p>
 
 <%= h "#button_to", 2 %>
@@ -251,7 +249,8 @@
 
 <%= h "#action mailer #email #mail", 2 %>
 
-  <p>For this to work, first configure your SMTP.</p>
+  <p>On development, uses letter opener plugin which should open any sent emails on your browser.</p>
+  <p>On production, send actual emails via SMTP. You must first configure your SMTP.</p>
   <%= form_tag action: 'mail' do %>
     <p>
       <%= label :user, :address, "Send emails to" %>:
