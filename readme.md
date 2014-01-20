@@ -354,6 +354,16 @@ with external plugins such as Factory Girl.
 
 TODO: prevent fixture from loading for a single test?
 
+#concerns
+
+Located under `app/models/concerns`.
+
+Files contain modules which extend from `ActiveSupport::Concern`.
+
+Used for code that is strongly coupled to models, but should be shared amongst models.
+
+When to use concerns vs `lib`: <http://stackoverflow.com/questions/16159021/rails-service-objects-vs-lib-classes>
+
 #scaffold
 
 Automatically generates a base CRUD interface for a model.
@@ -563,11 +573,15 @@ The rspec version may start running faster.
 
 Only run tests from a single file (<http://stackoverflow.com/questions/6116668/rspec-how-to-run-a-single-test>):
 
-    rake spec SPEC=path/to/spec.rb
+    bundle exec rake spec SPEC=path/to/spec.rb
 
-Only run a single test from a single file:
+or
 
-    rake spec SPEC=path/to/spec.rb SPEC_OPTS="-e \"should be successful and return 3 items\""
+    bundle exec rspec path/to/spec.rb
+
+Only run a test that includes a string
+
+    bundle exec rake spec SPEC=path/to/spec.rb SPEC_OPTS="-e \"should be successful and return 3 items\""
 
 ##spinach
 

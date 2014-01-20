@@ -1,4 +1,5 @@
 class Controller0Controller < ApplicationController
+  include Concern0
 
   def action0
 
@@ -142,6 +143,14 @@ class Controller0Controller < ApplicationController
     ##logger
 
         Rails.logger.info('controller0 log test')
+
+    ##concern
+
+      # The include automatically exports the `ClassMethods` methods, which is a magic name.
+
+      # *Very* explicit behaviour!
+
+        Controller0Controller.concern0_class_method == 0 or raise
 
     ##breadcrumbs_on_rails
 

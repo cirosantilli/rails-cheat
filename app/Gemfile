@@ -37,7 +37,7 @@ end
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
-##END default file
+##END default file ================================================================
 
 gem 'foreman'
 
@@ -63,6 +63,9 @@ gem 'haml-rails'
 
 # Custom settings:
 gem 'settingslogic'
+
+# Keep `counter_cache` advanced.
+#gem 'counter_culture'
 
 # Tests
 gem "rspec-rails", group: [:development, :test]
