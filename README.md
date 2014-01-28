@@ -604,7 +604,15 @@ Generate basic spinach files:
 
 Run all the tests:
 
-    RAILS_ENV=test rake spinach
+    RAILS_ENV=test bundle exec rake spinach
+
+Or:
+
+    bundle exec rake spinach
+
+Run only tests on given file:
+
+    bundle exec rake spinach features/path/to/file.feature
 
 ##cucumber
 

@@ -53,7 +53,6 @@ class CreateTable < ActiveRecord::Migration
       # Many to one relationship.
       t.column :model1_id, :integer
 
-
     ##timestamps
 
       #TODO
@@ -63,7 +62,26 @@ class CreateTable < ActiveRecord::Migration
     end
 
     create_table :model1s do |t|
-      t.column :string_col, :string, limit: 32, null: false
+      t.column :string_col, :string
+      t.column :integer_col, :integer
+      t.column :not_in_model0, :integer
+      t.column :model2_id, :integer
+      t.column :model22_id, :integer
+    end
+
+    create_table :model2s do |t|
+      t.column :string_col, :string
+      t.column :integer_col, :integer
+      t.column :model3_id, :integer
+    end
+
+    create_table :model22s do |t|
+      t.column :string_col, :string
+      t.column :integer_col, :integer
+    end
+
+    create_table :model3s do |t|
+      t.column :string_col, :string
       t.column :integer_col, :integer
     end
 

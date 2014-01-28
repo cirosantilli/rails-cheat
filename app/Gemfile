@@ -87,3 +87,8 @@ gem "spring", group: :development
 gem "guard-minitest", group: :development
 #gem "guard-rspec", group: :development
 #gem "guard-test", group: :development
+
+# Preload application to make tests run faster.
+# Rails 4 will have Spring by default which should make thie unnecessary:
+# TODO bootstrap for Minitest not available??
+#gem "spork-rails"

@@ -1,4 +1,5 @@
 class Model1 < ActiveRecord::Base
   has_many :model0s
-  validates :string_col, presence: true
+  belongs_to :model2
+  belongs_to :model22
 end

@@ -14,7 +14,7 @@
 ActiveRecord::Schema.define(version: 20131126102308) do
 
   create_table "model0s", force: true do |t|
-    t.string   "string_col",    limit: 32, null: false
+    t.string   "string_col"
     t.text     "text_col"
     t.integer  "integer_col"
     t.integer  "integer_col2"
@@ -26,7 +26,26 @@ ActiveRecord::Schema.define(version: 20131126102308) do
   end
 
   create_table "model1s", force: true do |t|
-    t.string  "string_col",  limit: 32, null: false
+    t.string  "string_col"
+    t.integer "integer_col"
+    t.integer "not_in_model0"
+    t.integer "model2_id"
+    t.integer "model22_id"
+  end
+
+  create_table "model22s", force: true do |t|
+    t.string  "string_col"
+    t.integer "integer_col"
+  end
+
+  create_table "model2s", force: true do |t|
+    t.string  "string_col"
+    t.integer "integer_col"
+    t.integer "model3_id"
+  end
+
+  create_table "model3s", force: true do |t|
+    t.string  "string_col"
     t.integer "integer_col"
   end
 

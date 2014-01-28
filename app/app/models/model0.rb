@@ -7,8 +7,18 @@ class Model0 < ActiveRecord::Base
 
   ##associations
 
-      belongs_to :model1 #has a single model1
-      #has_many :model1  #has many model1
+    # Has a single model1:
+
+      belongs_to :model1
+      has_one    :model2, through: :model1
+      has_one    :model3, through: :model2
+
+    # Will use target table `model1s` and use a column `model1_id`
+    # to store the foreign key on current table.
+
+    # Custom column name:
+
+      #belongs_to :custom, class: Model1
 
   # Change the name of the table.
   # Default: lowercase underlined class name.

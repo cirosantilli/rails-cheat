@@ -25,9 +25,14 @@ class Controller0ControllerTest < ActionController::TestCase
   end
 
   test "assert example" do
-    assert true
-    assert_equal(0, 0)
-    assert_raises(RuntimeError){ raise }
+
+    # Use assert_equal instead of assert whenever possible so that
+    # a failing test will tell you the value of both inputs.
+
+      assert_equal(0, 0)
+
+      assert true
+      assert_raises(RuntimeError){ raise }
   end
 
   test "fixtures were loaded" do
