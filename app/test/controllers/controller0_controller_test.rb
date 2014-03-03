@@ -26,32 +26,41 @@ class Controller0ControllerTest < ActionController::TestCase
 
   test "assert example" do
 
-    # Use assert_equal instead of assert whenever possible so that
-    # a failing test will tell you the value of both inputs.
+    assert true
 
-      assert_equal(0, 0)
+    ##assert_equal
 
-      assert true
-      assert_raises(RuntimeError){ raise }
+      # Use assert_equal instead of assert whenever possible so that
+      # a failing test will tell you the value of both inputs.
+
+        assert_equal(0, 0)
+
+    ##refute
+
+      # The negation of eveery assertion is via `refute_X`
+
+        refute_equal(0, 1)
+
+    assert_raises(RuntimeError){ raise }
   end
 
   test "fixtures were loaded" do
     # This checks that fixtures were actualy loaded.
-    assert Model0.find_by(string_col: 's1').integer_col == 1
-    assert Model1.find_by(string_col: 't1') != nil
+    assert_equal(Model0.find_by(string_col: 's1').integer_col, 1)
+    refute_equal(Model1.find_by(string_col: 't1'), nil)
     # Rows can be named on the fixtures and accessed here as:
-    assert model0s(:model0_1).integer_col == 1
+    assert_equal model0s(:model0_1).integer_col, 1
   end
 
   # DB is reset to fixtures between each test function.
 
     test "destroy" do
       Model0.destroy_all
-      assert Model0.find_by(string_col: 's1') == nil
+      assert_equal(Model0.find_by(string_col: 's1'), nil)
     end
 
     test "after destroy" do
-      assert Model0.find_by(string_col: 's1') != nil
+      assert_equal(Model0.find_by(string_col: 's1').integer_col, 1)
     end
 
   # This test uses methods furnished by `ActionController::TestCase`
@@ -64,6 +73,8 @@ class Controller0ControllerTest < ActionController::TestCase
 
       # Controller is deduced from classname / filename.
 
+        get :action1
+        get :haml
         get :action0
         #get(:action0, {'id' => "12"}, {'user_id' => 5})
         #get(:view, {'id' => '12'}, nil, {'message' => 'booya!'})

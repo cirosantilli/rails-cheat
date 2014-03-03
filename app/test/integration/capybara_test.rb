@@ -1,5 +1,7 @@
 require 'test_helper'
 
+# Main Capybara cheatsheet.
+
 class CapybaraTest < ActionDispatch::IntegrationTest
   test "main" do
     path = "/controller0/capybara"
@@ -7,11 +9,17 @@ class CapybaraTest < ActionDispatch::IntegrationTest
 
     ##driver
 
-      # Not all drivers support all functions.
+      # Capybara is an unified interface to multiple drivers, which actually ipmlement the functions.
+
+      # Not all drivers support all functions. When this is the case, Capybara docs specify it.
 
       # Driver can be set under `support/env.rb`
 
         #Capybara.javascript_driver = :poltergeist
+
+      # On Cucumber, drivers can be set per test with tags such as `@javascript`.
+
+      # Check this <https://github.com/jnicklas/capybara#drivers> for a list of drivers.
 
     ##visit
 
@@ -35,13 +43,17 @@ class CapybaraTest < ActionDispatch::IntegrationTest
               #fill_in('Street', :with => '12 Main Street')
             #end
 
+          # For single inner searches, use multiple finds instead:
+
+            #find(:css, '#id').find(:css, '.calss')
+
         ##all
 
           # http://rubydoc.info/github/jnicklas/capybara/master/Capybara/Node/Finders#all-instance_method
 
           # Most general find method. All others are convenience on top of this.
 
-          # Returns Capyabara::Result, whch is an Enumerable containing [Elements](http://rubydoc.info/github/jnicklas/capybara/master/Capybara/Node/Element)
+          # Returns Capyabara::Result, which is an Enumerable containing [Elements](http://rubydoc.info/github/jnicklas/capybara/master/Capybara/Node/Element)
 
           # By CSS
 
@@ -51,11 +63,13 @@ class CapybaraTest < ActionDispatch::IntegrationTest
           # Options:
 
           # - text(Bool). Containe text // match regexp. Possible in native xpath, but not CSS3.
-          # - visible(Bool). Not very portable.
+          # - visible(Bool). Not very portable. If true, only visible. If false **both** visible and invisible
+            # Inviible means: TODO visible:false? display:none?
+            # Default: false.
 
         ##find
 
-          # `all()[0] || raise`
+          # `all()[0]`. Raise if none or multiple matches.
 
         ##find_link
 
@@ -67,10 +81,14 @@ class CapybaraTest < ActionDispatch::IntegrationTest
 
       ##element
 
+        #[Elements](http://rubydoc.info/github/jnicklas/capybara/master/Capybara/Node/Element)
+        #
         # Useful methods:
         #
         # - find: find inside element
+        # - []: get value of attribute
         # - click: click on element
+        # - set: set the text of input fields like `input` or `textarea`
         # - double_click:
         # - hover:
         # - visible? Not all drivers support CSS, so the result may be inaccurate.
@@ -84,13 +102,17 @@ class CapybaraTest < ActionDispatch::IntegrationTest
             assert page.has_content?("paragraph")
             assert(!page.has_content?("<p>"))
 
+        ##has_selector
+
+          # Same syntax as all.
+
         ##has_xpath
 
-          # Selects elements by xpath.
+          # has_selector(:xpath, ...)
 
         ##has_css
 
-          # Selects elements by css.
+          # has_selector(:css, ...)
 
       ##xpath
 
@@ -166,25 +188,38 @@ class CapybaraTest < ActionDispatch::IntegrationTest
 
         #puts "page.body = " + page.body
 
-    ##click_link
+    ##actions
 
-      # `find().click`
+      # All methods here are convenience only. The sanest way to achieve all those effects is to find the element with find,
+      # and then use an Element method.
 
-        click_link('a-id')
-        assert current_path = '/'
-        visit path
+      ##click_link
+
+        # `find().click`
+
+      ##fill_in
+
+        # find by id, name or label text and .set()
 
     ##popup dialog
 
-      # Mark Cucumber Scenario with @javascript and:
+      # This feature is not portable.
+
+      # Poltergeist: always confirms popups, not yet possible to dismiss:
+      # <https://github.com/jonleighton/poltergeist/issues/80>
+
+      # Selenium interface:
 
         #page.driver.browser.switch_to.alert.accept
         #page.driver.browser.switch_to.alert.dismiss
         #page.driver.browser.switch_to.alert.text
 
-    # Save current page to a temporary file and open it in default browser.
-    # Good way to debuge failing tests.
+    ##save_and_open_page
 
-      #save_and_open_page
+      # Save current page to a temporary file and open it in default browser.
+
+      # Good way to debuge failing tests.
+
+        #save_and_open_page
   end
 end

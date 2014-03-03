@@ -1,5 +1,7 @@
 <% provide(:title, 'controller0') %>
 
+<p>Rails.env = <%= Rails.env %></p>
+
 <%= h "Controller0#action0", 2 %>
 
   <p>Find me in app/views/controller0/action0.html.erb</p>
@@ -37,10 +39,7 @@
 
   <p><%= link_to 'File Upload', {action: 'file_upload'} %></p>
 
-<%= h "#params #routes #link_to", 2 %>
-
-  <p>params = <%= params %></p>
-  <p>Try this URL: <a href="?a=b&c=d&list[]=1&list[]=2&hash0[key0]=val0&hash0[key1]=val1">?a=b&c=d&index[]=1&index[]=2&hash0[key0]=val0&hash0[key1]=val1</a></p>
+<%= h "#routes #link_to", 2 %>
 
   <p>Routes and params:</p>
 
@@ -85,6 +84,11 @@
     <%# If action is not given it defaults to current action. %>
     <li><%= link_to 'Myself' %></li>
 
+    <li>
+    <%= link_to '#data', {}, data:{a: "0", b: "1", c_0: "2"} %>: adds `data-` HTML5 data attributes to link.
+      Some of the values seem to already have Rails specific meanings, for example `confirm`, `remote`. TODO which exactly?
+    </li>
+
     <%# ##confirm %>
     <li><%= link_to 'Myself Confirm', {}, data: { confirm: "Are you sure?!?" } %></li>
 
@@ -102,6 +106,12 @@
       To get a plain HTML solution, use `button_to instead.
     %>
     <li><%= link_to 'file_download', {action: 'url_params_abc', id: 'abac'}, method: :delete %></li>
+
+    <li>
+      <%= link_to '#remote: true', {}, remote: true %>: Adds `data-remote="true"` to the tag.
+      This is in turn used by the Rails default Javascript library to make clicks on that link trigger
+      AJAX queries instead of regular redirects. Those can be handled in controllers via `respond_to`.
+    </li>
   </ul>
 
   <%#
@@ -109,6 +119,30 @@
     Only the a=b form is standard for URLs key value parameteres.
     It is rails tht parses lists and hashes.
   %>
+
+<%= h "#params", 2 %>
+
+  <p>Hash like object of type: ##HashWithIndifferentAccess.</p>
+  <%
+    h = ActiveSupport::HashWithIndifferentAccess.new(:a => 1, "b" => 2)
+    h[:a] == 1 or raise
+    h[:b] == 2 or raise
+    h["a"] == 1 or raise
+    h["b"] == 2 or raise
+    # By default, string keys:
+    h.keys.sort == ["a", "b"] or raise
+    # Rails mokey patches Hash with symbolize keys:
+    h.symbolize_keys == {a:1, b:2} or raise
+  %>
+  <p>params = <%= params %></p>
+  <p>Try this URL: <a href="?a=b&c=d&list[]=1&list[]=2&hash0[key0]=val0&hash0[key1]=val1">?a=b&c=d&index[]=1&index[]=2&hash0[key0]=val0&hash0[key1]=val1</a></p>
+  <pre>
+    All param values passed from GET/POST params are strings.
+    Conversion to other types must be done manually
+    Discussion on booleans: http://stackoverflow.com/questions/3673607/how-do-i-submit-a-boolean-parameter-in-rails
+    The most common convention is to use "true" and "false".
+  </pre>
+
 
 <%= h "#request", 2 %>
 
@@ -224,12 +258,25 @@
     The template file gets an underline appended!
   %>
 
-  <%= render "partial.html.erb" %>
+    <%= render "partial.html.erb" %>
 
-<%= h "#form", 2 %>
+  <%#
+    Insane shorthand method:
+    <http://guides.rubyonrails.org/layouts_and_rendering.html#using-partials>
 
-  <p><%= text_field 'model0', 'string_col' %></p>
-  <p><input id="model0_string_col" name="model0[string_col]" type="text" /></p>
+    Will render template `_model_object` and pass object `@model_object` to it.
+  %>
+
+    <%# render @model_object %>
+
+<%= h "##form", 2 %>
+
+  <%= h "##form_tag", 2 %>
+
+    <p>Lower level method than `form_for, which is much more commonly used when the form relates to an object.</p>
+
+  <p>input: <%= text_field 'model0', 'string_col' %></p>
+  <p>expected: <input id="model0_string_col" name="model0[string_col]" type="text"/></p>
 
   <%#= password_field_tag(:password) %>
   <%#= hidden_field_tag(:parent_id, "5") %>
@@ -337,19 +384,20 @@
     <%= link_to "TODO Sign in with Facebook", user_omniauth_authorize_path(:facebook) %>
   <% end %>
 
-<%= h "#faker", 2 %>
-
-  <ul>
-    <li>name = <%= Faker::Name.name %></li>
-    <li>email = <%= Faker::Internet.email %></li>
-    <li>free_email = <%= Faker::Internet.free_email %></li>
-    <li>user_name = <%= Faker::Internet.user_name %></li>
-    <li>words = <%= Faker::Lorem.words(2) %></li>
-    <li>paragraphs = <%= Faker::Lorem.paragraphs(2) %></li>
-  </ul>
-
 <%= h "#breadcrumbs_on_rails", 2 %>
 
   <p>TODO</p>
 
   <%= render_breadcrumbs %>
+
+<% if Rails.env == 'development' || Rails.env == 'test' %>
+  <%= h "#faker", 2 %>
+    <ul>
+      <li>name = <%= Faker::Name.name %></li>
+      <li>email = <%= Faker::Internet.email %></li>
+      <li>free_email = <%= Faker::Internet.free_email %></li>
+      <li>user_name = <%= Faker::Internet.user_name %></li>
+      <li>words = <%= Faker::Lorem.words(2) %></li>
+      <li>paragraphs = <%= Faker::Lorem.paragraphs(2) %></li>
+    </ul>
+<% end %>

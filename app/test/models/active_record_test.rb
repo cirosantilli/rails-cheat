@@ -283,6 +283,9 @@ class ActiveRecordTest < ActiveSupport::TestCase
         # Not:
 
           assert_equal Model0.where.not(integer_col: 1).take.string_col, 's2'
+          assert_equal Model0.where(integer_col: (1..2)).where.not(integer_col: 1).take.string_col, 's2'
+          # ERROR: omg, horrible interface? why do we need the extra where?
+          #assert_equal Model0.where(integer_col: (1..2)).not(integer_col: 1).take.string_col, 's2'
 
         # Error:
 
@@ -412,10 +415,10 @@ class ActiveRecordTest < ActiveSupport::TestCase
     Model0.create(id: 2, integer_col: 2, string_col: 's2', model1_id: 1)
     Model0.create(id: 3, integer_col: 3, string_col: 's3', model1_id: 2)
     Model0.create(id: 4, integer_col: 4, string_col: 's4', model1_id: 2)
-    Model0.create(id: 5, integer_col: 5, string_col: 's1', model1_id: 1)
-    Model0.create(id: 6, integer_col: 6, string_col: 's2', model1_id: 1)
-    Model0.create(id: 7, integer_col: 7, string_col: 's3', model1_id: 2)
-    Model0.create(id: 8, integer_col: 8, string_col: 's4', model1_id: 2)
+    Model0.create(id: 5, integer_col: 5, string_col: 's1', model1_id: 3)
+    Model0.create(id: 6, integer_col: 6, string_col: 's2', model1_id: 3)
+    Model0.create(id: 7, integer_col: 7, string_col: 's3', model1_id: 4)
+    Model0.create(id: 8, integer_col: 8, string_col: 's4', model1_id: 4)
 
     Model1.create(id: 1, integer_col: 1, string_col: 't1', model2_id: 1, model22_id: 1, not_in_model0: 1)
     Model1.create(id: 2, integer_col: 2, string_col: 't2', model2_id: 2, model22_id: 2, not_in_model0: 2)
@@ -521,6 +524,26 @@ class ActiveRecordTest < ActiveSupport::TestCase
           #Model0.order('model2s.id').pluck(:integer_col)
           #Model0.where(model2s: {id: 1}).pluck(:integer_col)
 
+      ##reflect
+
+        # Allows to get meta information on associations.
+
+        # Returns AssociationReflection obejcts.
+
+          reflect = Model0.reflect_on_association(:model1)
+          assert_equal reflect.macro, :belongs_to
+          assert_equal reflect.klass, Model1
+          assert_equal reflect.active_record, Model0
+          assert_equal reflect.table_name, "model1s"
+          assert_equal reflect.foreign_key, "model1_id"
+
+          reflect = Model1.reflect_on_association(:model0s)
+          assert_equal reflect.macro, :has_many
+          assert_equal reflect.klass, Model0
+          assert_equal reflect.active_record, Model1
+          assert_equal reflect.table_name, "model0s"
+          assert_equal reflect.foreign_key, "model1_id"
+
     # Includes vs joins:
 
     # - use includes when you want to get the entire object of the other side of the relation.
@@ -573,8 +596,36 @@ class ActiveRecordTest < ActiveSupport::TestCase
           Model0.joins(:model1).select('model1s.id AS model1_id').find_each do |model0|
             model1_ids << model0.model1_id
           end
-          assert_equal model1_ids, [1, 1, 2, 2] * 2
+          assert_equal model1_ids, [1, 1, 2, 2, 3, 3, 4, 4]
         end
+
+      # Both are the same and efficient;
+
+        stdout_log("joins + select 2 levels 2 joins") do
+          ids = []
+          Model0.joins(model1: :model22).select('model22s.id AS model22_id').find_each do |model0|
+            ids << model0.model22_id
+          end
+          assert_equal ids, [1, 1, 2, 2] * 2
+        end
+
+        stdout_log("joins + select 2 levels through") do
+          ids = []
+          Model0.joins(:model2).select('model2s.id AS model2_id').find_each do |model0|
+            ids << model0.model2_id
+          end
+          assert_equal ids, [1, 1, 2, 2] * 2
+        end
+
+      # Does not work from the has many side:
+
+        #stdout_log("joins + select from has many") do
+          #ids = []
+          #Model1.joins(:model0s).select('model0s.id AS model0_ids').find_each do |model1|
+            #ids += model1.model0_ids
+          #end
+          #assert_equal ids, [1, 1, 2, 2] * 2
+        #end
 
       # Unlike `includes`, `joins` does not eager load data automatically for us, so the following generates N queries:
       # BAD BAD BAD!
@@ -584,7 +635,7 @@ class ActiveRecordTest < ActiveSupport::TestCase
           Model0.joins(:model1).find_each do |model0|
             model1_ids << model0.model1.id
           end
-          assert_equal model1_ids, [1, 1, 2, 2] * 2
+          assert_equal model1_ids, [1, 1, 2, 2, 3, 3, 4, 4]
         end
 
       # Joins + group + sum is a common combo to count on multi level belongs to has many.
@@ -593,6 +644,20 @@ class ActiveRecordTest < ActiveSupport::TestCase
 
         assert_equal Model0.joins(:model1).group(:model2_id).sum(:integer_col), {1=>(1+2+5+6), 2=>(3+4+7+8)}
         #assert_equal Model2.joins(:model1s).select('model2s.id, model0s.integer_col').joins(:model0s).group('model2s.id').sum('model0s.integer_col'), {1=>10}
+
+      ##left join ##right join
+
+        # Only possible with explicit SQL.
+
+        # Note that SQLite does not implement `RIGHT JOIN` as of `2014`.
+
+          stdout_log("left joins + select") do
+            model1_ids = []
+            Model0.joins("LEFT JOIN model1s ON model0s.model1_id = model1s.id").select('model1s.id AS model1_id').find_each do |model0|
+              model1_ids << model0.model1_id
+            end
+          assert_equal model1_ids, [1, 1, 2, 2, 3, 3, 4, 4]
+          end
 
     ##includes ##preload ##eager_load
 
@@ -613,7 +678,7 @@ class ActiveRecordTest < ActiveSupport::TestCase
         Model0.includes(:model1).find_each do |model0|
           model1_ids << model0.model1.id
         end
-        assert_equal model1_ids, [1, 1, 2, 2] * 2
+        assert_equal model1_ids, [1, 1, 2, 2, 3, 3, 4, 4]
       end
 
       stdout_log("where on the other side") do
@@ -621,11 +686,11 @@ class ActiveRecordTest < ActiveSupport::TestCase
         Model0.includes(:model1).where(model1s: {id: 1}).find_each do |model0|
           model0_ids << model0.id
         end
-        assert_equal model0_ids, [1, 2, 5, 6]
+        assert_equal model0_ids, [1, 2]
       end
 
       stdout_log("order by the other side") do
-        assert_equal Model0.includes(:model1).order('model1s.id DESC', :id).pluck(:id), [3, 4, 7, 8, 1, 2, 5, 6]
+        assert_equal Model0.includes(:model1).order('model1s.id DESC', :id).pluck(:id), [7, 8,  5, 6, 3, 4, 1, 2]
       end
 
       stdout_log("##references") do
@@ -656,11 +721,11 @@ class ActiveRecordTest < ActiveSupport::TestCase
 
       stdout_log("nested includes") do
         # Rails can decide between 3 WHERE clauses or a single JOIN here.
-        ids = []
+        model1_ids = []
         Model0.includes(model1: :model22).find_each do |model0|
-          ids << model0.model1.model22.id
+          model1_ids << model0.model1.model22.id
         end
-        assert_equal ids, [1, 1, 2, 2] * 2
+        assert_equal model1_ids, [1, 1, 2, 2] * 2
       end
 
       stdout_log("nested includes + where on has many side") do
@@ -686,7 +751,7 @@ class ActiveRecordTest < ActiveSupport::TestCase
           Model1.includes(:model0s).find_each do |model1|
             model0_ids += model1.model0s.pluck(:id)
           end
-          assert_equal model0_ids, [1, 2, 5, 6, 3, 4, 7, 8]
+          assert_equal model0_ids, (1..8).to_a
         end
 
       # Same:
@@ -697,7 +762,7 @@ class ActiveRecordTest < ActiveSupport::TestCase
             model0_ids << model0.id
           end
         end
-        assert_equal model0_ids, [1, 2, 5, 6, 3, 4, 7, 8]
+        assert_equal model0_ids, (1..8).to_a
   end
 
   test "##create" do

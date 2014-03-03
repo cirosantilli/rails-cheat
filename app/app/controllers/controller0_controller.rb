@@ -57,6 +57,18 @@ class Controller0Controller < ApplicationController
           @arr == [1] or raise
           @after_render = 1
 
+        # Response status:
+
+          #render file: Rails.root.join("public", "404"), layout: false, status: "404"
+
+        # Empty body:
+
+          #render nothing: true, status: "404"
+
+        # It is however recommended that you use the `head` method instead on this case for a header only response.
+
+          #head :forbidden
+
       ##redirect_to
 
         # Return an http redirect to another address.
@@ -79,9 +91,17 @@ class Controller0Controller < ApplicationController
 
           #respond_to do |format|
             #format.html { redirect_to(person_list_url) }
-            #format.js
+            #format.js { render text: "AJAX response!" }
             #format.xml  { render xml: @person.to_xml(include: @company) }
           #end
+
+        # The typical way to make `format.js` AJAX calls is via `link_to` with `remote: true`.
+
+    ##helpers
+
+      # Sanitize:
+
+        ActionController::Base.helpers.strip_tags('<p data-key="val">a<p>b</p>c</p>') == 'abc' or raise
 
     ##cookies
 
@@ -167,6 +187,21 @@ class Controller0Controller < ApplicationController
     ##before_filter
 
         @before_filter_do == 1 or raise
+
+    ##view_context
+
+      # Run thing as they would if you were on a view, for example helpers.
+
+        view_context.controller0_helper == 0 or raise
+
+    ##mokey patches
+
+      # Rails adds many methods to existing Ruby stdlib objects.
+
+      ##hash
+
+          h = {"a" => 1, "b" => 2}
+          h.symbolize_keys == {a:1, b:2} or raise
 
     ##settingslogic
 

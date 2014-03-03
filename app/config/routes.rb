@@ -76,14 +76,16 @@ App::Application.routes.draw do
 
       ##resource ##CRUD
 
-        scope "model0" do
-          get "" => :index
-          get "new" => :new
-          post "" => :create
-          get ":id" => :show
-          get ":id/edit" => :edit
-          put ":id" => :update
-          delete ":id" => :destroy
+        # Automatically create all CRUD URLs at once
+
+          scope "model0" do
+            get "" => :index
+            get "new" => :new
+            post "" => :create
+            get ":id" => :show
+            get ":id/edit" => :edit
+            put ":id" => :update
+            delete ":id" => :destroy
 
           ##member
 

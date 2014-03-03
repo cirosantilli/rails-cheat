@@ -1,20 +1,20 @@
-%h1 haml
+%h1 Haml
 %p p
 %p ul:
 %ul
   %li a
   %li b
 %p a
-%p multiline:
+%p Multiline:
 %p
   a
   b
-no tag
+No tag
 - if true
   %p true
 - else
   %p false
-%h2 attrs
+%h2 Attributes
 %div{a: "b" + "0", c:"d"} a b
 %div(a: b c: d) a b
 %p
@@ -29,12 +29,19 @@ no tag
 %div{a: "b"}.class1#id1-fail id1 class1
 %h2 ruby code
 %p= "a"
-%p multiline:
+%p Multiline:
 %p
   = "a"
   = "b"
 %p
-  mix code and html:
+  Mix code and HTML:
   = "code"
-%p single line code + html: #{"code"}
+%p Single line / inline code + HTML: #{"code"}
+%p
+  %a{href: "http://stackoverflow.com/questions/3784047/inline-tag-in-haml"}
+    It does not seem possible to have inline tags / tags on the same line as other tags
+%p
+  = succeed '.' do
+    %a{href: "http://stackoverflow.com/questions/1311428/haml-control-whitespace-around-text"} Tag without whitespace afterwards
+  Horrible but works possible.
 -# comment

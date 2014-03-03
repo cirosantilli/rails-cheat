@@ -579,7 +579,7 @@ or
 
     bundle exec rspec path/to/spec.rb
 
-Only run a test that includes a string
+Only run tests that include a string
 
     bundle exec rake spec SPEC=path/to/spec.rb SPEC_OPTS="-e \"should be successful and return 3 items\""
 

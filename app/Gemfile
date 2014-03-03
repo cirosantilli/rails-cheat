@@ -68,6 +68,7 @@ gem 'settingslogic'
 #gem 'counter_culture'
 
 # Tests
+gem "minitest-rails", group: [:development, :test]
 gem "rspec-rails", group: [:development, :test]
 gem 'spinach-rails', group: [:development, :test]
 gem "capybara", group: [:development, :test]
@@ -83,12 +84,12 @@ gem "letter_opener", group: :development
 # Will come by default with Rails 4.1.
 gem "spring", group: :development
 
-# Default test suite on Rails 4.
+# Default test suite on Rails 4:
 gem "guard-minitest", group: :development
-#gem "guard-rspec", group: :development
 #gem "guard-test", group: :development
+#gem "guard-rspec", group: :development
 
 # Preload application to make tests run faster.
-# Rails 4 will have Spring by default which should make thie unnecessary:
+# Rails 4.X will have Spring by default which should make thie unnecessary:
 # TODO bootstrap for Minitest not available??
 #gem "spork-rails"
