@@ -347,10 +347,10 @@
   </p>
 
   <p>
-    Absolute paths create images with that exact path:
-    <%= image_tag "/images/png.png", alt: "alt", size: "20x30" %>.
-
-    Never use this since images should be served through the assets pipeline.
+    Absolute paths such as `/app/assets/images/png.png` create images with that exact path.
+    **Never** use this: in production the assets are precompiled under `public/assets`,
+    and not visible under app /images.
+    <%# image_tag "/images/png.png", alt: "alt", size: "20x30" %>.
   </p>
 
 <%= h "#assets", 2 %>
