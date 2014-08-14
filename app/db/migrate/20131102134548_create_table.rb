@@ -19,27 +19,33 @@ class CreateTable < ActiveRecord::Migration
   def change
     create_table :model0s do |t|
 
-      #  ##column
+      # TODO `t` is a `TableDefinition` object:
+      # http://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/TableDefinition.html
       #
-      # Signature:
+      # ##column
       #
-      #    name, type, options
+      # Possible way to create columns:
+      #
+      #     t.column :name, :type
+      #
+      # But the shorthands of type: `t.string :name` are recommended in the guides instead.
       #
       # ##limit
       #
       #     `:limit` is the maximum length of a string field.
       #
-      t.column :string_col, :string
-      #t.column :string_limit_32, :string, limit: 32
-      t.column :text_col, :text
-      t.column :integer_col, :integer
-      t.column :integer_col2, :integer
-      t.column :integer_col3, :integer
-      t.column :float_col, :float
-      t.column :timestamp_col, :timestamp
+      t.string :string_col
+      #t.string :string_limit_32, :string, limit: 32
+      t.text :text_col
+      t.integer :integer_col
+      t.integer :integer_col2
+      t.integer :integer_col3
+      t.float :float_col
+      t.timestamp :timestamp_col
+      t.boolean :boolean_col
       #t.column :not_null, :integer, null: false
 
-      ##Default value
+      # ##Default value
       #
       # The default is passed to the schema, and used for new objects.
       #
@@ -51,7 +57,7 @@ class CreateTable < ActiveRecord::Migration
       #t.column :default1, :integer, default: 1
 
       # Many to one relationship.
-      t.column :model1_id, :integer
+      t.integer :model1_id
 
     ##timestamps
 
@@ -62,27 +68,27 @@ class CreateTable < ActiveRecord::Migration
     end
 
     create_table :model1s do |t|
-      t.column :string_col, :string
-      t.column :integer_col, :integer
-      t.column :not_in_model0, :integer
-      t.column :model2_id, :integer
-      t.column :model22_id, :integer
+      t.string :string_col
+      t.integer :integer_col
+      t.integer :not_in_model0
+      t.integer :model2_id
+      t.integer :model22_id
     end
 
     create_table :model2s do |t|
-      t.column :string_col, :string
-      t.column :integer_col, :integer
-      t.column :model3_id, :integer
+      t.string :string_col
+      t.integer :integer_col
+      t.integer :model3_id
     end
 
     create_table :model22s do |t|
-      t.column :string_col, :string
-      t.column :integer_col, :integer
+      t.string :string_col
+      t.integer :integer_col
     end
 
     create_table :model3s do |t|
-      t.column :string_col, :string
-      t.column :integer_col, :integer
+      t.string :string_col
+      t.integer :integer_col
     end
 
     # It is possible to create some elements here already,
@@ -93,6 +99,7 @@ class CreateTable < ActiveRecord::Migration
     # Use schemas or `db/seeds.rb` for that instead.
     #
     #Model0.create string_col: 'abc', integer_col: 123
+
   end
 
   ##change_column_default
@@ -105,4 +112,39 @@ class CreateTable < ActiveRecord::Migration
         ## Remove the default:
         #change_column_default :profiles, :show_attribute, nil
       #end
+
+  ##add_index
+
+    # http://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-add_index
+
+    # Existing table:
+
+      #class ModifyTable < ActiveRecord::Migration
+      #  def change
+      #    add_index :table, :column
+      #  end
+      #end
+
+    # New table:
+
+      #class CreateTable < ActiveRecord::Migration
+      #  def change
+      #    create_table :table do |t|
+      #      ...
+      #    end
+      #    add_index :table, :column
+      #  end
+      #end
+
+    # Multi column index:
+
+      # add_index :table, [:column0, :column1]
+
+    # Options:
+
+      # add_index :table, :column, options
+
+    # `name`:   index name
+    # `unique: true`: `UNIQUE` index constraint
+    # `order`:  TODO
 end

@@ -1,5 +1,19 @@
 ActionMailer::Base.smtp_settings = {
+  # AWS SES
+  # You must first request the usage increase.
+  # It is free, and done in less than a day.
+  # The sender adress (set in the mailer) must be verified by receiving and email there.
+  # For the anti spam not to block your messages, use a domain you own and add a SPF record there pointing to the AWS sender IP.
+  address:              'email-smtp.eu-west-1.amazonaws.com',
+  port:                 587,
+  domain:               'amazonaws.com',
+  user_name:            'AKIAJKLNBJ6KBKMKL5SQ',
+  password:             'Ar7K6aG4c69KRngJIWOsVNjHgiw6L70VZNwJA8t7q7bd',
+  authentication:       'plain',
+  enable_starttls_auto: true
+
   # Gmail
+  # Will not work from AWS IPs because of spam filters.
   address:              'smtp.gmail.com',
   port:                 587,
   domain:               'gmail.com',
@@ -7,4 +21,5 @@ ActionMailer::Base.smtp_settings = {
   password:             '',
   authentication:       'plain',
   enable_starttls_auto: true
+
 }

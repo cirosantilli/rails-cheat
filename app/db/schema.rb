@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 20131126102308) do
     t.integer  "integer_col3"
     t.float    "float_col"
     t.datetime "timestamp_col"
+    t.boolean  "boolean_col"
     t.integer  "model1_id"
     t.string   "string_col2"
   end

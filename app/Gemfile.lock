@@ -78,6 +78,9 @@ GEM
     formatador (0.2.4)
     gherkin-ruby (0.3.1)
       racc
+    gon (5.0.4)
+      actionpack (>= 2.3.0)
+      json
     guard (2.4.0)
       formatador (>= 0.2.4)
       listen (~> 2.1)
@@ -255,6 +258,7 @@ DEPENDENCIES
   factory_girl_rails
   faker
   foreman
+  gon
   guard-minitest
   haml-rails
   jbuilder

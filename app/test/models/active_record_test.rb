@@ -68,7 +68,9 @@ class ActiveRecordTest < ActiveSupport::TestCase
 
       ##take
 
-        # Retreive from database. Does not specify an order.
+        # Retreive N records from database. Does not specify an order.
+
+          # take(N)
 
         # If no order was used on the query, the output is unpredictable.
 
@@ -77,6 +79,8 @@ class ActiveRecordTest < ActiveSupport::TestCase
         # Default is `N = 1`.
 
         # `nil` if none present.
+
+        # Does not raise if none found.
 
       ##first ##last
 
@@ -109,6 +113,12 @@ class ActiveRecordTest < ActiveSupport::TestCase
           assert_raises(ActiveRecord::StatementInvalid){Model0.find_by_sql("SELECT * FROM model0s WHERE model0s.id = ?", 1)}
 
         # Convert `Relation` to `Array` of arrays.
+
+      stdout_log("##exists?") do
+        # Check if there is at least one result for query.
+        assert Model0.exists?(1)
+        assert !Model0.exists?(3)
+      end
 
       stdout_log("##pluck") do
         # Take only certain columns from the Relation,
@@ -452,7 +462,7 @@ class ActiveRecordTest < ActiveSupport::TestCase
 
       # <http://guides.rubyonrails.org/association_basics.html>
 
-      ##has_one vs belongs_to
+      ##has_one vs ##belongs_to
 
         # The only difference is which table contains the foreign key:
         #
@@ -461,11 +471,58 @@ class ActiveRecordTest < ActiveSupport::TestCase
 
       ##patterns
 
-        # - one  to one : 2 tables: one belongs_to + one has_one
+        # - one to one : 2 tables: one belongs_to + one has_one
+        # - one to many: 2 tables: one belongs_to + one has_many
         #
-        # - one  to many: 2 tables: one belongs_to + one has_many
+        # #many to many
         #
-        # - many to many: 3 tables: two has_many through, and one belongs to the other two
+        #   3 tables: two has many, two has_many through, and one belongs to the other two
+        #
+        #       class Patient < ActiveRecord::Base
+        #         # Dependent so that Appointments are destroied if the Patient is destroyed.
+        #         has_many :appointments, dependent: :destroy
+        #         has_many :doctors, :through => :appointments
+        #       end
+        #
+        #       class Doctor < ActiveRecord::Base
+        #         has_many :appointments, dependent: :destroy
+        #         has_many :patients, :through => :appointments
+        #       end
+        #
+        #       # Must *NOT* end in `s`.
+        #       class Appointment < ActiveRecord::Base
+        #         belongs_to :doctor
+        #         belongs_to :patient
+        #
+        #         validates :doctor, presence: true
+        #         validates :patient, presence: true
+        #         # Pairs are unique.
+        #         validates :doctor, uniqueness: { scope: [:patient] }
+        #       end
+        #
+        #   Other good naming conventions:
+        #
+        #   If the relation does not have a special name like `appointment`:
+        #
+        #       #class PatientsDoctor < ActiveRecord::Base
+        #
+        #   If there is already another relation:
+        #
+        #       #class PatientsRelationtypeDoctor < ActiveRecord::Base
+        #
+        #   Migration:
+        #
+
+      ##has_many :through :source
+
+        # Name of the colum on the through table if different from first argument:
+        #
+        #       class Doctor < ActiveRecord::Base
+        #         has_many :appointments
+        #         has_many :dead_patients, through: :appointments, source: :patients
+        #       end
+        #
+        # And now you can: `doctor.dead_patients`.
 
       ##examples
 
@@ -546,13 +603,15 @@ class ActiveRecordTest < ActiveSupport::TestCase
 
     # Includes vs joins:
 
-    # - use includes when you want to get the entire object of the other side of the relation.
+    # -   use includes when you want to get the entire object of the other side of the relation.
     #
-    #    This will return a large number of SQL columns, but there is no workaround if you want the object.
+    #    This will return a large number of SQL columns,
+    #    but there is no workaround if you want the object: you need all fields.
     #
-    # - use joins when you only want a fields of the other side of the relation.
+    # -  use joins when you only want a fields of the other side of the relation.
     #
-    #    This will return a small nmber of SQL columns, but you cannot have the object on the other side.
+    #    This will return a smaller number of SQL columns,
+    #    but you cannot have the object on the other side.
 
     ##joins
 
@@ -568,12 +627,12 @@ class ActiveRecordTest < ActiveSupport::TestCase
       # Best way to go:
 
         assert_equal Model0.joins(:model1).find_by(model1s: {string_col: 't1'}).string_col, 's1'
-        #                                         ^
-        #                                         This is the Model1 column
+        #                                          ^
+        #                                          This is the Model1 column
 
         assert_equal Model1.joins(:model0s).find_by(model0s: {string_col: 's1'}).string_col, 't1'
-        #                                          ^
-        #                                          This is the Model0 column.
+        #                                           ^
+        #                                           This is the Model0 column.
 
       # Works: but not very neat:
 
@@ -789,7 +848,29 @@ class ActiveRecordTest < ActiveSupport::TestCase
 
     ##save! vs save
 
-      # `save!` does validations, `save` does not.
+      # `save!` throws on failed validation, `save` simply does nothing and returs a value.
+
+      ##validates
+
+        # Shortcut for multiple validate methods like `validates_uniqueness_of`.
+
+        # http://guides.rubyonrails.org/active_record_validations.html
+
+        # Determines form validation constraints. Those will not affect the database,
+        # but will make object creation fail if the fields do not pass the validations.
+
+        ##error messages
+
+          # If an message is given, the `true` is implicit.
+
+          # If not, a standard error message exists for each error.
+
+        # - presence: if true, field must be present (NOT NULL)
+        # - length: minimum, maximum string length
+
+        ##acceptance: true
+
+          # A checkbox that must be checked to continue:
 
     ##build
 
@@ -822,7 +903,7 @@ class ActiveRecordTest < ActiveSupport::TestCase
 
     ##destroy
 
-      # Deletes object and all associated objects
+      # Deletes object and all associated objects.
 
     ##delete_all
 

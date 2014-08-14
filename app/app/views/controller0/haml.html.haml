@@ -14,7 +14,7 @@ No tag
   %p true
 - else
   %p false
-%h2 Attributes
+%h2 #Attributes
 %div{a: "b" + "0", c:"d"} a b
 %div(a: b c: d) a b
 %p
@@ -27,7 +27,7 @@ No tag
 .class2#id2{a: "b"} id1 class1 a=b
 %p Non special synatx attributes must come last:
 %div{a: "b"}.class1#id1-fail id1 class1
-%h2 ruby code
+%h2 #Ruby code
 %p= "a"
 %p Multiline:
 %p
@@ -37,6 +37,18 @@ No tag
   Mix code and HTML:
   = "code"
 %p Single line / inline code + HTML: #{"code"}
+%h3 #html_safe #!
+%p
+  The html_safe behaviour of = depends on the
+  %code escape_html
+  option.
+  %p &= always escapes:
+  &= '<i>a</i>'
+  %p != never escapes.
+  != '<i>a</i>'
+  %p ! can be used before strings to prevent escaping the interpolations in the line:
+  ! a #{'<i>b</i>'}
+%h2 Inline tags
 %p
   %a{href: "http://stackoverflow.com/questions/3784047/inline-tag-in-haml"}
     It does not seem possible to have inline tags / tags on the same line as other tags
@@ -45,3 +57,20 @@ No tag
     %a{href: "http://stackoverflow.com/questions/1311428/haml-control-whitespace-around-text"} Tag without whitespace afterwards
   Horrible but works possible.
 -# comment
+%h2 #Spaces
+%p &gt;: remove outer space from tag.
+%div a
+%div>
+  b
+  %div c
+%div d
+%div>
+%h2 #Filters
+%p CoffeeScript:
+:coffeescript
+  # TODO why does document.write make the page hang only when coming from a link,
+  # not when refreshing the page?? Same for Javascript.
+  #document.write '#{'<p>:coffeescript</p>'}'
+%p Javascript:
+:javascript
+  //document.write('a')

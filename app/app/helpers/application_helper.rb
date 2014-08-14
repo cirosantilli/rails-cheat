@@ -2,7 +2,7 @@ module ApplicationHelper
   def toc
   end
 
-  def h(inner, n=1, id=true, link=true, id_callback=nil)
+  def header(inner, n=1, id=true, link=true, id_callback=nil)
     link_open = ""
     link_close = ""
     if id_callback == nil

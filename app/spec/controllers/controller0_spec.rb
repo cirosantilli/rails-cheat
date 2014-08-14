@@ -1,6 +1,13 @@
 require "spec_helper"
 
 # Set this to true if you want to see what things are like when they fail.
+
+##sources
+
+  # README: https://github.com/rspec/rspec
+
+  # Expectation docs: http://rubydoc.info/gems/rspec-expectations/frames
+
 do_fail = false
 
 ##describe
@@ -36,8 +43,9 @@ describe "desc0" do
     #it { should != "acb" }
   end
 
-  it "should" do
+  it "##should" do
     # Old and discoraged. Use expect to instead.
+    # https://github.com/rspec/rspec-expectations/blob/8c553c24133b794c3cf62ad15349531827db3db5/Should.md
 
     # Insaner because added to every object.
 
@@ -79,6 +87,8 @@ describe "desc0" do
         end
 
         expect(1).to be_eq(1)
+
+    ##define a matcher
   end
 
     ##before ##after

@@ -2,14 +2,20 @@ require 'test_helper'
 
 # Main Capybara cheatsheet.
 
+##sources
+
+  # The README is a great source of info: <https://github.com/jnicklas/capybara>
+
+  # Some of the doc pages contain useful info: <http://rubydoc.info/github/jnicklas/capybara/master/Capybara>
+
 class CapybaraTest < ActionDispatch::IntegrationTest
   test "main" do
-    path = "/controller0/capybara"
+    path = "/capybara"
     visit path
 
     ##driver
 
-      # Capybara is an unified interface to multiple drivers, which actually ipmlement the functions.
+      # Capybara is an unified interface to multiple drivers, which actually implement the functions.
 
       # Not all drivers support all functions. When this is the case, Capybara docs specify it.
 
@@ -17,9 +23,19 @@ class CapybaraTest < ActionDispatch::IntegrationTest
 
         #Capybara.javascript_driver = :poltergeist
 
-      # On Cucumber, drivers can be set per test with tags such as `@javascript`.
+      # On Cucumber, drivers can be set per test with tags such as `@javascript`,
+      # which uses the default Javascript enabled driver given by the `Capybara.javascript_driver` option.
+      # There are also explicit `@selenium` and `@rack_test` tags.
 
       # Check this <https://github.com/jnicklas/capybara#drivers> for a list of drivers.
+
+      ##RackTest
+
+        # Capybara's default driver. Simple, limited and fast.
+        #
+        # - only works with Rack apps like Rails or Sinatra,
+        # - and cannot access remote URLs.
+        # - only considers HTML, not CSS and Javascript. Parses HTML with Nogokiri.
 
     ##visit
 
@@ -27,25 +43,19 @@ class CapybaraTest < ActionDispatch::IntegrationTest
 
     ##current_url
 
+      # Current URL, with method and host.
+
         #puts "current_url = " + current_url
+
+    ##current_path
+
+      # Only the current `path`, e.g. `/a/b/c?d=f`.
 
     ##page
 
       ##querying
 
         # http://rubydoc.info/github/jnicklas/capybara/master/Capybara/Node/Finders#all-instance_method
-
-        ##within
-
-          # Limits scope of search to matching elements.
-
-            #within(:xpath, '//div[@id="delivery-address"]') do
-              #fill_in('Street', :with => '12 Main Street')
-            #end
-
-          # For single inner searches, use multiple finds instead:
-
-            #find(:css, '#id').find(:css, '.calss')
 
         ##all
 
@@ -55,17 +65,62 @@ class CapybaraTest < ActionDispatch::IntegrationTest
 
           # Returns Capyabara::Result, which is an Enumerable containing [Elements](http://rubydoc.info/github/jnicklas/capybara/master/Capybara/Node/Element)
 
-          # By CSS
+          # If given, the first argument specifyies the query type:
 
             #page.find(:xpath, '//div[contains(., "bar")]')
             #page.find(:css, '#foo.class')
 
+          # If not, uses an option which defaults to `:css`. So always specify.
+          # to prevent breaks.
+
+            #page.find(:css, '#foo.class')
+
           # Options:
 
-          # - text(Bool). Containe text // match regexp. Possible in native xpath, but not CSS3.
-          # - visible(Bool). Not very portable. If true, only visible. If false **both** visible and invisible
-            # Inviible means: TODO visible:false? display:none?
-            # Default: false.
+          ##text
+
+            # Restricts matches to elements that contain string if string given,
+            # or that match regexp if regexp given.
+
+            # Possible in native xpath, but not CSS3, and this options makes up for it.
+
+              assert page.all(:css, '#all-text', text: 'a' ).present?
+              assert page.all(:css, '#all-text', text: 'ab').present?
+              assert page.all(:css, '#all-text', text: 'ef').present?
+
+            # Does not see HTML tags, but does see text inside inner elements.
+
+              assert page.all(:css, '#all-text', text: 'ab<i>cd</i>ef').blank?
+              assert page.all(:css, '#all-text', text: 'cd').present?
+
+            # There is not driver portable way of doing that:
+            # http://stackoverflow.com/questions/15981820/capybara-should-have-html-content
+            # The best driver dependent method seems to be `evaluate_script`.
+
+            # Text node elements separated by HTML tags are seen as contiguous.
+
+              assert page.all(:css, '#all-text', text: 'abcdef').present?
+              assert page.all(:css, '#all-text', text: 'abef').blank?
+
+            # The start and end of regexp matches corresponds to the cncatented string:
+
+              assert page.all(:css, '#all-text', text: /^a/).present?
+              assert page.all(:css, '#all-text', text: /^b/).blank?
+              assert page.all(:css, '#all-text', text: /^e/).blank?
+
+            # Trailing and heading whitespaces are removed:
+
+              assert page.all(:css, '#all-text-whitespace', text: /^a$/).present?
+              assert page.all(:css, '#all-text-whitespace', text: / a /).blank?
+
+          # - visible(Bool). Not very portable. If true, only visible.
+          #
+          #    If false, **both** visible and invisible
+          #
+          #    Invisible means: TODO visible:false? display:none?
+          #    Seems to depend on Driver: on RackTest only uses `display:none` set on parent node.
+          #
+          #    Default: false.
 
         ##find
 
@@ -79,9 +134,29 @@ class CapybaraTest < ActionDispatch::IntegrationTest
 
           # `find(:css, "##{id}")
 
-      ##element
+        ##within
 
-        #[Elements](http://rubydoc.info/github/jnicklas/capybara/master/Capybara/Node/Element)
+          # Limits scope of search to matching elements.
+
+          # Useful to do multiple actions inside one scope.
+
+            #within(:xpath, '//div[@id="delivery-address"]') do
+              #fill_in('Street', :with => '12 Main Street')
+            #end
+
+          # For single inner searches, use multiple finds instead:
+
+            #find(:css, '#id').find(:css, '.class')
+
+      ##Element ##Result
+
+        # Capybara::Node::Element, Capybara::Result
+        #
+        # capybara's representation of HTML elements, used by all of Capybara's methods,
+        # returned inside the enumerable Capybara::Result for methods that return
+        # collections of elements.
+        #
+        # http://rubydoc.info/github/jnicklas/capybara/master/Capybara/Node/Element
         #
         # Useful methods:
         #
@@ -104,7 +179,7 @@ class CapybaraTest < ActionDispatch::IntegrationTest
 
         ##has_selector
 
-          # Same syntax as all.
+          # all(...).present?
 
         ##has_xpath
 
@@ -116,7 +191,11 @@ class CapybaraTest < ActionDispatch::IntegrationTest
 
       ##xpath
 
-        # Ok, quick xpath tutorial!
+        # A standard to do queries in XML.
+
+        # Has nothing specific to do with Capybara, but putting a small tutorial here.
+
+        # Prefer CSS as more web developpers use it, is also sane and golfs better.
 
         ##vs css selectors
 

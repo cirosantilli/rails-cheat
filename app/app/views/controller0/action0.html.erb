@@ -2,11 +2,11 @@
 
 <p>Rails.env = <%= Rails.env %></p>
 
-<%= h "Controller0#action0", 2 %>
+<%= header "Controller0#action0", 2 %>
 
   <p>Find me in app/views/controller0/action0.html.erb</p>
 
-<%= h "#CRUD", 2 %>
+<%= header "#CRUD", 2 %>
 
   <ul>
     <li><%= link_to 'New', {action: 'new'} %></li>
@@ -15,16 +15,180 @@
     <li><%= link_to 'Edit', {action: 'edit', id: '1'} %></li>
   </ul>
 
-<%= h "#accessible variables and methods", 2 %>
+<%= header '#helpers', 2 %>
+
+  <p>Helpers are methods made available in views to help them render.</p>
 
   <% @var0 == 0 or raise %>
   <% @var1 == 1 or raise %>
-  <% not defined? @after_render or raise %>
+  <%# not defined? @after_render or raise %>
   <% @arr[0] += 1 %>
 
-  <%= h "#named helpers", 2 %>
+  <%= header '#raw #html_safe', 3 %>
+
+    <p>
+      By default, ERB rendered strings are automatically escaped of HTML tags
+      before being rendered: <%= '<i>a</i>' %>
+    </p>
+    <p>
+      To avoid that, the string must be marked with the monkey patch <code>html_safe</code>
+      method, either from the view of the controller it comes from: <%= '<i>a</i>'.html_safe %>.
+    </p>
+    <p>
+      <code>raw s</code> is just a wrapper that does <code>s.to_s.html_safe</code>: <%= raw ['<i>a</i>'] %>
+      <a href="http://stackoverflow.com/questions/4251284/raw-vs-html-safe-vs-h-to-unescape-html">SO question.</a>
+    </p>
+
+  <%= header '#html_escape #h', 3 %>
+
+    <p>
+      Escape HTML special characters like &amp; and &lt; from a string to make them visible in HTML.
+      Very seldom used, as any string not marked as <code>html_safe</code> will be escaped automatically,
+      the only use them would be to undo it.
+    </p>
+    <p>
+      For CGI manipulations like query strings, use <code>CGI.escape</code> instead,
+      as it is a completely different operation.
+    </p>
+    <p>Escapes exactly: <%= %{&"'><} %> <a href="https://github.com/rails/rails/blob/7ce68406934c50a2ce3079bea4fd34936388c26a/activesupport/lib/active_support/core_ext/string/output_safety.rb#L8">Source</a>.</p>
+
+    <% h '&' == '&amp;' or raise %>
+    <% html_escape '&' == '&amp;' or raise %>
+
+  <%= header '#CGI.escape #to_query', 3 %>
+
+    <p>
+      <code>CGI.escape</code> is in the Ruby stdlib and CGI is required automatically by Rails in views:
+      <%= CGI.escape '?a=[0]' %>
+    </p>
+    <p>
+      <code>to_query</code> is a Rails helper put inside hashes.
+      It also orders parameters to help HTTP caching:
+      <%= {'b' => {1 => 2}, a: [0]}.to_query  %>
+    </p>
+
+  <%= header '#content_for', 3 %>
+
+    <p>Store a multi line rendered ERB fragment into a variable for later use.</p>
+
+    <% var = 2 %>
+    <% content_for :a do %>
+      <p>content_for a. var = <%= var %></p>
+      <p>content_for a 2</p>
+    <% end %>
+
+    <%= content_for :a %>
+
+  <%= header '#content_tag', 3 %>
+
+    <p>Convenient to generate an arbitray tag with many attributes.</p>
+
+    <%= content_tag :div, {class: 'a', style: 'background-color:green'} do %>
+      Inside div.
+    <% end %>
+
+  <%= header '#javascript_tag', 3 %>
+
+    <%= javascript_tag do %>
+      document.write('javascript')
+    <% end %>
+
+    <p>html_escape is required also inside of <code>javascript_tag</code>:</p>
+
+    <%= javascript_tag do %>
+      document.write('<%= '<' %>')
+    <% end %>
+
+    <%= header '#pass variable from Rails to Javascript.', 4 %>
+
+      <%= header 'Naive method', 5 %>
+
+        <p>Replace in Javascript.</p>
+
+        <% key = 'val' %>
+        <%= javascript_tag do %>
+          if ('<%= key %>' !== 'val' ) alert('fail')
+        <% end %>
+
+        <p>Downsides:</p>
+
+        <ul>
+          <li>fails is escape characters are used</li>
+          <li>not safe for user input</li>
+        </ul>
+
+        <p>Escaping problem: literal backslash in Ruby becomes a newline in Js.</p>
+
+        <% a = '\n' %>
+        <%= javascript_tag do %>
+          if ('<%= a %>' === '\\n') alert('fail')
+        <% end %>
+
+      <%= header '#javascript_escape #j + html_escape', 5 %>
+
+        <p>
+          Escapes Ruby string so that it can be put inside a Javascript
+          quoted string with the same meaning.
+        </p>
+        <p>
+          Does
+          <a href="https://github.com/rails/rails/blob/0d6e8edc2a47a4b4c6824936632bfb83850db343/actionview/lib/action_view/helpers/javascript_helper.rb#L6">the following</a>
+          transformations.
+          TODO: why the carriage return transforms? All others are obvious.
+        </p>
+        <p>Works only on strings: use other techniques for more complex onject types.</p>
+        <p>
+          Maintains <code>html_safe</code> status of input,
+          so you will almost always want to set it.
+        </p>
+        <% a = "\\n<" %>
+        <%= javascript_tag do %>
+          if ('<%= j(a)           %>' !== '\\n&lt;') alert('fail')
+          if ('<%= j(a).html_safe %>' !== '\\n<')    alert('fail')
+        <% end %>
+
+      <%= header 'to_json + html_safe', 5 %>
+
+        <p>
+          Works because JSON is almost a subset of Javascript object literal notation
+          http://timelessrepo.com/json-isnt-a-javascript-subset
+        </p>
+        <p>
+          Works on any hash object, including strings, arrays and integers which are
+          converted to JSON fragments of the corresponding data type.
+        </p>
+        <p>Needs raw otherwise special HTML chars like &lt; would get escaped into &amp;lt;.</p>
+
+        <% data = { key1: 'val1', key2: 'val2' } %>
+        <%= javascript_tag do %>
+          data = <%= data.to_json.html_safe %>
+          if (data.key1 !== 'val1') alert('fail')
+          if (data.key2 !== 'val2') alert('fail')
+        <% end %>
+
+      <%= header 'data attributes', 5 %>
+
+        <%= content_tag 'div', '', id: 'data', data: {key1: 'val1', key2: 'val2'} %>
+        <%= javascript_tag do %>
+          if ($('#data').data('key1') !== 'val1' ) alert('fail')
+          if ($('#data').data('key2') !== 'val2' ) alert('fail')
+        <% end %>
+
+      <%= header '#gon library', 5 %>
+
+        <p>Specialized solution.</p>
+        <p>Variables are set in the controller.</p>
+        <p>Don't forget to add the <code>= include_gon</code> helper at the layout.</p>
+
+        <%= javascript_tag do %>
+          if (gon.key1 !== 'val1') alert('fail')
+          if (gon.key2 !== 'val2') alert('fail')
+        <% end %>
+
+  <%= header "#named path helpers", 3 %>
+
+    <p><code>_path</code> helpers contain relative links:</p>
     <ul>
-      <li>root_url = <%= root_url %></li>
       <li>root_path = <%= root_path %></li>
       <li>namespace0_root_path = <%= namespace0_root_path %></li>
       <li>namespace0_action0_path = <%= namespace0_action0_path %></li>
@@ -35,12 +199,110 @@
       <%#<li>model0_path(@model0s.first) = <%= model0_path(@model0s.first) </li>%>
     </ul>
 
-<%= h "#file upload", 2 %>
+    <p>
+      Each <code>_path</code> helper also has a <code>_url</code> helper,
+      that give the full path, with , inste</p>
+
+  <%= header "#controller_name #action_name", 3 %>
+
+    <table>
+      <tr><td>controller_name</td><td><%= controller_name %></td></tr>
+      <tr><td>action_name    </td><td><%= action_name %>    </td></tr>
+    </table>
+
+    <p>
+      Those will also be present in <code>params</code>, but you should use the helpers instead.
+      <a href="http://stackoverflow.com/questions/3757491/can-i-get-the-name-of-the-current-controller-in-the-view">http://stackoverflow.com/questions/3757491/can-i-get-the-name-of-the-current-controller-in-the-view</a>
+    </p>
+
+<%= header '#monkey patches', 2 %>
+
+  <%= header '#to_json', 3 %>
+
+    <p>Works on any type. Converts strings and integers to corresponding JSON fragment data types.</p>
+    <%
+      1.to_json    == '1'    or raise
+      'ab'.to_json == '"ab"' or raise
+    %>
+
+<%= header '#ajax', 2 %>
+
+  <%= header 'manual ajax', 3 %>
+
+    <button id="ajax-source" type="submit">Click me to send AJAX request!</button>
+    <ul id="ajax-target"></ul>
+    <script>
+      document.getElementById('ajax-source').addEventListener(
+        'click',
+        function() {
+          var xmlhttp = new XMLHttpRequest()
+          xmlhttp.open('GET', 'controller0/ajax', true);
+          xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.status == 200) {
+              document.getElementById('ajax-target').innerHTML += '<li>xmlhttp.readyState = '
+                + xmlhttp.readyState + ', time = ' + xmlhttp.responseText + '</li>';
+            }
+          }
+          xmlhttp.send();
+        }
+      )
+    </script>
+
+  <%= header 'rails helped ajax', 3 %>
+
+    <%= link_to 'Click me to send AJAX request!', 'controller0/ajax',
+          remote: true, id: 'ajax-helper-source', method: :get, data: {type: 'text'} %>
+
+    <ul id="ajax-helper-target"></ul>
+    <div id="ajax-helper-target-loader" style="display:none;">Loading ...</div>
+    <script>
+      var loader = $('#ajax-helper-target-loader')
+      var toggleLoading = function() { loader.toggle() }
+      //alert($('#ajax-helper-source').html())
+      //alert(loader.html())
+      $('#ajax-helper-source')
+        .on('ajax:beforeSend', toggleLoading)
+        .on('ajax:complete',   toggleLoading)
+        .on('ajax:success',    function(e, data, status, xhr) {
+          $('#ajax-helper-target').append('<li>' + data + '</li>')
+        })
+    </script>
+
+    <p>
+      Rails relies on jquery-ujs which parses <code>data</code> attributes of the link or form.
+      If the <code>data-remote</code> attribute is <code>true</code>,
+      uJS uses jQuery's <code>ajax</code> method: <a href="http://api.jquery.com/jquery.ajax/">http://api.jquery.com/jquery.ajax/</a>.
+      To understand what is going on, first understand jQuery's <code>ajax</code> method.
+    </p>
+    <p><code>remote: true</code> sets the <code>data-remote="true"</code> attribute for uJS.</p>
+    <p>Add <code>remote: true</code> on <code>link_to</code> or <code>form</code> helpers.</p>
+    <a href="http://edgeguides.rubyonrails.org/working_with_javascript_in_rails.html">http://edgeguides.rubyonrails.org/working_with_javascript_in_rails.html</a>
+    <p>
+      XHR events are bound to named events prefixed by <code>ajax:</code>:
+      <a href="http://stackoverflow.com/questions/3501317/rails3-rails-js-and-jquery-catching-success-and-failure-of-ajax-requests">http://stackoverflow.com/questions/3501317/rails3-rails-js-and-jquery-catching-success-and-failure-of-ajax-requests</a>
+      <a href="https://github.com/rails/jquery-ujs/wiki/ajax">https://github.com/rails/jquery-ujs/wiki/ajax</a>
+    </p>
+    <p>
+      <i>Make sure that</i> the <code>data-type</code> is correct:
+      jQuery's interface is merciless for wrongly formatted JSON,
+      which is may be inferred "intelligently" as the <code>dataType</code>
+      if none is given through <code>data: {type: 'text'}</code>,
+      which in turn sets the HTTP <code>Accept</code> header, which is used by Rails's <code>respond_to</code>.
+      Plain XHRs don't have such JSON parsing capabilities, and so are not prone to this error.
+    </p>
+
+<%= header "#file upload", 2 %>
 
   <p><%= link_to 'File Upload', {action: 'file_upload'} %></p>
 
-<%= h "#routes #link_to", 2 %>
+<%= header "#routes #link_to #url_for", 2 %>
 
+  <p>
+    <code>link_to</code> and many other unctions uses <code>url_for</code>
+    <a href="http://api.rubyonrails.org/classes/ActionDispatch/Routing/UrlFor.html#method-i-url_for">http://api.rubyonrails.org/classes/ActionDispatch/Routing/UrlFor.html#method-i-url_for</a>
+    for URL generation, which in turn relies on (see source):
+    <code>polymorphic_url</code> <a href="http://api.rubyonrails.org/classes/ActionDispatch/Routing/PolymorphicRoutes.html">http://api.rubyonrails.org/classes/ActionDispatch/Routing/PolymorphicRoutes.html</a>
+  </p>
   <p>Routes and params:</p>
 
   <ul>
@@ -86,7 +348,9 @@
 
     <li>
     <%= link_to '#data', {}, data:{a: "0", b: "1", c_0: "2"} %>: adds `data-` HTML5 data attributes to link.
-      Some of the values seem to already have Rails specific meanings, for example `confirm`, `remote`. TODO which exactly?
+      Some of the data values are used by the default installed uJS giving them magic powers,
+      e.g. <code>confirm</code> and <code>remote</code>. They are documented at:
+      <a href="https://github.com/rails/jquery-ujs/wiki/Unobtrusive-scripting-support-for-jQuery">https://github.com/rails/jquery-ujs/wiki/Unobtrusive-scripting-support-for-jQuery</a>
     </li>
 
     <%# ##confirm %>
@@ -120,9 +384,36 @@
     It is rails tht parses lists and hashes.
   %>
 
-<%= h "#params", 2 %>
+<%= header "#params", 2 %>
 
-  <p>Hash like object of type: ##HashWithIndifferentAccess.</p>
+  <p>
+    Hash like object of type: <code>ActionController::Parameters &lt; ActiveSupport::HashWithIndifferentAccess</code>
+  </p>
+  <p>Contains all of:</p>
+  <ul>
+    <li>URL query string params: <code>/path?a=b&amp;c=d</code></li>
+    <li>body POST params</li>
+    <li>params embedded in the URL as in a route <code>/users/:id/profile</code></li>
+  </ul>
+  <p>Rails has the following convention for passing arrays and hashes using square brackets:</p>
+  <ul>
+    <li>arrays: <code>?ids[]=0&amp;ids[]=1</code></li>
+    <li>hashes: <code>?hash[key0]=val0&amp;hash[key1]=1</code></li>
+  </ul>
+  <p>These are converted to Ruby arrays and hashes for <code>params</code>.</p>
+  <p>
+    All array and hash keys and values are strings.
+    Conversion to other types must be done either manually,
+    or implicitly by Rails when those parameters are passed on to <code>Model.create</code>.
+  </p>
+  <p>
+    Best practice for passing booleans:
+    <a href="stackoverflow.com/questions/8119970/string-true-and-false-to-boolean">stackoverflow.com/questions/8119970/string-true-and-false-to-boolean</a>
+    "true" and "false" are popular.
+    The default <code>check_box_tag</code> is <code>"1"</code>, so this might be the sanest choice.
+    <a href="http://api.rubyonrails.org/classes/ActionView/Helpers/FormTagHelper.html#method-i-check_box_tag">http://api.rubyonrails.org/classes/ActionView/Helpers/FormTagHelper.html#method-i-check_box_tag</a>
+  </p>
+  <p>
   <%
     h = ActiveSupport::HashWithIndifferentAccess.new(:a => 1, "b" => 2)
     h[:a] == 1 or raise
@@ -135,55 +426,55 @@
     h.symbolize_keys == {a:1, b:2} or raise
   %>
   <p>params = <%= params %></p>
-  <p>Try this URL: <a href="?a=b&c=d&list[]=1&list[]=2&hash0[key0]=val0&hash0[key1]=val1">?a=b&c=d&index[]=1&index[]=2&hash0[key0]=val0&hash0[key1]=val1</a></p>
-  <pre>
-    All param values passed from GET/POST params are strings.
-    Conversion to other types must be done manually
-    Discussion on booleans: http://stackoverflow.com/questions/3673607/how-do-i-submit-a-boolean-parameter-in-rails
-    The most common convention is to use "true" and "false".
-  </pre>
+  <p>Try this URL:
+    <% url = CGI.escape '?a=b&c=d&index[]=1&index[]=2&hash0[key0]=val0&hash0[key1]=val1' %>
+    <a href="<%= url %>"><%= url %></a>
+  </p>
 
-
-<%= h "#request", 2 %>
-
-  <p>original_url = <%= request.original_url %></p>
-  <p>url =          <%= request.url %></p>
-  <p>host =         <%= request.host %></p>
-  <%# takes as arguments the number of domains to consider. Default: 2 %>
-  <p>domain =       <%= request.domain %></p>
-  <p>format =       <%= request.format %></p>
-  <p>method =       <%= request.method %></p>
-  <p>headers =      <%= request.headers %></p>
-  <p>port =         <%= request.port %></p>
-  <p>protocol =     <%= request.protocol %></p>
-  <p>query_string = <%= request.query_string %></p>
-  <%# IP that made the request %>
-  <p>remote_ip =    <%= request.remote_ip %></p>
-  <p>path_parameters =    <%= request.path_parameters %></p>
-  <p>query_parameters =    <%= request.query_parameters %></p>
-  <%# post body related: %>
-  <p>request_parameters =    <%= request.request_parameters %></p>
-
-  <p>request.env = </p>
-  <ul>
-    <% request.env.each do |k, v| %>
-      <li><%= k %> = <%= v %></li>
-    <% end %>
-  </ul>
-
-<%= h "#response", 2 %>
+<%= header "#request", 2 %>
 
   <table>
-    <tr><td>status</td><td><%= response.status %></td><tr>
-    <%# where the user will be redirected to %>
-    <tr><td>location</td><td><%= response.location %></td><tr>
-    <tr><td>content_type</td><td><%= response.content_type %></td><tr>
-    <tr><td>charset</td><td><%= response.charset %></td><tr>
-    <tr><td>headers</td><td><%= response.headers %></td><tr>
-    <tr><td>body</td><td><%= response.body %></td><tr>
+    <tr><td>original_url      </td><td><%= request.original_url %></td></tr>
+    <tr><td>url               </td><td><%= request.url %></td></tr>
+    <tr><td>host              </td><td><%= request.host %></td></tr>
+    <tr><td>format            </td><td><%= request.format %></td></tr>
+    <tr><td>method            </td><td><%= request.method %></td></tr>
+    <tr><td>headers           </td><td><%= request.headers %></td></tr>
+    <tr><td>port              </td><td><%= request.port %></td></tr>
+    <tr><td>protocol          </td><td><%= request.protocol %></td></tr>
+    <tr><td>query_string      </td><td><%= request.query_string %></td></tr>
+    <tr><td>remote_ip         </td><td><%= request.remote_ip %></td></tr>
+    <tr><td>path_parameters   </td><td><%= request.path_parameters %></td></tr>
+    <tr><td>query_parameters  </td><td><%= request.query_parameters %></td></tr>
+    <tr><td>request_parameters</td><td><%= request.request_parameters %></td></tr>
   </table>
 
-<%= h "#cookies", 2 %>
+  <p>request.env = </p>
+  <table>
+    <% request.env.each do |k, v| %>
+      <tr><td><%= k %></td><td><%= v %></td></tr>
+    <% end %>
+  </table>
+
+<%= header "#response", 2 %>
+
+  <p><a href="http://api.rubyonrails.org/classes/ActionDispatch/Response.html">http://api.rubyonrails.org/classes/ActionDispatch/Response.html</a></p>
+  <p>
+    You usually don't have to touch this obejct: it is generated automatically in controllers.
+    Docs say it is almost an implementation detail.
+    It can be useful on the tests.
+  </p>
+
+  <table>
+    <tr><td>status      </td><td><%= response.status %>      </td><td></td></tr>
+    <tr><td>headers     </td><td><%= response.headers %>     </td><td>All headers in a hash.</td></tr>
+    <tr><td>location    </td><td><%= response.location %>    </td><td>Location header.</td></tr>
+    <tr><td>content_type</td><td><%= response.content_type %></td><td>Content-Type header.</td></tr>
+    <tr><td>charset     </td><td><%= response.charset %>     </td><td></td></tr>
+    <tr><td>body        </td><td><%= response.body %>        </td><td></td></tr>
+  </table>
+
+<%= header "#cookies", 2 %>
 
   <ul>
     <% cookies.each do |k, v| %>
@@ -191,35 +482,7 @@
     <% end %>
   </ul>
 
-<%= h "#ajax", 2 %>
-
-  <%= h "manual ajax", 3 %>
-
-    <script>
-      var xmlhttp = new XMLHttpRequest()
-      function ajax_handler() {
-        if (xmlhttp.status == 200) {
-          document.getElementById("ajax-target").innerHTML += '<li>xmlhttp.readyState = '
-            + xmlhttp.readyState + ', time = ' + xmlhttp.responseText + '</li>';
-        }
-      }
-      function ajax_send() {
-        xmlhttp.open("GET", "controller0/ajax-test", true);
-        xmlhttp.onreadystatechange = ajax_handler;
-        xmlhttp.send();
-      }
-    </script>
-
-    <p onclick="ajax_send()">Click me!</p>
-
-    <ul id="ajax-target">
-    </ul>
-
-  <%= h "rails helped ajax", 3 %>
-
-    <p>TODO</p>
-
-<%= h "#Rails", 2 %>
+<%= header "#Rails", 2 %>
 
   <%#
   Current environment: production, development, test, etc.
@@ -229,15 +492,25 @@
   <p>Rails.root = <%= Rails.root %></p>
   <p>Rails.logger.level = <%= Rails.logger.level %></p>
 
-<%= h "#button_to", 2 %>
+<%= header "#button_to", 2 %>
 
-  <%= button_to 'TODO New', @get, {action: 'new'} %>
+  <p>
+    Analogous to <code>link_to</code>, but a <code>form</code> containing
+    a single button that submits to the destination:
+  </p>
+  <p>Options like the destination URL and method are set on the <code>form</code> element.</p>
 
-<%= h "#tag", 2 %>
+  <%= button_to 'Button text.', 'target_url' %>
 
-  <%= tag 'p' %>
+<%= header "#tag", 2 %>
 
-<%= h "#flash", 2 %>
+  <p>Helper to create a general HTML tag.</p>
+  <p>Self closing by default, even if invalid HTML like self closing <code>p</code>:</p>
+  <% tag 'p' == '<p/>' or raise %>
+  <p>Don't self close:</p>
+  <% tag 'p', nil, false == '<p>' or raise %>
+
+<%= header "#flash", 2 %>
 
   <p><%= link_to 'Redirect to myself', {action: 'redirect_to_action0'} %>
 
@@ -251,7 +524,7 @@
   %>
   <p>flash[:something] = <%= flash[:something] %></p>
 
-<%= h "#render #partials", 2 %>
+<%= header "#render #partials", 2 %>
 
   <%#
     Insert another template at current point.
@@ -269,44 +542,83 @@
 
     <%# render @model_object %>
 
-<%= h "##form", 2 %>
+  <p>#collection: Render partial for each element in collection:</p>
 
-  <%= h "##form_tag", 2 %>
+    <%# render :partial => 'post', :collection => @posts %>
 
-    <p>Lower level method than `form_for, which is much more commonly used when the form relates to an object.</p>
+<%= header "##form", 2 %>
 
-  <p>input: <%= text_field 'model0', 'string_col' %></p>
-  <p>expected: <input id="model0_string_col" name="model0[string_col]" type="text"/></p>
+  <%= header "###form_tag", 3 %>
 
-  <%#= password_field_tag(:password) %>
-  <%#= hidden_field_tag(:parent_id, "5") %>
-  <%#= search_field(:user, :name) %>
-  <%#= telephone_field(:user, :phone) %>
-  <%#= date_field(:user, :born_on) %>
-  <%#= datetime_field(:user, :meeting_time) %>
-  <%#= datetime_local_field(:user, :graduation_day) %>
-  <%#= month_field(:user, :birthday_month) %>
-  <%#= week_field(:user, :birthday_week) %>
-  <%#= url_field(:user, :homepage) %>
-  <%#= email_field(:user, :address) %>
-  <%#= color_field(:user, :favorite_color) %>
-  <%#= time_field(:task, :started_at) %>
-  <%# dropdown selection on one to many relation: %>
-  <%#= collection_select(:model0, :model1_id, @model1s, :id, :string_col) %>
+    <p>Lower level method than `form_for`, which is much more commonly used when the form is a way to create an object.</p>
 
-<%= h "#action mailer #email #mail", 2 %>
+    <p>input: <%= text_field 'model0', 'string_col' %></p>
+    <p>expected: <code>input id="model0_string_col" name="model0[string_col]" type="text"</code></p>
+
+    <%#= password_field_tag(:password) %>
+    <%#= hidden_field_tag(:parent_id, "5") %>
+    <%#= search_field(:user, :name) %>
+    <%#= telephone_field(:user, :phone) %>
+    <%#= date_field(:user, :born_on) %>
+    <%#= datetime_field(:user, :meeting_time) %>
+    <%#= datetime_local_field(:user, :graduation_day) %>
+    <%#= month_field(:user, :birthday_month) %>
+    <%#= week_field(:user, :birthday_week) %>
+    <%#= url_field(:user, :homepage) %>
+    <%#= email_field(:user, :address) %>
+    <%#= color_field(:user, :favorite_color) %>
+    <%#= time_field(:task, :started_at) %>
+    <%# dropdown selection on one to many relation: %>
+    <%#= collection_select(:model0, :model1_id, @model1s, :id, :string_col) %>
+
+  <%= header "###form_for", 3 %>
+
+    <p><a href="http://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-form_for">http://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-form_for</a></p>
+    <p>Makes it easy to create a form to create / update an object.</p>
+    <p>Does the following automatically:</p>
+    <ul>
+      <li>
+        Set default field defautl vales from the object from passed params,
+        so that the values will be restored in case of validation failures.
+        If an object is given as in <code>form_for @object</code>, use values from the object,
+        if a symbol is given as in <code>form_for :object</code>, use values from <code>@object</code>.
+      </li>
+      <li>
+        Puts all form control names inside a single namespace, e.g. <code>form_for object</code>,
+        generates names of type <code>object[field_name]</code>, which can then be easily used
+        to create the object from the controller. If an object is passed, this prefix is deduced from the class name.
+      </li>
+    </ul>
+
+    <p>
+      Besides <code>form_for</code>, one can also tie individual form controls to an object,
+      through methods like:
+      <a href="http://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-text_field">text_field</a>
+      These generate the same code as <code>form_for</code>, but are less DRY,
+      and allow you to have a single form for multiple objects.
+    </p>
+    <p>
+      There are also vanilla HTML helpers suffixed with <code>_tag</code>, e.g. <code>text_field_tag</code>.
+      The difference between them is that the <code>_tag</code> version does not do any of the magic
+      that the field tied version does.
+    </p>
+
+<%= header "#action mailer #email #mail", 2 %>
 
   <p>On development, uses letter opener plugin which should open any sent emails on your browser.</p>
   <p>On production, send actual emails via SMTP. You must first configure your SMTP.</p>
-  <%= form_tag action: 'mail' do %>
+  <%= form_for 'mail', url: {action: "mail"} do |f| %>
     <p>
-      <%= label :user, :address, "Send emails to" %>:
-      <%= email_field 'user', 'address' %>
+      <%= f.label :to, "Send emails to" %>:
+      <%= f.email_field 'to' %>
+      <br/>
+      <%= f.label :from, "From address (may need to be verified by cervices like AWS)" %>:
+      <%= f.email_field 'from' %>
     </p>
-    <%= submit_tag 'Send' %>
+    <%= f.submit 'Send Email' %>
   <% end %>
 
-<%= h "#i18n", 2 %>
+<%= header "#i18n", 2 %>
 
   <p><%= link_to 'en', {locale: 'en'} %> | <%= link_to 'zh', {locale: 'zh'} %></p>
 
@@ -338,12 +650,12 @@
   %>
   <p>I18n.load_path = <%= I18n.load_path %></p>
 
-<%= h "#images", 2 %>
+<%= header "#images", 2 %>
 
   <p>
     Relative paths give URLs of type <code>/assets/relpath.png</code> on development,
     and <code>/assets/relpath-MD5.png</code> on production:
-    <%= image_tag "png.png", alt: "alt", size: "20x30" %>
+    <%= image_tag "png.png", alt: "alt", size: "100x100" %>
   </p>
 
   <p>
@@ -353,51 +665,70 @@
     <%# image_tag "/images/png.png", alt: "alt", size: "20x30" %>.
   </p>
 
-<%= h "#assets", 2 %>
+<%= header "#assets #css #js #javascript", 2 %>
 
-  <div class="application-css">application-css</div>
-  <div class="controller0-scss">controller0-css</div>
+  <div>CSS OK?
+    <span class="application-css">application-css</span>
+    <span class="controller0-scss">controller0-css</span>
+  </div>
+  <div>JS OK?
+    <script>
+      var text
+      if (controller0 == 0 && any_name == 1 && plain_js == 2) {
+        text = 'yes'
+      } else {
+        text = 'NO!'
+      }
+      document.currentScript.insertAdjacentHTML('beforeBegin', text)
+    </script>
+  </div>
 
-<%= h "#third party" %>
+<%= header "#third party", 2 %>
 
   <p><%= link_to "Haml", {action: :haml} %></p>
 
-<%= h "#custom helpers", 2 %>
+  <%= header "#custom helpers I find useful", 3 %>
 
-<%#= toc %>
-<%= h "header 1" %>
-<%= h "header 2", 2 %>
+    <%#= toc %>
+    <%= header "header 1" %>
+    <%= header "header 2", 2 %>
 
-<%= h "#users #devise #omniauth", 2 %>
+  <%= header "#users #devise #omniauth", 3 %>
 
-  <p><%= link_to "Users Index", { controller: 'users', action: 'index' } %></p>
-  <% if user_signed_in? %>
-    <p>current_user.email = <%= current_user.email %></p>
-    <p><%= link_to 'Edit profile', edit_user_registration_path %> |
-    <%= link_to "Logout", destroy_user_session_path, method: :delete %></p>
-  <% else %>
-    <p>Not logged in.</p>
-    <p>
-      <%= link_to "Login", new_user_session_path %> |
-      <%= link_to "Sign up", new_user_registration_path %>
-    </p>
-    <%= link_to "TODO Sign in with Facebook", user_omniauth_authorize_path(:facebook) %>
+    <p><%= link_to "Users Index", { controller: 'users', action: 'index' } %></p>
+    <% if user_signed_in? %>
+      <p>current_user.email = <%= current_user.email %></p>
+      <p><%= link_to 'Edit profile', edit_user_registration_path %> |
+      <%= link_to "Logout", destroy_user_session_path, method: :delete %></p>
+    <% else %>
+      <p>Not logged in.</p>
+      <p>
+        <%= link_to "Login", new_user_session_path %> |
+        <%= link_to "Sign up", new_user_registration_path %>
+      </p>
+      <%= link_to "TODO Sign in with Facebook", user_omniauth_authorize_path(:facebook) %>
+    <% end %>
+
+  <%= header "#breadcrumbs_on_rails", 3 %>
+
+    <p>TODO</p>
+
+    <%= render_breadcrumbs %>
+
+  <% if Rails.env == 'development' || Rails.env == 'test' %>
+    <%= header "#faker", 3 %>
+      <ul>
+        <li>name = <%= Faker::Name.name %></li>
+        <li>email = <%= Faker::Internet.email %></li>
+        <li>free_email = <%= Faker::Internet.free_email %></li>
+        <li>user_name = <%= Faker::Internet.user_name %></li>
+        <li>words = <%= Faker::Lorem.words(2) %></li>
+        <li>paragraphs = <%= Faker::Lorem.paragraphs(2) %></li>
+      </ul>
   <% end %>
 
-<%= h "#breadcrumbs_on_rails", 2 %>
+  <%= header "#Capybara", 3 %>
 
-  <p>TODO</p>
+    <p>Assertins on test.</p>
 
-  <%= render_breadcrumbs %>
-
-<% if Rails.env == 'development' || Rails.env == 'test' %>
-  <%= h "#faker", 2 %>
-    <ul>
-      <li>name = <%= Faker::Name.name %></li>
-      <li>email = <%= Faker::Internet.email %></li>
-      <li>free_email = <%= Faker::Internet.free_email %></li>
-      <li>user_name = <%= Faker::Internet.user_name %></li>
-      <li>words = <%= Faker::Lorem.words(2) %></li>
-      <li>paragraphs = <%= Faker::Lorem.paragraphs(2) %></li>
-    </ul>
-<% end %>
+    <p>Test view: <%= link_to 'capybara', 'capybara' %></p>

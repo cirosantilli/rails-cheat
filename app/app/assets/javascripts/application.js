@@ -14,10 +14,16 @@
 //= require jquery_ujs
 //= require turbolinks
 //
-// Reason for this default `require_tree`: <http://stackoverflow.com/questions/7482192/whats-the-reason-behind-the-default-require-tree-in-asset-pipeline>
+// #require_tree .
+//
+// Will include every Javascript file in this folder on every page.
+//
 // This can do two different things:
 //
-// - production: concat all files into this file
+// - production: cat all files into one
 // - development: nothing. `_link` methods link to multiple files automatically.
+//
+// In the default template becase it is the best option for all websites:
+// let the browser load all javascript once, and then use it from cache fora all webpages.
 //
 //= require_tree .

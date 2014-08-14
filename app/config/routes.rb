@@ -1,24 +1,38 @@
 App::Application.routes.draw do
 
-  # Link urls to actions.
+  # Determines:
+  #
+  # - which URL will be treated by which action, method of a `module::controller#action`.
+  # - the name of named URL helpers
 
   # The priority is based upon order of creation: first created -> highest priority.
 
-  # See how all your routes lay out with "rake routes".
+  # See how all your routes layout:
+  #
+  #     rake routes
+  #
+  # The output is of form:
+
+    #contexts    GET    /contexts(.:format)           {:action=>"index", :controller=>"blog/contexts"}
+    #            POST   /contexts(.:format)           {:action=>"create", :controller=>"blog/contexts"}
+    #new_context GET    /contexts/new(.:format)       {:action=>"new", :controller=>"blog/contexts"}
 
   ##scope
 
-    # Everything inside the scope do end block gets the scope URL prefix.
-
-    # Can also set the controller for all routes inside the scope.
+    # Every URL route in the `do end` will get the given prefix.
+    #
+    # No other side effect happens without extra options.
+    #
+    # Using options, it is also possible to set:
+    #
+    # - controller
+    # - module
+    # - the module of the controllers
 
   ##namespace
 
-    # URLs are prefixed by the namespace like in scope, but in addition
-    # controllers, views and other controller related resources
-    # must be put under a `namespace0/` subdirectory.
-
-    # The controller itself must go under the `Namespace0::` module.
+    # Shortcut for scope that also adds analogous `as` and `module`.
+    # http://stackoverflow.com/questions/3029954/difference-between-scope-and-namespace-of-ruby-on-rails-3-routing
 
       namespace :namespace0 do
         get 'action0' => 'controller0#action0'
@@ -29,15 +43,15 @@ App::Application.routes.draw do
 
     # GET requests only.
 
-      #get "url" => 'controller#action'
+      #get 'url' => 'controller#action'
 
-      #scope "prefix", controller: :controller, id: /[^\/]/ do
-        #get "url/:id" => :action
+      #scope 'prefix', controller: :controller, id: /[^\/]/ do
+        #get 'url/:id' => :action
       #end
 
     # Optional part:
 
-      #get "url(/something)" => 'controller#action'
+      #get 'url(/something)' => 'controller#action'
 
   ##post
 
@@ -45,7 +59,7 @@ App::Application.routes.draw do
 
   ##i18n optional locale prefix.
 
-  scope "(:locale)", locale: /en|zh/ do
+  scope '(:locale)', locale: /en|zh/ do
 
     ##root
 
@@ -56,36 +70,36 @@ App::Application.routes.draw do
       # If inside a namespace, sets the root for the namespace only:
 
           #namespace :admin do
-            #root to: "admin#index"
+            #root to: 'admin#index'
           #end
 
-    scope "controller0", controller: :controller0 do
+    scope 'controller0', controller: :controller0 do
 
-          get "" => :action0
-          get "action0" => :action0
-          get "redirect-to-action0" => :redirect_to_action0
-          get "ajax-test" => :ajax_test
-          get "action1" => :action1
-          post "mail" => :mail
+          get '' => :action0
+          get 'action0' => :action0
+          get 'redirect-to-action0' => :redirect_to_action0
+          get 'ajax' => :ajax
+          get 'action1' => :action1
+          post 'mail' => :mail
 
       ## URL params
 
-          get "url_params_keyval" => :url_params_keyval
-          get "url_params/:id" => :url_params
-          get "url_params_abc/:id" => :url_params_abc, id: /[abc]+/
+          get 'url_params_keyval' => :url_params_keyval
+          get 'url_params/:id' => :url_params
+          get 'url_params_abc/:id' => :url_params_abc, id: /[abc]+/
 
       ##resource ##CRUD
 
         # Automatically create all CRUD URLs at once
 
-          scope "model0" do
-            get "" => :index
-            get "new" => :new
-            post "" => :create
-            get ":id" => :show
-            get ":id/edit" => :edit
-            put ":id" => :update
-            delete ":id" => :destroy
+          scope 'model0' do
+            get '' => :index
+            get 'new' => :new
+            post '' => :create
+            get ':id' => :show
+            get ':id/edit' => :edit
+            put ':id' => :update
+            delete ':id' => :destroy
 
           ##member
 
@@ -97,6 +111,11 @@ App::Application.routes.draw do
               #member do
                 #get 'preview'
               #end
+
+            # Generated helpers of form `preview_model0_path`. Weirdly, model0 comes after,
+            # so it sounds like English, but is insane.
+
+            # Method `preview` must be in the same class as the parent resource: Model0Controller.
         end
 
         # TODO Automatically generate exactly all above 7 CRUD operations:
@@ -107,22 +126,24 @@ App::Application.routes.draw do
 
       ##file upload
 
-        scope "file_upload", id: /[^\/]+/ do
-          get "" => :file_upload
-          post "" => :do_file_upload
-          get ":id" => :file_download
-          delete ":id" => :file_delete
+        scope 'file_upload', id: /[^\/]+/ do
+          get '' => :file_upload
+          post '' => :do_file_upload
+          get ':id' => :file_download
+          delete ':id' => :file_delete
         end
-
-      ##third party
-
-        # The following URLs exist for the test of third party tools:
-
-          get "haml" => :haml
-          get "capybara" => :capybara
-
     end
   end
+
+  get 'controller1' => 'controller1#action0'
+  get 'controller1/action0' => 'controller1#action0'
+
+  ##third party
+
+    # The following URLs exist for the test of third party tools:
+
+      get 'haml' => 'controller0#haml'
+      get 'capybara' => 'controller0#capybara'
 
   ##devise
 
@@ -131,9 +152,9 @@ App::Application.routes.draw do
     # - model: which model defies the user.
     # - path: login path relative to root. Default: `users`
 
-      devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
+      devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
       resources :users, :only => [:index, :show]
-      #devise_for :users, path: "auth"
+      #devise_for :users, path: 'auth'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

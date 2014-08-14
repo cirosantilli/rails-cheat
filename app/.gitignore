@@ -19,5 +19,5 @@
 
 /public/uploads
 
-# Not in by default. Raitionale: https://github.com/rails/rails/pull/2817
+# Not excluded by the default gitignore template. Rationale: <https://github.com/rails/rails/pull/2817>
 /public/assets

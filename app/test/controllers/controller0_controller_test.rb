@@ -24,27 +24,27 @@ class Controller0ControllerTest < ActionController::TestCase
   def test_name_of_test
   end
 
-  test "assert example" do
+  test 'assert example' do
 
-    assert true
+      assert true
 
     ##assert_equal
 
       # Use assert_equal instead of assert whenever possible so that
       # a failing test will tell you the value of both inputs.
 
-        assert_equal(0, 0)
+        assert_equal 0, 0
 
     ##refute
 
       # The negation of eveery assertion is via `refute_X`
 
-        refute_equal(0, 1)
+        refute_equal 0, 1
 
     assert_raises(RuntimeError){ raise }
   end
 
-  test "fixtures were loaded" do
+  test 'fixtures were loaded' do
     # This checks that fixtures were actualy loaded.
     assert_equal(Model0.find_by(string_col: 's1').integer_col, 1)
     refute_equal(Model1.find_by(string_col: 't1'), nil)
@@ -54,58 +54,110 @@ class Controller0ControllerTest < ActionController::TestCase
 
   # DB is reset to fixtures between each test function.
 
-    test "destroy" do
+    test 'destroy' do
       Model0.destroy_all
       assert_equal(Model0.find_by(string_col: 's1'), nil)
     end
 
-    test "after destroy" do
+    test 'after destroy' do
       assert_equal(Model0.find_by(string_col: 's1').integer_col, 1)
     end
 
   # This test uses methods furnished by `ActionController::TestCase`
   #
-  test "ActionController TestCase specific" do
+  test 'ActionController TestCase specific' do
+
+    # http://guides.rubyonrails.org/testing.html#functional-tests-for-your-controllers
 
     ##get
 
-      # Makes a get request. Assertions are made directly on the response obejct.
+      # Makes a get request.
 
-      # Controller is deduced from classname / filename.
+      # Assertions are made directly on the response obejct.
 
+      # Controller is deduced from current classname / filename.
+
+        get :action0
         get :action1
         get :haml
-        get :action0
-        #get(:action0, {'id' => "12"}, {'user_id' => 5})
+        #get(:action0, {'id' => '12'}, {'user_id' => 5})
         #get(:view, {'id' => '12'}, nil, {'message' => 'booya!'})
 
     ##assert_response
 
+      # Assert status of last request. Most symbols are ranges.
+      # http://api.rubyonrails.org/classes/ActionDispatch/Assertions/ResponseAssertions.html#method-i-assert_response
+
+        get :action0
         assert_response :success
 
-    ##assigns
+        get :action0
+        assert_response 200
 
-      # Returns the value given to `@var0` passed to the template.
+        get :redirect_to_action0
+        assert_response :redirect
 
-        assert_equal(assigns(:var0), 0)
+    ##assert_redirected_to
 
-      assert_routing '/', {controller: "controller0", action: "action0"}
-      assert_routing 'controller0/model0/1', {controller: "controller0", action: "show", id: "1"}
+      # Assert that latest response redirect to somewhere.
+      # http://api.rubyonrails.org/classes/ActionDispatch/Assertions/ResponseAssertions.html#method-i-assert_redirected_to
 
-    # The follwoing variables are available:
+      # Query strings must match.
+
+        get :redirect_to_action0
+        assert_redirected_to controller: :controller0, action: :action0,
+            notice: 'notice redirect', alert:  'alert redirect'
+
+    ##assert_template
+
+      # Assert that a given template was rendered.
+
+        get :action0
+        assert_template :action0
+        assert_template layout: 'layouts/application'
+
+    ##assert_routing
+
+      # Assert what the input string URLs will redirect to.
+      # Used to test routes.
+
+        assert_routing '/', {controller: 'controller0', action: 'action0'}
+        assert_routing 'controller0/model0/1', {controller: 'controller0', action: 'show', id: '1'}
+
+    ##available variables
+
+      # http://api.rubyonrails.org/classes/ActionController/TestCase.html
+
+      # The follwoing variables are available:
 
         @controller
 
-    # Request can be modified before requests are made, and affects the following requests.
+      # Contains the previous request made.
+      # If modified will affect the next request.
 
-        @request
+        get :action0
+        assert_equal @request., 200
 
-    # Request is modified by requests to contain the previous resonse.
+      # Contains previous response:
 
-        @response
+        get :action0
+        assert_equal @response.status, 200
+        assert_equal response.status, 200
 
-        assert_template :action0
-        assert_template layout: "layouts/application"
+      # TODO @response vs response. Current guide examples use only `@response`.
+
+      ##assigns
+
+        # Hash with the value given to `@var0` passed to last rendered template.
+
+          get :action0
+          assert_equal assigns(:var0), 0
+
+          get :action1
+          assert_equal assigns(:var0), 1
+
+        # Would be a Hash, but for historical reasons the Hash `assigns['asdf']`,
+        # only takes strings, so the method with symbols is used instead.
   end
 
   ##setup and ##teardown
@@ -122,7 +174,7 @@ class Controller0ControllerTest < ActionController::TestCase
         @setup = 0
       end
 
-      test "setup" do
+      test 'setup' do
         assert_equal @setup, 1
       end
 
@@ -134,7 +186,7 @@ class Controller0ControllerTest < ActionController::TestCase
         #@before = 0
       #end
 
-      #test "before" do
+      #test 'before' do
         #assert_equal @before, 1
       #end
 
@@ -151,4 +203,19 @@ class Controller0ControllerTest < ActionController::TestCase
 
     # This lists tests which you should always do in real projects and why.
 
+  test '##blank? ##present?' do
+
+    # Implemeted by Rails for all objects.
+
+    # Implements a Python like truthy: [], {}, and '' are all false.
+
+    # NOTE: whitespace strings are also blank falsy.
+
+    # `present?` is the negation
+
+      assert !0.blank?
+      assert nil.blank?
+      assert [].blank?
+      assert [].blank?
+  end
 end

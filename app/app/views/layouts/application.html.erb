@@ -10,6 +10,8 @@ This is the default layout fo the application.
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8"/>
+  <%= include_gon %>
   <%= favicon_link_tag %>
   <title>
     <% title = yield :title
@@ -18,6 +20,7 @@ This is the default layout fo the application.
     <% end %>
     Rails Cheat
   </title>
+
   <%#
   #stylesheet_link_tag
 

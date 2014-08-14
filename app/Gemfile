@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.0.0'
+ruby '2.1.1'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails'
@@ -68,28 +68,30 @@ gem 'settingslogic'
 #gem 'counter_culture'
 
 # Tests
-gem "minitest-rails", group: [:development, :test]
-gem "rspec-rails", group: [:development, :test]
+gem 'minitest-rails', group: [:development, :test]
+gem 'rspec-rails', group: [:development, :test]
 gem 'spinach-rails', group: [:development, :test]
-gem "capybara", group: [:development, :test]
-gem "factory_girl_rails", group: [:development, :test]
+gem 'capybara', group: [:development, :test]
+gem 'factory_girl_rails', group: [:development, :test]
 gem 'faker', group: [:development, :test]
 #gem 'seed-fu', group: [:development, :test]
-gem "database_cleaner", group: [:development, :test]
+gem 'database_cleaner', group: [:development, :test]
 
 # Email tests without sending emails.
-gem "letter_opener", group: :development
+gem 'letter_opener', group: :development
 
 # Makes tests faster by preloading app.
 # Will come by default with Rails 4.1.
-gem "spring", group: :development
+gem 'spring', group: :development
 
 # Default test suite on Rails 4:
-gem "guard-minitest", group: :development
-#gem "guard-test", group: :development
-#gem "guard-rspec", group: :development
+gem 'guard-minitest', group: :development
+#gem 'guard-test', group: :development
+#gem 'guard-rspec', group: :development
 
 # Preload application to make tests run faster.
 # Rails 4.X will have Spring by default which should make thie unnecessary:
 # TODO bootstrap for Minitest not available??
-#gem "spork-rails"
+#gem 'spork-rails"
+
+gem 'gon'
