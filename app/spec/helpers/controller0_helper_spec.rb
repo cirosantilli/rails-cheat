@@ -10,6 +10,6 @@ require 'spec_helper'
 #     end
 #   end
 # end
-describe Controller1Helper do
-  pending "add some examples to (or delete) #{__FILE__}"
+describe Controller0Helper do
+  #pending "add some examples to (or delete) #{__FILE__}"
 end

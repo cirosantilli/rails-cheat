@@ -480,11 +480,11 @@ Run all tests matching a given regexp in given file:
 
     bundle exec ruby -I"lib:test" test/unit/invitation_test.rb -n /.*between.*/
 
-##mail
+##Mail
 
-##email
+##Email
 
-##action mailer
+##Action mailer
 
 Quickstart:
 
@@ -510,6 +510,9 @@ SMPT configuration under `config/initializers/smtp_settings.rb`:
     }
 
 Create a `.example` version and Gitignore it to protect the password.
+
+You can, and should, use at least two view formats: `text.erb` and `html.erb`.
+The mailer then sends both on a multipart email and lets the client decide which one to use.
 
 ##Spring
 
@@ -841,7 +844,7 @@ Gemfile: `gem devise`.
 
 where `User` is the model that will represent the user.
 
-###email confirmation
+###Email confirmation
 
 Get action mailer working.
 
@@ -853,13 +856,19 @@ Migration file: uncomment the `:confirmable` section.
 
 - config.mailer = 'Devise::Mailer'
 
-###unregistered users
+###Unregistered users
 
 Just don't add:
 
     before_filter: authenticate!
 
 and unauthenticated users can view pages normally.
+
+###Letter Opener
+
+Open emails on the browser instead of sending them: <https://github.com/ryanb/letter_opener>
+
+The sent email has a link on the top right to toggle between text and HTML versions.
 
 ###OmniAuth
 

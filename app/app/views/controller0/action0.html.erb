@@ -1,10 +1,25 @@
 <% provide(:title, 'controller0') %>
 
-<p>Rails.env = <%= Rails.env %></p>
+<p><code>Rails.env</code> = <%= Rails.env %></p>
+<p><code>Rails::VERSION::STRING</code> = <%= Rails::VERSION::STRING %></p>
 
 <%= header "Controller0#action0", 2 %>
 
   <p>Find me in app/views/controller0/action0.html.erb</p>
+
+<%= header "#ERB", 2 %>
+
+  <p>
+    Ruby seems to use ERB from stdlib with the <code>-</code> <code>trim_option</code> set.
+  </p>
+<%= 'a' %>
+b
+
+<%= 'a' -%>
+b
+
+a
+<%- true %>b
 
 <%= header "#CRUD", 2 %>
 

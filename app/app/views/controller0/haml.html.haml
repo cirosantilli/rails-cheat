@@ -41,13 +41,23 @@ No tag
 %p
   The html_safe behaviour of = depends on the
   %code escape_html
-  option.
-  %p &= always escapes:
+  option. By default, it is off, and strings automatically get
+  %code html_safe
+%p
+  %code &=
+  always escapes:
   &= '<i>a</i>'
-  %p != never escapes.
+%p
+  %code !=
+  never escapes:
   != '<i>a</i>'
-  %p ! can be used before strings to prevent escaping the interpolations in the line:
+%p
+  %code !
+  can be used before strings to prevent escaping the interpolations in the line:
   ! a #{'<i>b</i>'}
+  By default, interpolation does get escaped, unlike
+  %code =
+  insertion which does not.
 %h2 Inline tags
 %p
   %a{href: "http://stackoverflow.com/questions/3784047/inline-tag-in-haml"}
