@@ -475,6 +475,9 @@ class Controller0Controller < ApplicationController
       def capybara
       end
 
+      def view_tests
+      end
+
   private
 
     # This determines which parameters can be sent through POST methods.

@@ -144,6 +144,7 @@ App::Application.routes.draw do
 
       get 'haml' => 'controller0#haml'
       get 'capybara' => 'controller0#capybara'
+      get 'view_tests' => 'controller0#view_tests'
 
   ##devise
 

@@ -452,13 +452,7 @@ Run one type of tests under `tests/XXX/`:
     bundle exec rake test:models
     bundle exec rake test:integration
 
-Run the only tests on `tests/models/model0_test.rb` do:
-
-    bundle exec ruby -I test test/models/model0_test.rb
-
-TODO: better way? <http://stackoverflow.com/questions/274349/running-single-rails-unit-functional-test>
-
-Run a single test function from a test file:
+Run a single test function from a test file: <http://stackoverflow.com/questions/274349/running-single-rails-unit-functional-test>
 
     bundle exec rake test tests/models/model0.rb test_name_of_the_test
 
@@ -744,6 +738,9 @@ Good cheatsheet: <https://gist.github.com/zhengjia/428105>
 
 Like other integration tests, Capybara tests can be run with `rake test:integration`,
 which is called by `rake test`.
+
+As of Rails 4.1, only needed for Javascript interactions,
+since Rails now has things like `assert_select` built-in.
 
 ###factory_girl
 

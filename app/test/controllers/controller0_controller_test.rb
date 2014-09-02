@@ -2,11 +2,15 @@
 
 require 'test_helper'
 
+# Read the tutorial as soon as you can:
+# http://guides.rubyonrails.org/testing.html
+#
 # The following hierarchy exists in Rails 4:
 #
 #     ActionController::TestCase < ActiveSupport::TestCase <  MiniTest::Unit::TestCase 
 #
-# Where `MiniTest::Unit::TestCase` is the default Minitest package.
+# Where `MiniTest::Unit::TestCase` is the Minitest present in the Ruby stdlib:
+# http://ruby-doc.org/stdlib-2.1.0/libdoc/minitest/rdoc/MiniTest.html
 #
 # By default a template is generated to extend `ActiveSupport::TestCase`
 # to add methods and configs that will be used for all tests of the app.
@@ -28,20 +32,11 @@ class Controller0ControllerTest < ActionController::TestCase
 
       assert true
 
-    ##assert_equal
+    # All assertions on the stdlib Minitest are available:
 
-      # Use assert_equal instead of assert whenever possible so that
-      # a failing test will tell you the value of both inputs.
-
-        assert_equal 0, 0
-
-    ##refute
-
-      # The negation of eveery assertion is via `refute_X`
-
-        refute_equal 0, 1
-
-    assert_raises(RuntimeError){ raise }
+      assert_equal 0, 0
+      refute_equal 0, 1
+      assert_raises(RuntimeError){ raise }
   end
 
   test 'fixtures were loaded' do
@@ -67,8 +62,6 @@ class Controller0ControllerTest < ActionController::TestCase
   #
   test 'ActionController TestCase specific' do
 
-    # http://guides.rubyonrails.org/testing.html#functional-tests-for-your-controllers
-
     ##get
 
       # Makes a get request.
@@ -83,47 +76,6 @@ class Controller0ControllerTest < ActionController::TestCase
         #get(:action0, {'id' => '12'}, {'user_id' => 5})
         #get(:view, {'id' => '12'}, nil, {'message' => 'booya!'})
 
-    ##assert_response
-
-      # Assert status of last request. Most symbols are ranges.
-      # http://api.rubyonrails.org/classes/ActionDispatch/Assertions/ResponseAssertions.html#method-i-assert_response
-
-        get :action0
-        assert_response :success
-
-        get :action0
-        assert_response 200
-
-        get :redirect_to_action0
-        assert_response :redirect
-
-    ##assert_redirected_to
-
-      # Assert that latest response redirect to somewhere.
-      # http://api.rubyonrails.org/classes/ActionDispatch/Assertions/ResponseAssertions.html#method-i-assert_redirected_to
-
-      # Query strings must match.
-
-        get :redirect_to_action0
-        assert_redirected_to controller: :controller0, action: :action0,
-            notice: 'notice redirect', alert:  'alert redirect'
-
-    ##assert_template
-
-      # Assert that a given template was rendered.
-
-        get :action0
-        assert_template :action0
-        assert_template layout: 'layouts/application'
-
-    ##assert_routing
-
-      # Assert what the input string URLs will redirect to.
-      # Used to test routes.
-
-        assert_routing '/', {controller: 'controller0', action: 'action0'}
-        assert_routing 'controller0/model0/1', {controller: 'controller0', action: 'show', id: '1'}
-
     ##available variables
 
       # http://api.rubyonrails.org/classes/ActionController/TestCase.html
@@ -135,16 +87,17 @@ class Controller0ControllerTest < ActionController::TestCase
       # Contains the previous request made.
       # If modified will affect the next request.
 
-        get :action0
-        assert_equal @request., 200
+        @request
 
-      # Contains previous response:
+      ##response
 
-        get :action0
-        assert_equal @response.status, 200
-        assert_equal response.status, 200
+        # Contains previous response:
 
-      # TODO @response vs response. Current guide examples use only `@response`.
+          get :action0
+          assert_equal @response.status, 200
+          assert_equal response.status, 200
+
+        # TODO @response vs response. Current guide examples use only `@response`.
 
       ##assigns
 
@@ -158,6 +111,62 @@ class Controller0ControllerTest < ActionController::TestCase
 
         # Would be a Hash, but for historical reasons the Hash `assigns['asdf']`,
         # only takes strings, so the method with symbols is used instead.
+
+    ##assertions
+
+      # The following assertions are added by Rails for convenience.
+      # They could all be achieved with Minitest assertions + request / response objects.
+
+      ##assert_response
+
+        # Assert status of last response. Most symbols are integer ranges.
+        # http://api.rubyonrails.org/classes/ActionDispatch/Assertions/ResponseAssertions.html#method-i-assert_response
+
+          get :action0
+          assert_response :success
+
+          get :action0
+          assert_response 200
+
+          get :redirect_to_action0
+          assert_response :redirect
+
+      ##assert_redirected_to
+
+        # Assert that latest response redirect to somewhere.
+        # http://api.rubyonrails.org/classes/ActionDispatch/Assertions/ResponseAssertions.html#method-i-assert_redirected_to
+
+        # Query strings must match.
+
+          get :redirect_to_action0
+          assert_redirected_to controller: :controller0, action: :action0,
+              notice: 'notice redirect', alert:  'alert redirect'
+
+      ##assert_template
+
+        # Assert that a given template was rendered.
+
+          get :action0
+          assert_template :action0
+          assert_template layout: 'layouts/application'
+
+      ##assert_select
+
+        # http://api.rubyonrails.org/classes/ActionDispatch/Assertions/SelectorAssertions.html#method-i-assert_select
+
+        # Asserts that the response matches a CSS selector or other selector types.
+        # Can also assert the content of the selected element.
+
+          get :view_tests
+          assert_select('#assert-select .inside-select', 'content')
+
+      ##assert_routing
+
+        # Assert what the input string URLs will redirect to.
+        # Used to test routes.
+
+          assert_routing '/', {controller: 'controller0', action: 'action0'}
+          assert_routing 'controller0/model0/1', {controller: 'controller0', action: 'show', id: '1'}
   end
 
   ##setup and ##teardown
@@ -217,5 +226,14 @@ class Controller0ControllerTest < ActionController::TestCase
       assert nil.blank?
       assert [].blank?
       assert [].blank?
+  end
+
+  test 'ERB' do
+    get(:action0)
+    assert_select('#erb-newline'                        , "a\nb")
+    assert_select('#erb-newline-hyphen'                 , "ab"  )
+    assert_select('#erb-newline-hyphen-spaces'          , "ab"  )
+    assert_select('#erb-newline-hyphen-leading'         , "a\nb")
+    assert_select('#erb-newline-hyphen-leading-trailing', "a\nb")
   end
 end

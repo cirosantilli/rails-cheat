@@ -12,14 +12,21 @@
   <p>
     Ruby seems to use ERB from stdlib with the <code>-</code> <code>trim_option</code> set.
   </p>
-<%= 'a' %>
-b
 
-<%= 'a' -%>
-b
+<div id="erb-newline"><%= 'a' %>
+b</div>
 
-a
-<%- true %>b
+<div id="erb-newline-hyphen"><%= 'a' -%>
+b</div>
+
+<div id="erb-newline-hyphen-spaces"><%= 'a' -%> 
+b</div>
+
+<div id="erb-newline-hyphen-leading">a
+<%- true %>b</div>
+
+<div id="erb-newline-hyphen-leading-trailing">a
+<%- true -%>b</div>
 
 <%= header "#CRUD", 2 %>
 
