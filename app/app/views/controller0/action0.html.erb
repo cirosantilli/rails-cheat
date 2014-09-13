@@ -10,20 +10,38 @@
 <%= header "#ERB", 2 %>
 
   <p>
-    Ruby seems to use ERB from stdlib with the <code>-</code> <code>trim_option</code> set.
+    Ruby uses erubis by default for the `.erb` templates.
+    erubis is slightlly different from the stdlib ERB, so watch out!
+    The best option is probably to use HAML, which is much DRYer.
+    This section will not cheat on erubis extensively, as that can be done in pure Ruby.
   </p>
 
-<div id="erb-newline"><%= 'a' %>
+<div id="erb-equal-newline"><%= 'a' %>
 b</div>
 
-<div id="erb-newline-hyphen"><%= 'a' -%>
+<div id="erb-equal-newline-hyphen"><%= 'a' -%>
 b</div>
 
-<div id="erb-newline-hyphen-spaces"><%= 'a' -%> 
+<div id="erb-equal-newline-hyphen-spaces"><%= 'a' -%> 
+b</div>
+
+<div id="erb-hyphen-newline">a<% 0 -%>
 b</div>
 
 <div id="erb-newline-hyphen-leading">a
-<%- true %>b</div>
+<%- 0 %>b</div>
+
+<div id="erb-blank-line-hyphen-leading">a
+
+<%- 0 %>b</div>
+
+<div id="erb-blank-line-space-hyphen-leading">a
+
+ <%- 0 %>b</div>
+
+<div id="erb-in-blank-line">a
+<% 0 %>
+b</div>
 
 <div id="erb-newline-hyphen-leading-trailing">a
 <%- true -%>b</div>
@@ -31,10 +49,10 @@ b</div>
 <%= header "#CRUD", 2 %>
 
   <ul>
-    <li><%= link_to 'New', {action: 'new'} %></li>
+    <li><%= link_to 'New',   {action: 'new'} %></li>
     <li><%= link_to 'Index', {action: 'index'} %></li>
-    <li><%= link_to 'Show', {action: 'show', id: '1'} %></li>
-    <li><%= link_to 'Edit', {action: 'edit', id: '1'} %></li>
+    <li><%= link_to 'Show',  {action: 'show', id: '1'} %></li>
+    <li><%= link_to 'Edit',  {action: 'edit', id: '1'} %></li>
   </ul>
 
 <%= header '#helpers', 2 %>
@@ -216,14 +234,24 @@ b</div>
       <li>namespace0_action0_path = <%= namespace0_action0_path %></li>
       <li>action0_path = <%= action0_path %></li>
       <li>action1_path = <%= action1_path %></li>
-
-      <%#TODO%>
-      <%#<li>model0_path(@model0s.first) = <%= model0_path(@model0s.first) </li>%>
+      <li>
+        <p>Resources in routes generate named helpers.</p>
+        <p>Be ultra careful about pluralization of identifiers!</p>
+        <ul>
+          <li>model0s_path = <%= link_to model0s_path, model0s_path %></li>
+          <li>new_model0_path = <%= link_to new_model0_path, new_model0_path %></li>
+          <li>model0s_path = TODO how to do it?
+            Hash version is bad because id goes into params string: <%= link_to model0s_path(id: @model0s.first), model0s_path(id: @model0s.first) %>
+            Non hash version fails because the id goes into the optional language param: <%= link_to model0s_path(@model0s.first), model0s_path(@model0s.first) %>
+          </li>
+        </ul>
+      </li>
     </ul>
 
     <p>
       Each <code>_path</code> helper also has a <code>_url</code> helper,
-      that give the full path, with , inste</p>
+      that give the full path, with , inste
+    </p>
 
   <%= header "#controller_name #action_name", 3 %>
 
@@ -322,10 +350,24 @@ b</div>
   <p>
     <code>link_to</code> and many other unctions uses <code>url_for</code>
     <a href="http://api.rubyonrails.org/classes/ActionDispatch/Routing/UrlFor.html#method-i-url_for">http://api.rubyonrails.org/classes/ActionDispatch/Routing/UrlFor.html#method-i-url_for</a>
-    for URL generation, which in turn relies on (see source):
+    for URL generation, which in turn sometimes relies on (see source):
     <code>polymorphic_url</code> <a href="http://api.rubyonrails.org/classes/ActionDispatch/Routing/PolymorphicRoutes.html">http://api.rubyonrails.org/classes/ActionDispatch/Routing/PolymorphicRoutes.html</a>
   </p>
   <p>Routes and params:</p>
+
+  <%= header 'Relative vs absolute paths.', 3 %>
+
+    <p>
+      In you web interface, use only paths without the domain: it makes the website smaller,
+      and browsers automatically convert them to full URLs when users copy link locations for example.
+    </p>
+    <p>In things outside the websit like email or RSS, use full URLs.</p>
+    <p>
+      Many Rails methods have a convention of either using <code>path</code>
+      and <code>url</code> suffixes to indicate what kind of href they return.
+    </p>
+    <p>Weirdly, <code>url_for</code> gives only paths instead of full URLs like most <code>url</code> named methods.</p>
+    <p>To get around that, pass <code>only_path: false</code>as in: <%= url_for([@model0s.first, only_path: false]) %></p>
 
   <ul>
     <li>link_to "inner", "href" = <%= link_to "inner", "href" %></li>
@@ -400,6 +442,25 @@ b</div>
     </li>
   </ul>
 
+  <%= header "#polymorphic routes", 3 %>
+
+    <p>Polymorphic routes allow you to generate a path without knowing the exact object type,</p>
+    <p>When you know the object type, you can use a named helper like: <code>posts_path(post)</code></p>
+    <p>
+      But if you don't know the type, you can use a polymorphic path like: <code>polymorphic_path(post)</code>
+      The path is inferred from the type of <code>post</code>.
+    </p>
+    <p>
+      <code>polymorphic_path</code> is used as a backend for certain <code>url_for</code>
+      and thus <code>link_to</code> arguments, so you don't need to use it directly.
+    </p>
+
+    <ul>
+      <li>link_to: <%= link_to 'Model0.first', Model0.first %></li>
+      <li>url_for: = <%= url_for(Model0.first) %></li>
+      <li>polymorphic_path: <%= polymorphic_path(Model0.first) %></li>
+    </ul>
+
   <%#
   Contains request information such as the current action, controller, and GET/POST parameters.</p>
     Only the a=b form is standard for URLs key value parameteres.
@@ -430,20 +491,19 @@ b</div>
   </p>
   <p>
     Best practice for passing booleans:
-    <a href="stackoverflow.com/questions/8119970/string-true-and-false-to-boolean">stackoverflow.com/questions/8119970/string-true-and-false-to-boolean</a>
+    <a href="http://stackoverflow.com/questions/8119970/string-true-and-false-to-boolean">http://stackoverflow.com/questions/8119970/string-true-and-false-to-boolean</a>
     "true" and "false" are popular.
     The default <code>check_box_tag</code> is <code>"1"</code>, so this might be the sanest choice.
     <a href="http://api.rubyonrails.org/classes/ActionView/Helpers/FormTagHelper.html#method-i-check_box_tag">http://api.rubyonrails.org/classes/ActionView/Helpers/FormTagHelper.html#method-i-check_box_tag</a>
   </p>
-  <p>
   <%
     h = ActiveSupport::HashWithIndifferentAccess.new(:a => 1, "b" => 2)
     h[:a] == 1 or raise
     h[:b] == 2 or raise
-    h["a"] == 1 or raise
-    h["b"] == 2 or raise
+    h['a'] == 1 or raise
+    h['b'] == 2 or raise
     # By default, string keys:
-    h.keys.sort == ["a", "b"] or raise
+    h.keys.sort == ['a', 'b'] or raise
     # Rails mokey patches Hash with symbolize keys:
     h.symbolize_keys == {a:1, b:2} or raise
   %>
@@ -453,7 +513,7 @@ b</div>
     <a href="<%= url %>"><%= url %></a>
   </p>
 
-<%= header "#request", 2 %>
+<%= header '#request', 2 %>
 
   <table>
     <tr><td>original_url      </td><td><%= request.original_url %></td></tr>
@@ -534,7 +594,7 @@ b</div>
 
 <%= header "#flash", 2 %>
 
-  <p><%= link_to 'Redirect to myself', {action: 'redirect_to_action0'} %>
+  <p><%= link_to 'Redirect to myself', {action: 'redirect_to_action0'} %></p>
 
   <p>notice now = <%= notice %></p>
   <p>alert now = <%= alert %></p>
@@ -645,6 +705,8 @@ b</div>
   <p><%= link_to 'en', {locale: 'en'} %> | <%= link_to 'zh', {locale: 'zh'} %></p>
 
   <p>I18n.locale = <%= I18n.locale %></p>
+
+  <p>Link to another part of the site: TODO: I want that if we are in a language, we stay in the same language: <%= url_for(Model0.first) %></p>
 
   <p>I18n.t :hello = <%= I18n.t :hello %></p>
 

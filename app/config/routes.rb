@@ -21,7 +21,10 @@ App::Application.routes.draw do
 
     # Every URL route in the `do end` will get the given prefix.
     #
-    # No other side effect happens without extra options.
+    # No other side effect happens without extra options:
+    #
+    # - the controller is not put inside a module
+    # - the names URL helpers are not prefixd by the scope
     #
     # Using options, it is also possible to set:
     #
@@ -31,13 +34,19 @@ App::Application.routes.draw do
 
   ##namespace
 
-    # Shortcut for scope that also adds analogous `as` and `module`.
+    # Shortcut for scope that also adds `as` and `module` options.
     # http://stackoverflow.com/questions/3029954/difference-between-scope-and-namespace-of-ruby-on-rails-3-routing
 
       namespace :namespace0 do
         get 'action0' => 'controller0#action0'
         root to: 'controller0#action0'
       end
+
+    # Is the same as:
+
+      #scope '/namespace0', as: 'namespace0', module: 'namespace0' do
+        #resources :contexts
+      #end
 
   ##get
 
@@ -59,7 +68,7 @@ App::Application.routes.draw do
 
   ##i18n optional locale prefix.
 
-  scope '(:locale)', locale: /en|zh/ do
+  scope '(:locale)', constraints: {locale: /en|zh/}, defaults: {locale: 'en'} do
 
     ##root
 
@@ -92,14 +101,18 @@ App::Application.routes.draw do
 
         # Automatically create all CRUD URLs at once
 
-          scope 'model0' do
-            get '' => :index
-            get 'new' => :new
-            post '' => :create
-            get ':id' => :show
-            get ':id/edit' => :edit
-            put ':id' => :update
-            delete ':id' => :destroy
+          resources 'model0s', controller: :controller0 do
+
+        # Same as:
+
+          #scope 'model0' do
+            #get '' => :index
+            #get 'new' => :new
+            #post '' => :create
+            #get ':id' => :show
+            #get ':id/edit' => :edit
+            #put ':id' => :update
+            #delete ':id' => :destroy
 
           ##member
 

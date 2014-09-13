@@ -1,4 +1,6 @@
-Information and cheats on Rails.
+# Rails Cheat
+
+Rails information and cheatsheets.
 
 Live version of the application app at: <http://cirosantilli-rails-cheat.herokuapp.com/>
 
@@ -9,7 +11,7 @@ You can deploy your own instance instantly with:
 Certain features of the app may break on that deployment such as file uploads due to the ephemeral FS.
 This could be corrected by using something like FTP or AWS.
 
-#Location of the main cheats
+## Location of the main cheats
 
 Different cheats fit better into different places.
 
@@ -31,7 +33,7 @@ The most important ones are:
 
     Those had to be moved to tests instead of controllers since the database state has to be controlled to run tests.
 
-#Ubuntu install
+## Ubuntu install
 
 Install Rails on Ubuntu with Ruby RVM:
 <https://www.digitalocean.com/community/articles/how-to-install-ruby-on-rails-on-ubuntu-12-04-lts-precise-pangolin-with-rvm>
@@ -44,7 +46,7 @@ Will also need Node.js:
 
     sudo aptitude install nodejs
 
-#Directory structure
+## Directory structure
 
 -   `app`: most of the app
 -   `vendor`: third party things.
@@ -57,7 +59,7 @@ Places to put Javascript:
 - `lib/assets/javascripts`:    scripts that are shared by many applications (but use a gem if you can).
 - `vendor/assets/javascripts`: copies of JQuery plugins, etc., from other developers.
 
-##config
+### config
 
 -   `application.rb` and environments under `environments`.
 
@@ -67,17 +69,17 @@ Places to put Javascript:
 
     Configurations of things which are not built-in rails, such as installed gems.
 
-##lib
+### lib
 
 Is put on the Ruby require path.
 
 Does not work for config files.
 
-###lib/tasks
+#### lib/tasks
 
 All `.rake` files in this dir are searched for rake commands.
 
-#initializers
+## initializers
 
 Are automatically required on many files of the application including:
 
@@ -90,7 +92,7 @@ Is not automatically required for:
 
 Initializers are not put on the require path.
 
-#public
+## public
 
 Contains files that will be served directly by the server, such as images.
 
@@ -108,7 +110,7 @@ However, in certain cases it is the best option:
 
 - you generate the data on the fly.
 
-#rails command
+## rails command
 
 Create a new project template:
 
@@ -152,7 +154,16 @@ Open a live terminal in which to interact with the application:
 
 Allow you for example to run database queries to do quick tests.
 
-#rake
+If you want to run a single command quickly you can do:
+
+    rails runner 'puts 0'
+    rails r 'puts 0'
+
+To run a script file <http://stackoverflow.com/questions/10313181/pass-ruby-script-file-to-rails-console> do:
+
+    
+
+## rake
 
 `rake` is the standard way to create new commands to be used interactively.
 
@@ -162,7 +173,7 @@ Useful tasks which did not fit anywhere else:
 
 - `tmp:clear` and `log:clear`. May greatly reduce directory sizes.
 
-#Controller
+## Controller
 
 Controllers take user inputs (HTTP requests) and return the expected data page.
 
@@ -179,7 +190,7 @@ Generate a controller inside a namespace:
     rails generate controller Namespace0::Controller0
     rails generate controller namespace0/controller0
 
-#Action
+## Action
 
 Actions are controller methods.
 
@@ -191,13 +202,13 @@ named `Controller0` automatically corresponds to the `erb` file `app/views/contr
 Any instance variable defined in the function as `@var0`
 becomes available to its corresponding `erb` as `@var0`.
 
-#Helper
+## Helper
 
 Helpers are usually method that output HTML and which are used in views.
 
 They should be defined under `app/helpers`.
 
-#Routes
+## Routes
 
 Determine which action to take for each URL.
 
@@ -207,11 +218,11 @@ To view all the routes, run:
 
     rake routes
 
-#Model
+## Model
 
 See active records.
 
-#Active records
+## Active records
 
 Name for the RoR provided ORM.
 
@@ -240,14 +251,14 @@ Create a template with some fields:
 
     rails generate model model_name column0:string column1:string
 
-#Database
+## Database
 
 Database connection is configured at the file `config/database.yml` which is a YAML file.
 
 - `adapter`: database type. Most common values: `sqlite3` (default), `mysql` and `postgresql`
 - `username`: if not present, Rails tries to use the current username to log into the database.
 
-##Databases
+### Databases
 
 By convention RoR application development uses 3 databases:
 
@@ -274,7 +285,7 @@ By convention RoR application development uses 3 databases:
         export RAILS_ENV=production
         rails serve
 
-##create
+### create
 
 Once the database connection is configured, create current database (`Rails.env`):
 
@@ -329,7 +340,7 @@ for example to reset a development database after a `db:drop`, or after cloning 
 
 Great to turn a development database to its initial state.
 
-##dbconsole
+### dbconsole
 
 Log into the REPL of the DBMS used by the current application:
 
@@ -341,7 +352,7 @@ Alias:
 
     rails db
 
-##migration
+### migration
 
 Migrations are specifications of how databases should change.
 
@@ -394,7 +405,7 @@ Go back to last migration:
 
     rake db:rollback
 
-##fixture
+### fixture
 
 Fixtures are data to be used in tests.
 
@@ -410,7 +421,7 @@ or with external plugins such as Factory Girl.
 
 TODO: prevent fixture from loading for a single test?
 
-#concerns
+## concerns
 
 Located under `app/models/concerns`.
 
@@ -420,13 +431,13 @@ Used for code that is strongly coupled to models, but should be shared amongst m
 
 When to use concerns vs `lib`: <http://stackoverflow.com/questions/16159021/rails-service-objects-vs-lib-classes>
 
-#scaffold
+## scaffold
 
 Automatically generates a base CRUD interface for a model.
 
     rails generate scaffold ModelName
 
-#Tests
+## Tests
 
 The default testing library is `minitest`, which was introduced in the Ruby 1.9 stdlib.
 
@@ -474,11 +485,11 @@ Run all tests matching a given regexp in given file:
 
     bundle exec ruby -I"lib:test" test/unit/invitation_test.rb -n /.*between.*/
 
-##Mail
+### Mail
 
-##Email
+### Email
 
-##Action mailer
+### Action mailer
 
 Quickstart:
 
@@ -508,7 +519,7 @@ Create a `.example` version and Gitignore it to protect the password.
 You can, and should, use at least two view formats: `text.erb` and `html.erb`.
 The mailer then sends both on a multipart email and lets the client decide which one to use.
 
-##Spring
+### Spring
 
 Application pre loader.
 
@@ -542,7 +553,7 @@ To stop it:
 
 TODO install Rails 4.1 and then Spring. I get dependency conflicts.
 
-#Assets
+## Assets
 
 The assets pipeline allows to:
 
@@ -577,7 +588,7 @@ e.g. `controller0.js.coffee` for `Controller0Controller`.
 However, by default the `= reqire_tree` in `applicaion.js.coffee` will include every
 controller Js into every page, so don't rely on it for specificity.
 
-##Assets in production
+### Assets in production
 
 In production mode, all assets should be compiled only once before the app is started,
 and served from `/public/assets/`. Files are taken from from under `/app/assets`, processed, and put under `/public`.
@@ -594,7 +605,7 @@ as this job should be left for a web server such as Apache or Nginx for efficien
 If you really want Rails to serve those files edit `config.serve_static_assets = true`
 under `config/environment/production.rb`.
 
-##gitignore public assets
+### gitignore public assets
 
 `public/assets` is not present on the default `.gitignore` because:
 
@@ -603,13 +614,13 @@ under `config/environment/production.rb`.
 - `public/assets` should not exist in the first place in a development environment,
     in which one should never run `rake assets:precompile`.
 
-#Third party libraries
+## Third party libraries
 
 Besides the built-in test classes, there tons of third party test libraries, many of which mix with one another.
 
-##Testing libraries
+### Testing libraries
 
-###RSpec
+#### RSpec
 
 General unit test framework. Alternative to Minitest, which is the default Rails 4.
 
@@ -677,7 +688,7 @@ Only run tests at given lines:
 
     bundle exec rspec path/to/spec.rb:15:32
 
-###spinach
+#### spinach
 
 Unit testing framework, with yet another super mini language (the Gherkin language, not a ruby DSL).
 It seems that the goal of that language is to make tests accessible to people who do not understand Ruby.
@@ -710,13 +721,13 @@ Run only tests on given file at given line:
 
     bundle exec rake spinach features/path/to/file.feature:15
 
-###Cucumber
+#### Cucumber
 
 Similar to Spinach, and came before it.
 
 Also uses the Gherkin language.
 
-###Capybara
+#### Capybara
 
 Cheatsheet at: <app/test/integration/capybara_test.rb>.
 
@@ -742,7 +753,7 @@ which is called by `rake test`.
 As of Rails 4.1, only needed for Javascript interactions,
 since Rails now has things like `assert_select` built-in.
 
-###factory_girl
+#### factory_girl
 
 Interface to generates test data.
 
@@ -771,7 +782,7 @@ If included, may be the source of the following methods in the tests:
     user.posts.create(attributes_for(:post))
     end
 
-###seed_fu
+#### seed_fu
 
 <https://github.com/mbleigh/seed-fu>
 
@@ -798,7 +809,7 @@ Only seed from files with name containing `users` or `articles`:
 
     FILTER=users,articles bundle exec rake db:seed_fu
 
-##guard
+### guard
 
 Monitors the filesystem for file modifications, and when those happen run certain commands.
 
@@ -810,7 +821,7 @@ To do that, install directly plug-in gems which support your types of tests:
 - `gem guard-rspec`
 - `gem guard-spinach`
 
-###guard test
+#### guard test
 
 Install:
 
@@ -829,7 +840,7 @@ Now just leave guard running and it will redo tests whenever the files are mofid
 
 Guard produces notifications to its stdout and to the desktop notification system.
 
-##devise
+### devise
 
 User signup and authentication.
 
@@ -841,7 +852,7 @@ Gemfile: `gem devise`.
 
 where `User` is the model that will represent the user.
 
-###Email confirmation
+#### Email confirmation
 
 Get action mailer working.
 
@@ -853,7 +864,7 @@ Migration file: uncomment the `:confirmable` section.
 
 - config.mailer = 'Devise::Mailer'
 
-###Unregistered users
+#### Unregistered users
 
 Just don't add:
 
@@ -861,15 +872,15 @@ Just don't add:
 
 and unauthenticated users can view pages normally.
 
-###Letter Opener
+#### Letter Opener
 
 Open emails on the browser instead of sending them: <https://github.com/ryanb/letter_opener>
 
 The sent email has a link on the top right to toggle between text and HTML versions.
 
-###OmniAuth
+#### OmniAuth
 
-##foreman
+### foreman
 
 Tool that starts many processes at once, for example one main web process + many works.
 
@@ -898,7 +909,7 @@ Files:
 A `foreman stop` command is WONTFIX:
 <http://stackoverflow.com/questions/18925483/how-to-simply-stop-or-restart-foreman-processes>
 
-##settings logic
+### settings logic
 
 Settings manager gem.
 
@@ -907,13 +918,13 @@ Files:
 - `config/settingslogic.yml`
 - `config/initializers/01_settingslogic.rb`
 
-##Formtastic
+### Formtastic
 
-##SimpleForm
+### SimpleForm
 
 Ultra DRY form generation.
 
-#Internals
+## Internals
 
 As with any system, understanding internals helps you understand the API.
 

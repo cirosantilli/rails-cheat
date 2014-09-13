@@ -1,4 +1,5 @@
-# This is the main cheat on Active Records.# You should understand at least one SQL language like MySQL before reading this.
+# This is the main cheat on Active Records.
+# You should understand at least one SQL language like MySQL before reading this.
 
 require 'test_helper'
 

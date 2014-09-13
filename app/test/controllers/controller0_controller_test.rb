@@ -165,8 +165,8 @@ class Controller0ControllerTest < ActionController::TestCase
         # Assert what the input string URLs will redirect to.
         # Used to test routes.
 
-          assert_routing '/', {controller: 'controller0', action: 'action0'}
-          assert_routing 'controller0/model0/1', {controller: 'controller0', action: 'show', id: '1'}
+          assert_routing '/', {controller: 'controller0', action: 'action0', locale: 'en'}
+          assert_routing '/controller0/model0s/1', {controller: 'controller0', action: 'show', id: '1', locale: 'en'}
   end
 
   ##setup and ##teardown
@@ -228,12 +228,23 @@ class Controller0ControllerTest < ActionController::TestCase
       assert [].blank?
   end
 
-  test 'ERB' do
+  test '#ERB #erubis' do
     get(:action0)
-    assert_select('#erb-newline'                        , "a\nb")
-    assert_select('#erb-newline-hyphen'                 , "ab"  )
-    assert_select('#erb-newline-hyphen-spaces'          , "ab"  )
+    assert_select('#erb-equal-newline'                  , "a\nb")
+    assert_select('#erb-equal-newline-hyphen'           , 'ab'  )
+    assert_select('#erb-equal-newline-hyphen-spaces'    , 'ab'  )
+    assert_select('#erb-hyphen-newline'                 , "a\nb"  )
     assert_select('#erb-newline-hyphen-leading'         , "a\nb")
+    assert_select('#erb-blank-line-hyphen-leading'      , "a\n\nb")
+    assert_select('#erb-blank-line-space-hyphen-leading', "a\n\n b")
     assert_select('#erb-newline-hyphen-leading-trailing', "a\nb")
+  end
+
+  test '#model_name' do
+    # Model.model_name returns an `ActiveModel::Name` object with many useful name variations.
+    # Human readable fields are i18n aware.
+    # http://api.rubyonrails.org/classes/ActiveModel/Name.html
+    assert_equal(TwoWord.model_name.human, 'Two word')
+    assert_equal(TwoWord.model_name.param_key, 'two_word')
   end
 end
