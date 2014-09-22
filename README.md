@@ -33,6 +33,9 @@ The most important ones are:
 
     Those had to be moved to tests instead of controllers since the database state has to be controlled to run tests.
 
+We are trying to move every non Rails-specific functionality out of this repository, e.g.,
+HAML and Capybara can be very well understood without Rails. Only stub entry points will be shown here.
+
 ## Ubuntu install
 
 Install Rails on Ubuntu with Ruby RVM:
@@ -161,7 +164,7 @@ If you want to run a single command quickly you can do:
 
 To run a script file <http://stackoverflow.com/questions/10313181/pass-ruby-script-file-to-rails-console> do:
 
-    
+    bundle exec rails runner "eval(File.read 'your_script.rb')"
 
 ## rake
 
@@ -551,7 +554,7 @@ To stop it:
 
     bundle exec spring stop
 
-TODO install Rails 4.1 and then Spring. I get dependency conflicts.
+If you add a new gem, make sure to restart the Spring server or it might not find it.
 
 ## Assets
 
