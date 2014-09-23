@@ -612,12 +612,12 @@ under `config/environment/production.rb`.
 
 `public/assets` is not present on the default `.gitignore` because:
 
-- it is sometimes necessary to precompile locally and `git add` to deploy to servers like Heroku
+-   it is sometimes necessary to precompile locally and `git add` to deploy to servers like Heroku
 
-- `public/assets` should not exist in the first place in a development environment,
+-   `public/assets` should not exist in the first place in a development environment,
     in which one should never run `rake assets:precompile`.
 
-## Third party libraries
+## Third-party libraries
 
 Besides the built-in test classes, there tons of third party test libraries, many of which mix with one another.
 
@@ -627,71 +627,24 @@ Besides the built-in test classes, there tons of third party test libraries, man
 
 General unit test framework. Alternative to Minitest, which is the default Rails 4.
 
-TODO vs Minitest (rails 4 default)? Minitest interface is saner, `assert_x` instead of `expect(x).to X`, and is default.
+RSpec is not Rails dependent, so we will not cheat on it extensively here.
 
-Meta gem: <https://github.com/rspec/rspec>
+Composed into multiple gems, only <https://github.com/rspec/rspec-rails> will be commented here.
 
-Main tutorial docs: <https://www.relishapp.com/rspec>
-
-Tests are located under `/spec/`. Main cheat: `app/spec/controllers/controller0_spec.rb`
-
-Contains 4 gems which can be used separately:
-
--   Core: `describe`, `it`.
-
--   Expectations: <https://github.com/rspec/rspec-expectations>.
-    `expect`, the horrible `to` and `not_to` monkey-patches,
-    the matchers (arguments passed to `to`) such as: `eq`, `be_xxx`
-    which by `method_missing` invokes `xxx?`, etc.
-
--   Mocks
-
--   Rails
-
-Only the Rails gem is Rails specific.
-
-Install `Gemfile`:
+Install on `Gemfile`:
 
     group :development, :test do
       gem 'rspec-rails'
     end
 
-Generate templates `.rspec` and `spec/spec_helper.rb`.:
+Generate templates for `.rspec` and `spec/spec_helper.rb`.:
 
     rails generate rspec:install
 
-Tests are run with:
+Simple Rails integration examples can be found at
+[spec/controllers/controller0_spec.rb](spec/controllers/controller0_spec.rb).
 
-    rake spec
-
-It may be possible to run them with:
-
-    cd RAILS_ROOT
-    rspec
-
-but his may have disadvantages: `rake spec` may do more initialization such as DB TODO confirm.
-
-The RSpec version may start running faster.
-
-Only run tests from a single file (<http://stackoverflow.com/questions/6116668/rspec-how-to-run-a-single-test>):
-
-    bundle exec rake spec SPEC=path/to/spec.rb
-
-or
-
-    bundle exec rspec path/to/spec.rb
-
-Only run tests that include a string:
-
-    bundle exec rake spec SPEC=path/to/spec.rb SPEC_OPTS="-e \"should be successful and return 3 items\""
-
-Only run tests at given lines:
-
-    bundle exec rspec path/to/spec.rb:15
-
-    bundle exec rspec path/to/spec.rb:15:32
-
-#### spinach
+#### Spinach
 
 Unit testing framework, with yet another super mini language (the Gherkin language, not a ruby DSL).
 It seems that the goal of that language is to make tests accessible to people who do not understand Ruby.
@@ -732,29 +685,26 @@ Also uses the Gherkin language.
 
 #### Capybara
 
-Cheatsheet at: <app/test/integration/capybara_test.rb>.
+Unified front-end for several browser automation backends.
 
-Offers methods to interact with the application through a browser automation (by default via Selenium), such as:
+Is not a testing framework: only provides browser interaction
+to be used by testing frameworks.
 
-- `visit`: go to a page
-- `page.has_text`: finding visible text on the screen (not a direct `body` element search)
-- clicking on a button or link
-- filling a form
-
-Those are useful to test the application from the user point of view.
+Capybara is not Rails dependent, so we will not cheat on it extensively here.
 
 Can be used with any Unit test framework such as Minitest, RSpec or Spinach.
 
-Recommended location for tests are: `test/integration` for Minitest (built-in) tests
-and `spec/features` for RSpec tests, or `features` for Spinach tests.
+Recommended location for tests are: `test/integration` for Minitest
+`spec/features` for RSpec tests, or `features` for Spinach tests.
 
-Good cheatsheet: <https://gist.github.com/zhengjia/428105>
+Minimal Rails integration tests can be found in this repository under
+[test/integration/capybara_test.rb](test/integration/capybara_test.rb).
 
 Like other integration tests, Capybara tests can be run with `rake test:integration`,
 which is called by `rake test`.
 
-As of Rails 4.1, only needed for Javascript interactions,
-since Rails now has things like `assert_select` built-in.
+As of Rails 4.1, the only use case for it tests that depend on Javascript,
+since Rails now has HTML-only tests like `assert_select` built-in.
 
 #### factory_girl
 
@@ -843,7 +793,7 @@ Now just leave guard running and it will redo tests whenever the files are mofid
 
 Guard produces notifications to its stdout and to the desktop notification system.
 
-### devise
+### Devise
 
 User signup and authentication.
 
