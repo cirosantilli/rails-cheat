@@ -155,9 +155,10 @@ App::Application.routes.draw do
 
     # The following URLs exist for the test of third party tools:
 
-      get 'haml' => 'controller0#haml'
       get 'capybara' => 'controller0#capybara'
+      get 'haml' => 'controller0#haml'
       get 'view_tests' => 'controller0#view_tests'
+      get 'rspec' => 'controller0#rspec'
 
   ##devise
 

@@ -15,6 +15,12 @@ require 'test_helper'
 # By default a template is generated to extend `ActiveSupport::TestCase`
 # to add methods and configs that will be used for all tests of the app.
 #
+# It is the `ActionController::TestCase` that adds many of the key controller test methods:
+#
+# - `get`, `post`, etc.
+# - request, response
+# - the four hashes: assigns, cookies, flash, session
+#
 class Controller0ControllerTest < ActionController::TestCase
 
   # Must include this for devise tests, or simple things like `get` may not work.

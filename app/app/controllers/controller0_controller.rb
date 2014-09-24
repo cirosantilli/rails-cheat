@@ -468,11 +468,15 @@ class Controller0Controller < ApplicationController
 
     # The following actions exist to test third party tools.
 
+      def capybara
+      end
+
       def haml
         @a = 1
       end
 
-      def capybara
+      def rspec
+        render text: 'rspec'
       end
 
       def view_tests
