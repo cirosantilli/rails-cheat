@@ -265,15 +265,9 @@ b</div>
       <a href="http://stackoverflow.com/questions/3757491/can-i-get-the-name-of-the-current-controller-in-the-view">http://stackoverflow.com/questions/3757491/can-i-get-the-name-of-the-current-controller-in-the-view</a>
     </p>
 
-<%= header '#monkey patches', 2 %>
+<%= header '#lib', 2 %>
 
-  <%= header '#to_json', 3 %>
-
-    <p>Works on any type. Converts strings and integers to corresponding JSON fragment data types.</p>
-    <%
-      1.to_json    == '1'    or raise
-      'ab'.to_json == '"ab"' or raise
-    %>
+  <p>Test that lib is visible and if modifications are automatically loaded. <code>TestLib:VAR</code> = <b><%= TestLib::VAR %></b></p>
 
 <%= header '#ajax', 2 %>
 
@@ -301,7 +295,7 @@ b</div>
   <%= header 'rails helped ajax', 3 %>
 
     <%= link_to 'Click me to send AJAX request!', 'controller0/ajax',
-          remote: true, id: 'ajax-helper-source', method: :get, data: {type: 'text'} %>
+          remote: true, id: 'ajax-helper-source', method: :get, data: { type: 'text' } %>
 
     <ul id="ajax-helper-target"></ul>
     <div id="ajax-helper-target-loader" style="display:none;">Loading ...</div>

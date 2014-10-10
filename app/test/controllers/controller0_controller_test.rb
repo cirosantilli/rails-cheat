@@ -1,10 +1,5 @@
-# This is the main cheat for tests.
-
 require 'test_helper'
 
-# Read the tutorial as soon as you can:
-# http://guides.rubyonrails.org/testing.html
-#
 # The following hierarchy exists in Rails 4:
 #
 #     ActionController::TestCase < ActiveSupport::TestCase <  MiniTest::Unit::TestCase 
@@ -12,10 +7,7 @@ require 'test_helper'
 # Where `MiniTest::Unit::TestCase` is the Minitest present in the Ruby stdlib:
 # http://ruby-doc.org/stdlib-2.1.0/libdoc/minitest/rdoc/MiniTest.html
 #
-# By default a template is generated to extend `ActiveSupport::TestCase`
-# to add methods and configs that will be used for all tests of the app.
-#
-# It is the `ActionController::TestCase` that adds many of the key controller test methods:
+# It is the `ActionController::TestCase` that adds stuff like:
 #
 # - `get`, `post`, etc.
 # - request, response
@@ -25,25 +17,6 @@ class Controller0ControllerTest < ActionController::TestCase
 
   # Must include this for devise tests, or simple things like `get` may not work.
   include Devise::TestHelpers
-
-  # Every method that starts with `test` is run as a test.
-  #
-  # The `test` method creates such methods.
-  # It replaces spaces by underlines.
-  #
-  def test_name_of_test
-  end
-
-  test 'assert example' do
-
-      assert true
-
-    # All assertions on the stdlib Minitest are available:
-
-      assert_equal 0, 0
-      refute_equal 0, 1
-      assert_raises(RuntimeError){ raise }
-  end
 
   test 'fixtures were loaded' do
     # This checks that fixtures were actualy loaded.
@@ -82,7 +55,7 @@ class Controller0ControllerTest < ActionController::TestCase
         #get(:action0, {'id' => '12'}, {'user_id' => 5})
         #get(:view, {'id' => '12'}, nil, {'message' => 'booya!'})
 
-    ##available variables
+    ##Available variables
 
       # http://api.rubyonrails.org/classes/ActionController/TestCase.html
 
@@ -175,36 +148,6 @@ class Controller0ControllerTest < ActionController::TestCase
           assert_routing '/controller0/model0s/1', {controller: 'controller0', action: 'show', id: '1', locale: 'en'}
   end
 
-  ##setup and ##teardown
-
-      # This method is run before each test method.
-      #
-      def setup
-        @setup = 1
-      end
-
-      # This method is run after each test method.
-      #
-      def teardown
-        @setup = 0
-      end
-
-      test 'setup' do
-        assert_equal @setup, 1
-      end
-
-      #before :each do
-        #@before = 1
-      #end
-
-      #after :each do
-        #@before = 0
-      #end
-
-      #test 'before' do
-        #assert_equal @before, 1
-      #end
-
   ##devise
 
     # Devise offers the following test helpers:
@@ -214,43 +157,25 @@ class Controller0ControllerTest < ActionController::TestCase
     # sign_out :user         # sign_out(scope)
     # sign_out @user         # sign_out(resource)
 
-  ##recommended tests
+  ## View tests
 
-    # This lists tests which you should always do in real projects and why.
+    # The following tests are for things which are shown in the views.
 
-  test '##blank? ##present?' do
+      test '#ERB #erubis' do
+        get(:action0)
+        assert_select('#erb-equal-newline'                  , "a\nb")
+        assert_select('#erb-equal-newline-hyphen'           , 'ab'  )
+        assert_select('#erb-equal-newline-hyphen-spaces'    , 'ab'  )
+        assert_select('#erb-hyphen-newline'                 , "a\nb"  )
+        assert_select('#erb-newline-hyphen-leading'         , "a\nb")
+        assert_select('#erb-blank-line-hyphen-leading'      , "a\n\nb")
+        assert_select('#erb-blank-line-space-hyphen-leading', "a\n\n b")
+        assert_select('#erb-newline-hyphen-leading-trailing', "a\nb")
+      end
 
-    # Implemeted by Rails for all objects.
-
-    # Implements a Python like truthy: [], {}, and '' are all false.
-
-    # NOTE: whitespace strings are also blank falsy.
-
-    # `present?` is the negation
-
-      assert !0.blank?
-      assert nil.blank?
-      assert [].blank?
-      assert [].blank?
-  end
-
-  test '#ERB #erubis' do
-    get(:action0)
-    assert_select('#erb-equal-newline'                  , "a\nb")
-    assert_select('#erb-equal-newline-hyphen'           , 'ab'  )
-    assert_select('#erb-equal-newline-hyphen-spaces'    , 'ab'  )
-    assert_select('#erb-hyphen-newline'                 , "a\nb"  )
-    assert_select('#erb-newline-hyphen-leading'         , "a\nb")
-    assert_select('#erb-blank-line-hyphen-leading'      , "a\n\nb")
-    assert_select('#erb-blank-line-space-hyphen-leading', "a\n\n b")
-    assert_select('#erb-newline-hyphen-leading-trailing', "a\nb")
-  end
-
-  test '#model_name' do
-    # Model.model_name returns an `ActiveModel::Name` object with many useful name variations.
-    # Human readable fields are i18n aware.
-    # http://api.rubyonrails.org/classes/ActiveModel/Name.html
-    assert_equal(TwoWord.model_name.human, 'Two word')
-    assert_equal(TwoWord.model_name.param_key, 'two_word')
-  end
+      test 'partials' do
+        get(:action0)
+        assert_select('#partial-instance', '0')
+        assert_select('#partial-optional-local', '0')
+      end
 end

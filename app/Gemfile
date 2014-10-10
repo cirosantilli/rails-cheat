@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.1.1'
+#ruby '2.1.1'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.0'
@@ -23,7 +23,7 @@ gem 'uglifier'
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
 
-# Every internal <a> link makes the body reload via AJAX instead of reloading the entire page.
+# Every internal <a> link makes the body reloadvia AJAX instead of reloading the entire page.
 gem 'turbolinks'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
@@ -37,7 +37,7 @@ end
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
-##END default file ================================================================
+##END of default template ======================================================
 
 gem 'foreman'
 

@@ -1,4 +1,8 @@
-ENV["RAILS_ENV"] ||= "test"
+# This file will be required by most tests.
+#
+# It could have any name, but this is the conventional one so use it.
+
+ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
 

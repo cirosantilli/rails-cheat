@@ -43,5 +43,15 @@ module App
     ##assets
 
         #config.assets.initialize_on_precompile = false
+
+    ##END OF TEMPLATE
+
+      ##autoload_paths
+
+          config.autoload_paths += %W(#{config.root}/lib)
+
+      ##eager
+
+        # TODO vs autoload
   end
 end

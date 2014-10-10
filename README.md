@@ -2,39 +2,35 @@
 
 Rails information and cheatsheets.
 
-Live version of the application app at: <http://cirosantilli-rails-cheat.herokuapp.com/>
-
-You can deploy your own instance instantly with:
-
-    ./heroku-deploy.sh appname
-
-Certain features of the app may break on that deployment such as file uploads due to the ephemeral FS.
-This could be corrected by using something like FTP or AWS.
+Every non-Rails-specific gem will not be in this repository,
+e.g.: HAML, Capybara, factory_girl, etc.
 
 ## Location of the main cheats
 
 Different cheats fit better into different places.
 
-The most important ones are:
+Everything that can be asserted will be.
 
--   `app/views/controller0/action0.html.erb`: shows on the browser unpredictable outputs,
-    or outputs which are too large to assert on such as helpers.
+-   [app/test/unit/main_test.rb](app/test/unit/main_test.rb):
+    everything that can be tested directly by plain stdlib `MiniTest`.
 
-    Default view of the app.
+-   [app/controller/controller0_controller.rb](app/controller/controller0_controller.rb):
+    main cheat controller.
 
--   `app/controller/controller0_controller.rb`
+-   [test/controllers/controller0_controller_test.rb](test/controllers/controller0_controller_test.rb):
+    controller specific tests that use `ActionController::TestCase` functionality.
 
--   `test/controllers/controller0_controller_test.rb`: main cheat on:
+-   [app/views/controller0/action0.html.erb](app/views/controller0/action0.html.erb):
+    main cheat view.
 
-    - how tests work
-    - things that can be asserted
+-   [app/models/model0.rb](app/models/model0.rb)
+    main cheat model.
 
--   `app/models/model0.rb` and `test/models/active_record_test.rb`: cheats on active records
+-   [test/models/active_record_test.rb](test/models/active_record_test.rb)
+    `ActiveRecord` tests.
 
-    Those had to be moved to tests instead of controllers since the database state has to be controlled to run tests.
-
-We are trying to move every non Rails-specific functionality out of this repository, e.g.,
-HAML and Capybara can be very well understood without Rails. Only stub entry points will be shown here.
+    Those could be done with `unit/main`,
+    but since they are very complex it is better to separate them.
 
 ## Ubuntu install
 
@@ -48,6 +44,8 @@ The line which has been put on `~/.bash_profile` in the tutorial should be moved
 Will also need Node.js:
 
     sudo aptitude install nodejs
+
+or even better, use NVM.
 
 ## Directory structure
 
@@ -156,6 +154,13 @@ Open a live terminal in which to interact with the application:
     rails c
 
 Allow you for example to run database queries to do quick tests.
+
+Useful things you can do from the console include:
+
+- `app` allows you to do things like in integration tests such as:`app.get '/path'; app.response.body`
+- `helper.button_tag` to try out helpers available inside views
+
+>> app.response.body
 
 If you want to run a single command quickly you can do:
 
@@ -466,23 +471,17 @@ Run one type of tests under `tests/XXX/`:
     bundle exec rake test:models
     bundle exec rake test:integration
 
+There is also `test:units` which runs: `test/models`, `test/helpers`, and `test/unit`.
+
+A good place to test `lib/` code is `test/unit`:
+<http://stackoverflow.com/questions/798881/rails-how-to-test-code-in-the-lib-directory>
+This is run by default on `rake test` and `rake units`.
+
 Run a single test function from a test file: <http://stackoverflow.com/questions/274349/running-single-rails-unit-functional-test>
 
     bundle exec rake test tests/models/model0.rb test_name_of_the_test
 
 Where `name_of_the_test` is the test name with spaces replaced by underlines.
-
-Run all unit tests:
-
-    bundle exec rake test:units
-
-Run all functional tests:
-
-    bundle exec rake test:functionals
-
-Run all integration tests:
-
-    bundle exec rake test:integration
 
 Run all tests matching a given regexp in given file:
 
@@ -641,8 +640,14 @@ Generate templates for `.rspec` and `spec/spec_helper.rb`.:
 
     rails generate rspec:install
 
-Simple Rails integration examples can be found at
+Simple Rails integration examples can be found at:
 [spec/controllers/controller0_spec.rb](spec/controllers/controller0_spec.rb).
+
+##### RSpec prevents rendering for controller specs
+
+<http://stackoverflow.com/questions/1063073/rspec-controller-testing-blank-response-body>
+
+Therefore, `response.body` will be empty and `assert_select` will fail.
 
 #### Spinach
 
@@ -711,32 +716,11 @@ since Rails now has HTML-only tests like `assert_select` built-in.
 
 #### factory_girl
 
-Interface to generates test data.
+Only Rails specifics shall be discussed here.
 
-The default fixtures method is bad because it is not possible to have per test data with it.
-
-TODO Advantage over manually using create?
+Rails integration is provided by the `factory_rails` gem.
 
 Factories are automatically loaded from `(spec|test)/(factories.rb|factories*.rb)`.
-
-If included, may be the source of the following methods in the tests:
-
-    # Returns a User instance that's not saved
-    user = build(:user)
-
-    # Returns a saved User instance
-    user = create(:user)
-
-    # Returns a hash of attributes that can be used to build a User instance
-    attrs = attributes_for(:user)
-
-    # Returns an object with all defined attributes stubbed out
-    stub = build_stubbed(:user)
-
-    # Passing a block to any of the methods above will yield the return object
-    create(:user) do |user|
-    user.posts.create(attributes_for(:post))
-    end
 
 #### seed_fu
 
@@ -879,6 +863,12 @@ Files:
 ### SimpleForm
 
 Ultra DRY form generation.
+
+## Lint tools
+
+-   <https://github.com/presidentbeef/brakeman>
+
+    Security focused lint tool.
 
 ## Internals
 

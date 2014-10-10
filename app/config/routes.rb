@@ -97,11 +97,11 @@ App::Application.routes.draw do
           get 'url_params/:id' => :url_params
           get 'url_params_abc/:id' => :url_params_abc, id: /[abc]+/
 
-      ##resource ##CRUD
+      ##resources ##CRUD
 
         # Automatically create all CRUD URLs at once
 
-          resources 'model0s', controller: :controller0 do
+          resources :model0s, controller: :controller0 do
 
         # Same as:
 
@@ -136,6 +136,21 @@ App::Application.routes.draw do
 
         # Generate only some of the above actions
         #resources :controller0, only: [:index, :show]
+
+        ##_index helpers
+
+          # If a singular name is usde like: `:model0`,
+          # then the helper path for index gets `_index` appended to it:
+
+          # <http://stackoverflow.com/questions/6476763/rails-3-route-appends-index-to-route-name>
+
+      ##Singular resources
+
+      ##resource
+
+        # Different from `resources` with `s`!
+
+        # Shortcut for resources like profile, for which there is no index.
 
       ##file upload
 

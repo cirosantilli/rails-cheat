@@ -1,4 +1,4 @@
-# Main cheat on factory definition.
+# Demonstration of Factory Girl Rails integration.
 
 FactoryGirl.define do
   # Uses model0 class because of the factory name.
@@ -22,5 +22,4 @@ FactoryGirl.define do
     # Explicit generation with generate.
     integer_col2 { generate(:integer_col) }
   end
-
 end

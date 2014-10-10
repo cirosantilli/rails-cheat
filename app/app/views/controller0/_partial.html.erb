@@ -1,2 +1,15 @@
 <p>Inside the partial.</p>
-<p>Can see external variables: var0 = <%= @var0 %></p>
+<p>
+  Can see controller instance variables:
+  <code>var0 = <span id="partial-instance"><%= @var0 %></span></code>,
+  but it some people consider it practice
+  for the same reason it is a bad idea to use global variables in functions:
+  you lose control of the scope.
+  <a href="http://stackoverflow.com/questions/2503838/rails-should-partials-be-aware-of-instance-variables">http://stackoverflow.com/questions/2503838/rails-should-partials-be-aware-of-instance-variables</a>
+</p>
+<p>
+  All the local parameters passed to the partial are also available under <code>local_assigns</code>.
+  Do not use <code>defined?</code> to do optional arguments: use <code>local_assigns</code> instead
+  <a href="http://stackoverflow.com/questions/2060561/optional-local-variables-in-rails-partial-templates-how-do-i-get-out-of-the-de">http://stackoverflow.com/questions/2060561/optional-local-variables-in-rails-partial-templates-how-do-i-get-out-of-the-de</a>
+  <span id="partial-optional-local"><%= local_assigns[:opttional] || 0 %></span>
+</p>

@@ -20,7 +20,7 @@ class ActiveRecordTest < ActiveSupport::TestCase
     ActiveRecord::Base.logger = Logger.new(STDOUT)
     yield
     ActiveRecord::Base.logger = nil
-    puts("====================")
+    puts('====================')
   end
 
   # The following tests:
@@ -28,18 +28,18 @@ class ActiveRecordTest < ActiveSupport::TestCase
   # - don't alter the db
   # - involve only a single table
   #
-  test "single table readonly" do
+  test 'single table readonly' do
 
     ##table info
 
       ##table_name
 
-          assert_equal Model0.table_name, "model0s"
+          assert_equal Model0.table_name, 'model0s'
           assert_equal Model0.quoted_table_name, '"model0s"'
 
       ##primary_key
 
-          assert_equal Model0.primary_key, "id"
+          assert_equal Model0.primary_key, 'id'
 
     ##retreive from DB to memory
 
@@ -105,23 +105,23 @@ class ActiveRecordTest < ActiveSupport::TestCase
 
       ##find_by_sql
 
-          model0s = Model0.find_by_sql("SELECT * FROM model0s WHERE model0s.id = 1")
+          model0s = Model0.find_by_sql('SELECT * FROM model0s WHERE model0s.id = 1')
           assert_equal model0s.class, Array
           assert_equal model0s.map(&:string_col).sort, ['s1']
 
         # TODO why fails with prepared statement?:
 
-          assert_raises(ActiveRecord::StatementInvalid){Model0.find_by_sql("SELECT * FROM model0s WHERE model0s.id = ?", 1)}
+          #model0s = Model0.find_by_sql('SELECT * FROM model0s WHERE model0s.id = ?', 1)
 
         # Convert `Relation` to `Array` of arrays.
 
-      stdout_log("##exists?") do
+      stdout_log('##exists?') do
         # Check if there is at least one result for query.
         assert Model0.exists?(1)
         assert !Model0.exists?(3)
       end
 
-      stdout_log("##pluck") do
+      stdout_log('##pluck') do
         # Take only certain columns from the Relation,
         # and transforms them into an array of arrays of column values.
         # Also does a select query, returning only the necessary fields.
@@ -139,7 +139,7 @@ class ActiveRecordTest < ActiveSupport::TestCase
 
       ##find_each ##find_in_batches
 
-        # Both methods find in fixed size batches so as not to overflw memory.
+        # Both methods find in fixed size batches so as not to overflow memory.
         # `find_each` is just an iteration over a `find_in_batches` returned array.
 
         # Find in batches passes regular Array to the loop variable, not queries.
@@ -159,18 +159,20 @@ class ActiveRecordTest < ActiveSupport::TestCase
           end
           assert_equal model0s, Model0.order(:id).find(1, 2)
 
-        # As of 4.0.2:
+        # These methods:
 
         # - always reorders by primary key
-        # - limits are ignored (obviously, since we already have batch_size)
+        # - .limit are ignored (obviously, since we already have batch_size)
 
-        # Works even if primary column is renamed:
+        # Fails if primary column is renamed with
+        # "Primary key is not included in custom select clause"
+        # because Rails does not know anymore how to sort:
 
-          Model0.select('id AS id_new').find_in_batches() do |batch|
-          end
+          assert_raises(RuntimeError){Model0.select('id AS id_new').find_in_batches(){}}
+          assert_raises(RuntimeError){Model0.select('model0s.id AS id_new').find_in_batches(){}}
 
-          Model0.select('model0s.id AS id_new').find_in_batches() do |batch|
-          end
+        # This failure only happens immediately (good) starting on Rails 4.1:
+        # before it would only happen after the first batch.
 
         # Since this function is a bit restricted by the fixed order,
         # we might also want to do this manually:
@@ -267,14 +269,14 @@ class ActiveRecordTest < ActiveSupport::TestCase
         # String:
 
           assert_equal Model0.where("integer_col = 1 AND string_col = 's1'")[0].string_col, 's1'
-          assert_equal Model0.where("integer_col = 1 OR integer_col = 2").order(:integer_col).pluck(:string_col), ['s1', 's2']
+          assert_equal Model0.where('integer_col = 1 OR integer_col = 2').order(:integer_col).pluck(:string_col), ['s1', 's2']
 
         # Array with first element being a string: (#prepared statement)
 
-          assert_equal Model0.where(["integer_col = ? ", 1]).take.string_col, 's1'
-          #assert_equal Model0.where(["integer_col = ? ", [1, 2]]).order(:integer_col).to_a, Model0.order(:id).find(1, 2)
+          assert_equal Model0.where(['integer_col = ? ', 1]).take.string_col, 's1'
+          #assert_equal Model0.where(['integer_col = ? ', [1, 2]]).order(:integer_col).to_a, Model0.order(:id).find(1, 2)
           # Placeholders:
-          assert_equal Model0.where(["integer_col = :integer_col", {integer_col: 1}])[0].string_col, 's1'
+          assert_equal Model0.where(['integer_col = :integer_col', {integer_col: 1}])[0].string_col, 's1'
 
         # Strings are the worst method, since must be parsed and are less convenient to write.
 
@@ -321,18 +323,18 @@ class ActiveRecordTest < ActiveSupport::TestCase
 
         # A new method is added to the resulting objects of this query:
 
-          assert_equal Model0.select("integer_col AS i").first.i, 1
-          assert_raises(ActiveModel::MissingAttributeError){Model0.select("integer_col AS i").first.integer_col == 1}
+          assert_equal Model0.select('integer_col AS i').first.i, 1
+          assert_raises(ActiveModel::MissingAttributeError){Model0.select('integer_col AS i').first.integer_col == 1}
 
         # Other columns are gone from the end object:
 
-          assert_raises(ActiveModel::MissingAttributeError){Model0.select("integer_col AS i").first.string_col}
+          assert_raises(ActiveModel::MissingAttributeError){Model0.select('integer_col AS i').first.string_col}
 
         # TODO why do the following not work?
 
-          #assert_equal Model0.order(:integer_col).select("integer_col AS i").pluck(:i), [1, 2]
-          #assert_equal Model0.select("integer_col AS i").order(:i).find_by(i: 1).string_col, 's1'
-          assert_equal Model0.order(:integer_col).select("integer_col AS i").pluck(:integer_col), [1, 2]
+          #assert_equal Model0.order(:integer_col).select('integer_col AS i').pluck(:i), [1, 2]
+          #assert_equal Model0.select('integer_col AS i').order(:i).find_by(i: 1).string_col, 's1'
+          assert_equal Model0.order(:integer_col).select('integer_col AS i').pluck(:integer_col), [1, 2]
 
         # Even if you select only a single column, it is still possible to pluck by others:
 
@@ -455,7 +457,7 @@ class ActiveRecordTest < ActiveSupport::TestCase
 
   # Tests functions that use multiple tables.
   #
-  test "#multitable" do
+  test '#multitable' do
 
     setup_multitable_data
 
@@ -556,7 +558,7 @@ class ActiveRecordTest < ActiveSupport::TestCase
         # - for the N+1 problem.
         # - only returns all columns `tables.*` from the endpoints, not from the middle columns.
 
-        stdout_log("through") do
+        stdout_log('through') do
 
           assert_equal Model2.find(1).model0s.pluck(:id).sort, [1, 2, 5, 6]
           end
@@ -568,7 +570,7 @@ class ActiveRecordTest < ActiveSupport::TestCase
           assert_equal Model0.find(1).model3.integer_col, 1
 
           # Only does one extra query per batch.
-          stdout_log("through each") do
+          stdout_log('through each') do
           model0_is = []
           Model2.find(1).model0s.find_each(batch_size: 2) do |model0|
             model0_is << model0.integer_col
@@ -592,15 +594,15 @@ class ActiveRecordTest < ActiveSupport::TestCase
           assert_equal reflect.macro, :belongs_to
           assert_equal reflect.klass, Model1
           assert_equal reflect.active_record, Model0
-          assert_equal reflect.table_name, "model1s"
-          assert_equal reflect.foreign_key, "model1_id"
+          assert_equal reflect.table_name, 'model1s'
+          assert_equal reflect.foreign_key, 'model1_id'
 
           reflect = Model1.reflect_on_association(:model0s)
           assert_equal reflect.macro, :has_many
           assert_equal reflect.klass, Model0
           assert_equal reflect.active_record, Model1
-          assert_equal reflect.table_name, "model0s"
-          assert_equal reflect.foreign_key, "model1_id"
+          assert_equal reflect.table_name, 'model0s'
+          assert_equal reflect.foreign_key, 'model1_id'
 
     # Includes vs joins:
 
@@ -651,27 +653,30 @@ class ActiveRecordTest < ActiveSupport::TestCase
       # Unlike `includes`, `joins` considers `select`, and this allows to make certain fields of the has_many
       # side directly available without any extra queries:
 
-        stdout_log("joins + select") do
+        stdout_log('joins + select') do
           model1_ids = []
-          Model0.joins(:model1).select('model1s.id AS model1_id').find_each do |model0|
+          Model0.joins(:model1).select('model0s.id, model1s.id AS model1_id').find_each do |model0|
             model1_ids << model0.model1_id
           end
           assert_equal model1_ids, [1, 1, 2, 2, 3, 3, 4, 4]
         end
 
+        # You must include the primary key of `Model0` for find_each or else
+        # "Primary key is not included in custom select clause.".
+
       # Both are the same and efficient;
 
-        stdout_log("joins + select 2 levels 2 joins") do
+        stdout_log('joins + select 2 levels 2 joins') do
           ids = []
-          Model0.joins(model1: :model22).select('model22s.id AS model22_id').find_each do |model0|
+          Model0.joins(model1: :model22).select('model0s.id, model22s.id AS model22_id').find_each do |model0|
             ids << model0.model22_id
           end
           assert_equal ids, [1, 1, 2, 2] * 2
         end
 
-        stdout_log("joins + select 2 levels through") do
+        stdout_log('joins + select 2 levels through') do
           ids = []
-          Model0.joins(:model2).select('model2s.id AS model2_id').find_each do |model0|
+          Model0.joins(:model2).select('model0s.id, model2s.id AS model2_id').find_each do |model0|
             ids << model0.model2_id
           end
           assert_equal ids, [1, 1, 2, 2] * 2
@@ -679,7 +684,7 @@ class ActiveRecordTest < ActiveSupport::TestCase
 
       # Does not work from the has many side:
 
-        #stdout_log("joins + select from has many") do
+        #stdout_log('joins + select from has many') do
           #ids = []
           #Model1.joins(:model0s).select('model0s.id AS model0_ids').find_each do |model1|
             #ids += model1.model0_ids
@@ -690,7 +695,7 @@ class ActiveRecordTest < ActiveSupport::TestCase
       # Unlike `includes`, `joins` does not eager load data automatically for us, so the following generates N queries:
       # BAD BAD BAD!
 
-        stdout_log("joins + association") do
+        stdout_log('joins + association') do
           model1_ids = []
           Model0.joins(:model1).find_each do |model0|
             model1_ids << model0.model1.id
@@ -711,9 +716,9 @@ class ActiveRecordTest < ActiveSupport::TestCase
 
         # Note that SQLite does not implement `RIGHT JOIN` as of `2014`.
 
-          stdout_log("left joins + select") do
+          stdout_log('left joins + select') do
             model1_ids = []
-            Model0.joins("LEFT JOIN model1s ON model0s.model1_id = model1s.id").select('model1s.id AS model1_id').find_each do |model0|
+            Model0.joins('LEFT JOIN model1s ON model0s.model1_id = model1s.id').select('model0s.id, model1s.id AS model1_id').find_each do |model0|
               model1_ids << model0.model1_id
             end
           assert_equal model1_ids, [1, 1, 2, 2, 3, 3, 4, 4]
@@ -733,7 +738,7 @@ class ActiveRecordTest < ActiveSupport::TestCase
 
       # Good: only makes 2 queries:
 
-      stdout_log("includes") do
+      stdout_log('includes') do
         model1_ids = []
         Model0.includes(:model1).find_each do |model0|
           model1_ids << model0.model1.id
@@ -741,7 +746,7 @@ class ActiveRecordTest < ActiveSupport::TestCase
         assert_equal model1_ids, [1, 1, 2, 2, 3, 3, 4, 4]
       end
 
-      stdout_log("where on the other side") do
+      stdout_log('where on the other side') do
         model0_ids = []
         Model0.includes(:model1).where(model1s: {id: 1}).find_each do |model0|
           model0_ids << model0.id
@@ -749,23 +754,27 @@ class ActiveRecordTest < ActiveSupport::TestCase
         assert_equal model0_ids, [1, 2]
       end
 
-      stdout_log("order by the other side") do
+      stdout_log('order by the other side') do
         assert_equal Model0.includes(:model1).order('model1s.id DESC', :id).pluck(:id), [7, 8,  5, 6, 3, 4, 1, 2]
       end
 
-      stdout_log("##references") do
-          # Raises a deprecation warning since it cannot know wether to use `JOIN` or `WHERE` without parsing the SQL.
-          # and the SELECT would require a `JOIN`.
+      stdout_log('includes + select') do
+        # Before 4.1, raises a deprecation warning since it cannot know wether to use
+        # `JOIN` or `WHERE` without parsing the SQL which it does not do,
+        # and the SELECT would force a `JOIN`.
 
-            assert_equal Model0.includes(:model1).select("model0s.integer_col AS i, model1s.*").find(1).integer_col, 1
+        # On 4.1 raises SQL errors.
+
+            #assert_equal Model0.includes(:model1).select(
+              #'model0s.integer_col AS i, model1s.*').find(1).integer_col, 1
       end
 
-            Model0.includes(:model1).where("model0s.id = 1").take.integer_col
+            Model0.includes(:model1).where('model0s.id = 1').take.integer_col
 
-      stdout_log("select + references") do
+      stdout_log('select + references') do
           # The select is ignored: columns are not renamed, and `SELECT *` is done so every column is accessible.
           # This is unlike `joins`, in which `select` is considered.
-          model0 = Model0.includes(:model1).select("model0s.integer_col AS i, model1s.id") \
+          model0 = Model0.includes(:model1).select('model0s.integer_col AS i, model1s.id') \
               .references(:model0s, :model1s).find(1)
           assert_raises(NoMethodError){model0.i}
           assert_equal model0.integer_col, 1
@@ -776,10 +785,10 @@ class ActiveRecordTest < ActiveSupport::TestCase
       # Fails because missing attribute model1.id. TODO But why, since selects are ignored?
 
         assert_raises(ActiveModel::MissingAttributeError){
-          Model0.includes(:model1).select("model0s.integer_col AS i").references(:model0s).find(1)
+          Model0.includes(:model1).select('model0s.integer_col AS i').references(:model0s).find(1)
         }
 
-      stdout_log("nested includes") do
+      stdout_log('nested includes') do
         # Rails can decide between 3 WHERE clauses or a single JOIN here.
         model1_ids = []
         Model0.includes(model1: :model22).find_each do |model0|
@@ -788,7 +797,7 @@ class ActiveRecordTest < ActiveSupport::TestCase
         assert_equal model1_ids, [1, 1, 2, 2] * 2
       end
 
-      stdout_log("nested includes + where on has many side") do
+      stdout_log('nested includes + where on has many side') do
         # Rails is smart, and the where forces the query to be a single JOIN,
         # since it would not be possible to do this efficiently with the WHERE strategy.
         model2_ids = []
@@ -798,14 +807,14 @@ class ActiveRecordTest < ActiveSupport::TestCase
         assert_equal model2_ids, [1, 2, 5, 6]
       end
 
-      stdout_log("nested includes + order") do
+      stdout_log('nested includes + order') do
         assert_equal Model0.includes(model1: :model2).order('model2s.id DESC', :id).pluck(:id), [3, 4, 7, 8, 1, 2, 5, 6]
       end
 
       # Including from the has many side is possible, but then each usage of the has many relation fires a new query.
       # There is no logical way around this.
 
-        stdout_log("includes belongs to from has many side") do
+        stdout_log('includes belongs to from has many side') do
           # Includes also works from the `has_many` side, the following makes only a fixed number of queries:
           model0_ids = []
           Model1.includes(:model0s).find_each do |model1|
@@ -825,13 +834,13 @@ class ActiveRecordTest < ActiveSupport::TestCase
         assert_equal model0_ids, (1..8).to_a
   end
 
-  test "##create" do
+  test '##create' do
     # Unlike new, immediately creates the element on the database.
     #
     # It does not seem to be currently possible to create multiple objects with a single query:
     # even if the array interface is used:
     # http://stackoverflow.com/questions/2509320/saving-multiple-objects-in-a-single-call-in-rails
-    stdout_log("create") do
+    stdout_log('create') do
       Model0.create([
         {integer_col: 1, string_col: 's1'},
         {integer_col: 2, string_col: 's2'},
@@ -875,7 +884,7 @@ class ActiveRecordTest < ActiveSupport::TestCase
 
     ##build
 
-  test "#update" do
+  test '#update' do
 
     # Takes id of record to update:
 
@@ -883,13 +892,13 @@ class ActiveRecordTest < ActiveSupport::TestCase
       assert_equal Model0.find(1).integer_col, 2
   end
 
-  test "#update multiarg" do
+  test '#update multiarg' do
       assert Model0.update([1, 2], [{integer_col: 11}, {integer_col: 12}])
       assert_equal Model0.find(1).integer_col, 11
       assert_equal Model0.find(2).integer_col, 12
   end
 
-  test "#update_all" do
+  test '#update_all' do
     # Updates an argument for all records of the table
       assert Model0.update_all(integer_col: 10)
       assert_equal Model0.find(1).integer_col, 10
@@ -916,7 +925,7 @@ class ActiveRecordTest < ActiveSupport::TestCase
       # possible actions. To truncate consider using the `DatabaseCleaner` gem.
       # with `DatabaseCleaner.clean_with(:truncation, only: [:model0s, :model1s])`.
 
-  test "##changed ##was" do
+  test '##changed ##was' do
 
       # Check for differneces between the object and its DB version.
 
@@ -934,7 +943,7 @@ class ActiveRecordTest < ActiveSupport::TestCase
 
       # Find which attributes changed and their DB values:
 
-        assert_equal model0.changed_attributes, {"integer_col" => 1}
+        assert_equal model0.changed_attributes, {'integer_col' => 1}
 
       ##changed
 
@@ -950,7 +959,7 @@ class ActiveRecordTest < ActiveSupport::TestCase
         # To get the DB version of the entire object use `model0.dup.reload`.
   end
 
-  test "##reload" do
+  test '##reload' do
 
     # Find object by ID on the database, and update the memory version inplace to match the DB.
 
