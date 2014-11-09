@@ -64,36 +64,53 @@ b</div>
   <%# not defined? @after_render or raise %>
   <% @arr[0] += 1 %>
 
-  <%= header '#raw #html_safe', 3 %>
+  <%= header '#html_escape #h', 3 %>
+
+    <p>XSS and defacement prevention mechanism.</p>
+    <p>
+      <code>ERB::Util.html_escape</code>
+      <a href="http://api.rubyonrails.org/classes/ERB/Util.html#method-c-html_escape">http://api.rubyonrails.org/classes/ERB/Util.html#method-c-html_escape</a>
+      Also present on the stdlib, but Rail's is different because it considers <code>SafeBuffer</code>.
+    </p>
+    <p>
+      Escape HTML special characters like &amp; and &lt; from a string to make them visible in HTML.
+      unless the input is a <code>SafeBuffer</code>.
+    </p>
+    <p>
+      Called automatically on ERB <code>=</code> block.
+      Escapes exactly: <%= %{&"'><} %>
+      <a href="https://github.com/rails/rails/blob/7ce68406934c50a2ce3079bea4fd34936388c26a/activesupport/lib/active_support/core_ext/string/output_safety.rb#L8">Source</a>.
+    </p>
+    <p>
+      For CGI manipulations like query strings, use <code>CGI.escape</code> instead,
+      as it is a completely different operation.
+    </p>
+
+  <%= header '#raw #html_safe #SafeBuffer', 3 %>
 
     <p>
-      By default, ERB rendered strings are automatically escaped of HTML tags
+      By default, ERB rendered <code>String</code> are automatically escaped of HTML tags
       before being rendered: <%= '<i>a</i>' %>
     </p>
     <p>
-      To avoid that, the string must be marked with the monkey patch <code>html_safe</code>
-      method, either from the view of the controller it comes from: <%= '<i>a</i>'.html_safe %>.
+      To avoid that, the string must wrapped around a <code>SafeBuffer</code> object:
+      <a href="http://api.rubyonrails.org/classes/ActiveSupport/SafeBuffer.html">http://api.rubyonrails.org/classes/ActiveSupport/SafeBuffer.html</a>
+      Conversion from <code>String</code>
+      marked with the monkey patch <code>html_safe</code>
     </p>
     <p>
       <code>raw s</code> is just a wrapper that does <code>s.to_s.html_safe</code>: <%= raw ['<i>a</i>'] %>
       <a href="http://stackoverflow.com/questions/4251284/raw-vs-html-safe-vs-h-to-unescape-html">SO question.</a>
     </p>
 
-  <%= header '#html_escape #h', 3 %>
+  <%= header '#sanitize', 3 %>
 
+    <p><a href="http://api.rubyonrails.org/classes/ActionView/Helpers/SanitizeHelper.html#method-i-sanitize">http://api.rubyonrails.org/classes/ActionView/Helpers/SanitizeHelper.html#method-i-sanitize</a></p>
     <p>
-      Escape HTML special characters like &amp; and &lt; from a string to make them visible in HTML.
-      Very seldom used, as any string not marked as <code>html_safe</code> will be escaped automatically,
-      the only use them would be to undo it.
+      Vs <code>html_escape</code>: sanitize is more complex:
+      it whitelists certain tags and attributes instead of escaping all chars.
+      It is therefore less safe, and can allow you to show code with HTML input.
     </p>
-    <p>
-      For CGI manipulations like query strings, use <code>CGI.escape</code> instead,
-      as it is a completely different operation.
-    </p>
-    <p>Escapes exactly: <%= %{&"'><} %> <a href="https://github.com/rails/rails/blob/7ce68406934c50a2ce3079bea4fd34936388c26a/activesupport/lib/active_support/core_ext/string/output_safety.rb#L8">Source</a>.</p>
-
-    <% h '&' == '&amp;' or raise %>
-    <% html_escape '&' == '&amp;' or raise %>
 
   <%= header '#CGI.escape #to_query', 3 %>
 
@@ -181,7 +198,7 @@ b</div>
           Maintains <code>html_safe</code> status of input,
           so you will almost always want to set it.
         </p>
-        <% a = "\\n<" %>
+        <% a = '\n<' %>
         <%= javascript_tag do %>
           if ('<%= j(a)           %>' !== '\\n&lt;') alert('fail')
           if ('<%= j(a).html_safe %>' !== '\\n<')    alert('fail')
@@ -225,33 +242,47 @@ b</div>
           if (gon.key2 !== 'val2') alert('fail')
         <% end %>
 
-  <%= header "#named path helpers", 3 %>
+  <%= header '#Named path helpers', 3 %>
 
-    <p><code>_path</code> helpers contain relative links:</p>
+  <%= header '#as', 3 %>
+
+    <p>Routing methods like <code>get</code> automatically created named paths based on the path:</p>
     <ul>
-      <li>root_path = <%= root_path %></li>
-      <li>namespace0_root_path = <%= namespace0_root_path %></li>
-      <li>namespace0_action0_path = <%= namespace0_action0_path %></li>
-      <li>action0_path = <%= action0_path %></li>
-      <li>action1_path = <%= action1_path %></li>
-      <li>
-        <p>Resources in routes generate named helpers.</p>
-        <p>Be ultra careful about pluralization of identifiers!</p>
-        <ul>
-          <li>model0s_path = <%= link_to model0s_path, model0s_path %></li>
-          <li>new_model0_path = <%= link_to new_model0_path, new_model0_path %></li>
-          <li>model0s_path = TODO how to do it?
-            Hash version is bad because id goes into params string: <%= link_to model0s_path(id: @model0s.first), model0s_path(id: @model0s.first) %>
-            Non hash version fails because the id goes into the optional language param: <%= link_to model0s_path(@model0s.first), model0s_path(@model0s.first) %>
-          </li>
-        </ul>
-      </li>
+      <li><%= print_eval(:no_as_path) {} %></li>
+      <li><%= print_eval(:slash_no_as_path) {} %></li>
     </ul>
 
-    <p>
-      Each <code>_path</code> helper also has a <code>_url</code> helper,
-      that give the full path, with , inste
-    </p>
+    <p>Scope is not appended to the path by default:</p>
+    <ul>
+      <li><%= print_eval(:in_no_as_scope_path) {} %></li>
+    </ul>
+
+    <p>But it can be added with <code>as</code> on the scope:</p>
+    <ul>
+      <li><%= print_eval(:as_scope_in_as_scope_path) {} %></li>
+    </ul>
+
+    <%= header '#root', 3 %>
+
+      <ul>
+        <li><%= print_eval(:namespace0_root_path) {} %></li>
+        <li><%= print_eval(:root_path) {} %></li>
+      </ul>
+
+    <%= header '#resources helpers', 3 %>
+
+      <p>Resources in routes generate named helpers.</p>
+      <p>Be ultra careful about pluralization of identifiers!</p>
+
+      <ul>
+        <li><%= print_eval(:model0s_path) {} %></li>
+        <li><%= print_eval(:new_model0_path) {} %></li>
+      </ul>
+
+  <p>
+    Each <code>_path</code> helper also has a <code>_url</code> helper,
+    that give the full path, with , inste
+  </p>
 
   <%= header "#controller_name #action_name", 3 %>
 
@@ -261,7 +292,7 @@ b</div>
     </table>
 
     <p>
-      Those will also be present in <code>params</code>, but you should use the helpers instead.
+      Those are also be present in <code>params</code>, but you should use the helpers instead.
       <a href="http://stackoverflow.com/questions/3757491/can-i-get-the-name-of-the-current-controller-in-the-view">http://stackoverflow.com/questions/3757491/can-i-get-the-name-of-the-current-controller-in-the-view</a>
     </p>
 
@@ -335,11 +366,15 @@ b</div>
       Plain XHRs don't have such JSON parsing capabilities, and so are not prone to this error.
     </p>
 
-<%= header "#file upload", 2 %>
+<%= header '#file upload', 2 %>
 
-  <p><%= link_to 'File Upload', {action: 'file_upload'} %></p>
+  <p><%= link_to 'File Upload', { action: 'file_upload' } %></p>
 
-<%= header "#routes #link_to #url_for", 2 %>
+<%= header '#routes', 2 %>
+
+<%= header '#link_to', 2 %>
+
+<%= header '#url_for', 2 %>
 
   <p>
     <code>link_to</code> and many other unctions uses <code>url_for</code>
@@ -361,10 +396,13 @@ b</div>
       and <code>url</code> suffixes to indicate what kind of href they return.
     </p>
     <p>Weirdly, <code>url_for</code> gives only paths instead of full URLs like most <code>url</code> named methods.</p>
-    <p>To get around that, pass <code>only_path: false</code>as in: <%= url_for([@model0s.first, only_path: false]) %></p>
+    <p>
+      To get around that, pass <code>only_path: false</code>as in:
+      <%= url_for([@model0s.first, only_path: false]) %>
+    </p>
 
   <ul>
-    <li>link_to "inner", "href" = <%= link_to "inner", "href" %></li>
+    <li>link_to "inner", "href" = <%= link_to 'inner', 'href' %></li>
     <li>
       same as above do end version =
       <%= link_to "href" do %>
@@ -436,7 +474,7 @@ b</div>
     </li>
   </ul>
 
-  <%= header "#polymorphic routes", 3 %>
+  <%= header '#Polymorphic routes', 3 %>
 
     <p>Polymorphic routes allow you to generate a path without knowing the exact object type,</p>
     <p>When you know the object type, you can use a named helper like: <code>posts_path(post)</code></p>
@@ -445,9 +483,10 @@ b</div>
       The path is inferred from the type of <code>post</code>.
     </p>
     <p>
-      <code>polymorphic_path</code> is used as a backend for certain <code>url_for</code>
-      and thus <code>link_to</code> arguments, so you don't need to use it directly.
+      <code>polymorphic_path</code> is used as a backend for <code>url_for</code>
+      and thus <code>link_to</code> arguments, so you don't need to use it directly most of the time.
     </p>
+    <p><code>polymorphic_rout</code> works by building a helper.</p>
 
     <ul>
       <li>link_to: <%= link_to 'Model0.first', Model0.first %></li>
@@ -728,38 +767,40 @@ b</div>
   %>
   <p>I18n.load_path = <%= I18n.load_path %></p>
 
-<%= header "#images", 2 %>
+<%= header '#assets', 2 %>
 
-  <p>
-    Relative paths give URLs of type <code>/assets/relpath.png</code> on development,
-    and <code>/assets/relpath-MD5.png</code> on production:
-    <%= image_tag "png.png", alt: "alt", size: "100x100" %>
-  </p>
+  <%= header '#images', 3 %>
 
-  <p>
-    Absolute paths such as `/app/assets/images/png.png` create images with that exact path.
-    **Never** use this: in production the assets are precompiled under `public/assets`,
-    and not visible under app /images.
-    <%# image_tag "/images/png.png", alt: "alt", size: "20x30" %>.
-  </p>
+  <%= header '#image_tag', 3 %>
 
-<%= header "#assets #css #js #javascript", 2 %>
+    <p>
+      Relative paths give URLs of type <code>/assets/relpath.png</code> on development,
+      and <code>/assets/relpath-MD5.png</code> on production:
+    </p>
 
-  <div>CSS OK?
-    <span class="application-css">application-css</span>
-    <span class="controller0-scss">controller0-css</span>
-  </div>
-  <div>JS OK?
+    <%= image_tag 'png.png', alt: 'alt', size: '100x100' %>
+
+    <p>
+      Absolute paths such as `/app/assets/images/png.png` create images with that exact path.
+      **Never** use this: in production the assets are precompiled under `public/assets`,
+      and not visible under app /images.
+      <%# image_tag '/images/png.png', alt: 'alt', size: '20x30' %>.
+    </p>
+
+  <%= header '#CSS', 3 %>
+
+  <%= header '#Js', 3 %>
+
+  <%= header '#Javascript', 3 %>
+
+    <div id="application-css">application.css FAILED</div>
+    <div id="controller0-scss">controller0.scss FAILED</div>
+
     <script>
-      var text
-      if (controller0 == 0 && any_name == 1 && plain_js == 2) {
-        text = 'yes'
-      } else {
-        text = 'NO!'
+      if !(controller0 == 0 && any_name == 1 && plain_js == 2) {
+        document.write('<div id="application-css">Javascript include FAILED</div>')
       }
-      document.currentScript.insertAdjacentHTML('beforeBegin', text)
     </script>
-  </div>
 
 <%= header "#third party", 2 %>
 

@@ -113,6 +113,8 @@ However, in certain cases it is the best option:
 
 ## rails command
 
+### new
+
 Create a new project template:
 
     rails new project-name
@@ -121,16 +123,42 @@ Use a specific RDMS:
 
     rails new myapp --database=postgresql
 
+### server
+
 Run test server:
 
     cd project-name
-    rails server
+    bundle exec rails server
 
 Shortcut:
 
-    rails s
+    bundle exec rails s
 
-By default this serves on port `3000`.
+By default this serves on port `3000`. You can chose a custom one with:
+
+    bundle exec rails server -p 4000
+
+If you have certain gems installed,
+you can use another server other than the default WEBrick with:
+
+    bundle exec rails thin
+    bundle exec rails mongrel
+
+<http://stackoverflow.com/questions/7047496/how-to-set-thin-as-default-in-rails-3>
+
+<http://stackoverflow.com/questions/15858887/how-can-i-use-unicorn-as-rails-s>
+
+Daemonize Rails:
+
+    bundle exec rails server -d
+
+To stop it later do:
+
+    kill `cat tmp/pids/server.pid`
+
+### generate
+
+### destroy
 
 Generate a controller template with one action:
 
@@ -147,6 +175,8 @@ Delete files created with generate:
 Shortcut:
 
     rails d controller controller-name
+
+# console
 
 Open a live terminal in which to interact with the application:
 
@@ -177,7 +207,7 @@ To run a script file <http://stackoverflow.com/questions/10313181/pass-ruby-scri
 
 To create a new rake task add a `.rake` file with any name under `lib/tasks` in Rakefile format.
 
-Useful tasks which did not fit anywhere else:
+Useful tasks:
 
 - `tmp:clear` and `log:clear`. May greatly reduce directory sizes.
 
@@ -555,6 +585,12 @@ To stop it:
 
 If you add a new gem, make sure to restart the Spring server or it might not find it.
 
+### Shoulda
+
+Adds extra Rails-specific assertions for Minitest and RSpec.
+
+<https://github.com/thoughtbot/shoulda-matchers>
+
 ## Assets
 
 The assets pipeline allows to:
@@ -651,16 +687,7 @@ Therefore, `response.body` will be empty and `assert_select` will fail.
 
 #### Spinach
 
-Unit testing framework, with yet another super mini language (the Gherkin language, not a ruby DSL).
-It seems that the goal of that language is to make tests accessible to people who do not understand Ruby.
-
-Tests are located under `/features/`.
-
-General config file is `/features/support/env.rb`.
-
-Tests are defined on `.feature` files written in Gherkin located TODO where.
-
-Step definition (what each part of a feature test does) goes under `steps`
+Only Rails Ruby specifics will be commented here.
 
 Generate basic spinach files:
 
@@ -722,11 +749,13 @@ Rails integration is provided by the `factory_rails` gem.
 
 Factories are automatically loaded from `(spec|test)/(factories.rb|factories*.rb)`.
 
-#### seed_fu
+#### Seed Fu
 
 <https://github.com/mbleigh/seed-fu>
 
 Seeding library.
+
+Rails specific since it explicitly uses `ActiveRecord`.
 
 TODO: why is it better than the built-in Rails seeding?
 
@@ -876,7 +905,21 @@ As with any system, understanding internals helps you understand the API.
 
 In come cases, documentation fails, and opening up the method is the only way to understand anything.
 
-<https://github.com/rails/rails>
+Source code: <https://github.com/rails/rails>
+
+### tmp
+
+-   `pids/server.pid`: PID of the server. File only exists while server is running.
+
+    Specially useful when running Rails daemonized with `rails s -d`.
+
+### Rack
+
+Rails implements a Rack application: the main class `App::Appname` is the rack app.
+
+Rails requires the rack. The default handler for development is WEBrick.
+
+### Source tree
 
 Rails is made of directories which implement independent sections of it.
 

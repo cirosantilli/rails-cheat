@@ -341,13 +341,19 @@ class Controller0Controller < ApplicationController
     # but before_filter is not yet deprecated as of Rails 4.1.
     #
     # But it may be some day, and `before_action` makes more sense.
-
+    #
     # Action taken before doing any action.
-
-    # To make a fileter for all controllers, place it in `application_controller.rb`,
+    #
+    # The main advantage of them over writting a method call before each action
+    # is that you can affect all actions and descendent class actions with a single line.
+    #
+    # If the filter renders or redirects, the main action is not called.
+    # This is for example how Devise's `:authenticate_user!`
+    # and many permission control systems work.
+    # The return value does not matter.
+    #
+    # To make a filter for all controllers, place it in `application_controller.rb`,
     # which is the base class of every controller.
-
-    # Can for example redirect user to another page.
 
       before_filter :before_filter_do, unless: :before_filter_dont
 

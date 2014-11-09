@@ -4,6 +4,30 @@
 # http://guides.rubyonrails.org/testing.html
 
 class MainTest < MiniTest::Unit::TestCase
+
+  # safe_join
+  include ActionView::Helpers::OutputSafetyHelper
+
+  ##test method
+
+    # http://api.rubyonrails.org/classes/ActiveSupport/Testing/Declarative.html#method-i-test
+
+    # Rails specific, simply defines a MiniTest method:
+
+    # TODO why fails?
+
+      #test 'test method' do
+        #assert true
+      #end
+
+    # Same as (would conflict):
+
+      #def test_method
+        #assert true
+      #end
+
+    # Raionale: `test` is more readable. But just use `def test_` since saner.
+
   ##Autoload
 
     # Rails has a Rails-specific constant autoloading system.
@@ -86,6 +110,41 @@ class MainTest < MiniTest::Unit::TestCase
           assert [].blank?
       end
 
+      ##html_safe ##html_escape ##SafeBuffer
+
+      def test_html_safe
+        refute '<'.html_safe?
+        assert '<'.html_safe.html_safe?
+        assert_equal '<'.html_safe.class, ActiveSupport::SafeBuffer
+
+        assert '<'.html_safe == '<'
+
+        # html_escape only escapes raw `String`, not `SafeBuffer`:
+
+          ERB::Util.html_escape('<') == '&lt;'
+          ERB::Util.html_escape('<'.html_safe) == '<'
+
+        # Concatenation works like this:
+
+          s = '<' + '>'.html_safe
+          refute s.html_safe?
+          assert_equal ERB::Util.html_escape(s), '&lt;&gt;'
+
+          s = '<'.html_safe + '>'
+          assert s.html_safe?
+          assert_equal ERB::Util.html_escape(s), '<&gt;'
+          assert_equal ERB::Util.html_escape('<'.html_safe + '>'.html_safe), '<>'
+
+        ##safe_join
+
+          # <http://api.rubyonrails.org/classes/ActionView/Helpers/OutputSafetyHelper.html#method-i-safe_join>
+
+            assert_equal ERB::Util.html_escape(['<'.html_safe, '>'.html_safe].
+                                               join('&'.html_safe)), '&lt;&amp;&gt;'
+
+            assert_equal safe_join(['<'.html_safe, '>'.html_safe], '&'.html_safe), '<&>'
+      end
+
       ##to_json
 
       def test_to_json
@@ -102,5 +161,14 @@ class MainTest < MiniTest::Unit::TestCase
         # http://api.rubyonrails.org/classes/ActiveModel/Name.html
         assert_equal(TwoWord.model_name.human, 'Two word')
         assert_equal(TwoWord.model_name.param_key, 'two_word')
+      end
+
+      # Monkey patched into Numeric
+      # http://api.rubyonrails.org/classes/Numeric.html#method-i-kilobytes
+
+      def bytes
+        assert_equal(1.kilobyte, 1024)
+        assert_equal(1.kilobytes, 1024)
+        assert_equal(1.megabyte, 2**20)
       end
 end

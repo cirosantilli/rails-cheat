@@ -30,7 +30,9 @@ App::Application.routes.draw do
     #
     # - controller
     # - module
-    # - the module of the controllers
+    # - module of the controllers
+    #
+    # But you are likely better off doing that with `namespace` which is DRYer.
 
   ##namespace
 
@@ -45,7 +47,6 @@ App::Application.routes.draw do
     # Is the same as:
 
       #scope '/namespace0', as: 'namespace0', module: 'namespace0' do
-        #resources :contexts
       #end
 
   ##get
@@ -81,6 +82,21 @@ App::Application.routes.draw do
           #namespace :admin do
             #root to: 'admin#index'
           #end
+
+    ##Name path helpers
+
+    ##as
+
+        get 'no_as' => 'controller0#action0'
+        get 'slash/no_as' => 'controller0#action0'
+
+        scope 'no_as_scope', controller: 'controller0' do
+          get 'in_no_as_scope' => 'action0'
+        end
+
+        scope 'as_scope', as: 'as_scope' do
+          get 'in_as_scope' => 'controller0#action0'
+        end
 
     scope 'controller0', controller: :controller0 do
 

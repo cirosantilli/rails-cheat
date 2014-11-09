@@ -18,7 +18,7 @@ class Controller0ControllerTest < ActionController::TestCase
   # Must include this for devise tests, or simple things like `get` may not work.
   include Devise::TestHelpers
 
-  test 'fixtures were loaded' do
+  def test_fixtures_were_loaded
     # This checks that fixtures were actualy loaded.
     assert_equal(Model0.find_by(string_col: 's1').integer_col, 1)
     refute_equal(Model1.find_by(string_col: 't1'), nil)
@@ -28,18 +28,18 @@ class Controller0ControllerTest < ActionController::TestCase
 
   # DB is reset to fixtures between each test function.
 
-    test 'destroy' do
+    def test_destroy
       Model0.destroy_all
       assert_equal(Model0.find_by(string_col: 's1'), nil)
     end
 
-    test 'after destroy' do
+    def test_after_destroy
       assert_equal(Model0.find_by(string_col: 's1').integer_col, 1)
     end
 
   # This test uses methods furnished by `ActionController::TestCase`
   #
-  test 'ActionController TestCase specific' do
+  def test_action_controller_test_case_specifiK
 
     ##get
 
@@ -161,7 +161,11 @@ class Controller0ControllerTest < ActionController::TestCase
 
     # The following tests are for things which are shown in the views.
 
-      test '#ERB #erubis' do
+      ##ERB
+
+      ##Erubis
+
+      def test_erb
         get(:action0)
         assert_select('#erb-equal-newline'                  , "a\nb")
         assert_select('#erb-equal-newline-hyphen'           , 'ab'  )
@@ -173,7 +177,7 @@ class Controller0ControllerTest < ActionController::TestCase
         assert_select('#erb-newline-hyphen-leading-trailing', "a\nb")
       end
 
-      test 'partials' do
+      def test_partials
         get(:action0)
         assert_select('#partial-instance', '0')
         assert_select('#partial-optional-local', '0')
