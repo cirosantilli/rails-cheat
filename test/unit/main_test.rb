@@ -1,9 +1,20 @@
+require 'test_helper'
+
 # This is the main cheat for tests.
 
 # Read the tutorial as soon as you can:
 # http://guides.rubyonrails.org/testing.html
 
-class MainTest < MiniTest::Unit::TestCase
+# ##ActiveSupport::TestCase
+#
+#   Inherits `MiniTest::Unit::TestCase`.
+#
+#   Is the base class of other Rails specific test classes like
+#   `Controller0ControllerTest` which adds controller tests.
+#
+#   For generic tests like thos under `lib`,
+#   this is the recommended base class.
+class MainTest < ActiveSupport::TestCase
 
   # safe_join
   include ActionView::Helpers::OutputSafetyHelper
@@ -14,11 +25,9 @@ class MainTest < MiniTest::Unit::TestCase
 
     # Rails specific, simply defines a MiniTest method:
 
-    # TODO why fails?
-
-      #test 'test method' do
-        #assert true
-      #end
+      test 'test method' do
+        assert true
+      end
 
     # Same as (would conflict):
 

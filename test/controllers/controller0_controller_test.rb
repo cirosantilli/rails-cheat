@@ -1,6 +1,6 @@
 require 'test_helper'
 
-# The following hierarchy exists in Rails 4:
+# The following hierarchy exists:
 #
 #     ActionController::TestCase < ActiveSupport::TestCase <  MiniTest::Unit::TestCase 
 #

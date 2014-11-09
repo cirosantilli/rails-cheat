@@ -231,15 +231,20 @@ b</div>
           if ($('#data').data('key2') !== 'val2' ) alert('fail')
         <% end %>
 
-      <%= header '#gon library', 5 %>
+      <%= header '#gon', 5 %>
 
         <p>Specialized solution.</p>
         <p>Variables are set in the controller.</p>
         <p>Don't forget to add the <code>= include_gon</code> helper at the layout.</p>
 
         <%= javascript_tag do %>
-          if (gon.key1 !== 'val1') alert('fail')
-          if (gon.key2 !== 'val2') alert('fail')
+          // TODO why??
+          if (typeof(gon) === 'undefined') {
+            alert('gon fail: undefined')
+          } else {
+            if (gon.key1 !== 'val1') alert('gon fail val1')
+            if (gon.key2 !== 'val2') alert('gon fail val2')
+          }
         <% end %>
 
   <%= header '#Named path helpers', 3 %>
@@ -797,7 +802,7 @@ b</div>
     <div id="controller0-scss">controller0.scss FAILED</div>
 
     <script>
-      if !(controller0 == 0 && any_name == 1 && plain_js == 2) {
+      if (!(controller0 === 0 && any_name === 1 && plain_js === 2)) {
         document.write('<div id="application-css">Javascript include FAILED</div>')
       }
     </script>
