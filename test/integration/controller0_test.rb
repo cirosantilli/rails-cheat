@@ -9,7 +9,7 @@ class Controller0Test < ActionDispatch::IntegrationTest
   def test_action0
     Capybara.current_driver = :poltergeist
     visit action0_path
-    assert find('#application-css').visible?
-    #controller0-scss
+    refute find('#application-css', visible: false).visible?
+    refute find('#controller0-scss', visible: false).visible?
   end
 end

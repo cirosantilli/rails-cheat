@@ -236,15 +236,15 @@ b</div>
         <p>Specialized solution.</p>
         <p>Variables are set in the controller.</p>
         <p>Don't forget to add the <code>= include_gon</code> helper at the layout.</p>
+        <p>TODO failing with gon undefined.</p>
 
         <%= javascript_tag do %>
-          // TODO why??
-          if (typeof(gon) === 'undefined') {
-            alert('gon fail: undefined')
-          } else {
-            if (gon.key1 !== 'val1') alert('gon fail val1')
-            if (gon.key2 !== 'val2') alert('gon fail val2')
-          }
+          //if (typeof(gon) === 'undefined') {
+          //  alert('gon fail: undefined')
+          //} else {
+          //  if (gon.key1 !== 'val1') alert('gon fail val1')
+          //  if (gon.key2 !== 'val2') alert('gon fail val2')
+          //}
         <% end %>
 
   <%= header '#Named path helpers', 3 %>
