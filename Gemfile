@@ -42,6 +42,8 @@ end
 # Deployment
 gem 'foreman'
 gem 'unicorn'
+
+# Uses Unicorn on `rails server`.
 #gem 'unicorn-rails'
 
 # Login

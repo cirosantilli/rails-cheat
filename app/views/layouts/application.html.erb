@@ -44,6 +44,22 @@ This is the default layout fo the application.
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
 
+  <%#
+  #stylesheet_link_tag
+
+      Add the following elements:
+
+          <meta content="authenticity_token" name="csrf-param" />
+          <meta content="j/DcoJ2VZvr7vdf8CHKsvjdlDbmiizaOb5B8DMALg6s=" name="csrf-token" />
+
+      This is only used for AJAX requests, and updating fragment-cache from Javascript:
+      the token is automatically inserted in non-GET form helpers.
+
+      This gets used by jquery-ujs.
+
+      http://stackoverflow.com/questions/9996665/rails-how-does-csrf-meta-tag-work
+  %>
+
   <%= csrf_meta_tags %>
 </head>
 <body>

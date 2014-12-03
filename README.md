@@ -1,4 +1,4 @@
-# Rails Cheat
+# ![logo](logo.png) Rails Cheat
 
 Rails information and cheatsheets.
 
@@ -288,6 +288,12 @@ This will also create a db migration and test fixtures templates.
 Create a template with some fields:
 
     rails generate model model_name column0:string column1:string
+
+### SQL injection
+
+Website dedicated to SQL injection
+
+<http://rails-sqli.org>
 
 ## Database
 
@@ -599,9 +605,9 @@ The assets pipeline allows to:
 
     - ERB -> HTML, SCSS -> CSS, etc. conversions, so you can write your assets in more convenient languages.
 
-    - Javascript and CSS minification
+    - JavaScript and CSS minification
 
-    - concatenation of multiple CSS and Javascript files into a single file
+    - concatenation of multiple CSS and JavaScript files into a single file
         so that they load faster.
 
 -   improve browser caching by adding MD5 hashes to filenames:
@@ -642,6 +648,14 @@ By default Rails does not serve files under `public` in production mode
 as this job should be left for a web server such as Apache or Nginx for efficiency reasons.
 If you really want Rails to serve those files edit `config.serve_static_assets = true`
 under `config/environment/production.rb`.
+
+### Asset permission control
+
+<http://guides.rubyonrails.org/asset_pipeline.html#x-sendfile-headers>
+
+<http://stackoverflow.com/questions/2143300/protecting-the-content-of-public-in-a-rails-app>
+
+Use `send_file`, which uses the `X-Sendfile` extension header.
 
 ### gitignore public assets
 
@@ -929,3 +943,11 @@ Each section has a README which explains what it is about.
 
 - `actionpack`: model and View layers.
 - `activesupport`: utility classes.
+
+# Deployment
+
+As of 2014, Unicorn + Nginx is a very popular method:
+
+<https://www.digitalocean.com/community/tutorials/how-to-deploy-rails-apps-using-unicorn-and-nginx-on-centos-6-5>
+
+Used by GitLab and GitHub.

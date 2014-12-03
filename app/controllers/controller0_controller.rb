@@ -259,6 +259,10 @@ class Controller0Controller < ApplicationController
     @var0 = 1
   end
 
+  def post
+    render text: params.to_s
+  end
+
   ##routes
 
       def url_params
@@ -405,14 +409,13 @@ class Controller0Controller < ApplicationController
 
   ##file upload ##download
 
+    # TODO: as it stands this is a huge security breach:
+    # https://www.owasp.org/index.php/Unrestricted_File_Upload
+
       def file_upload
         @uploaded_files = Dir.entries(File.join(upload_dir)).
           map{|x| File.basename(x)}.delete_if{|x| x == '.' or x == '..'}
         @upload_total = UploadTotal.take.upload_total
-      end
-
-      def upload_dir
-        Rails.root.join('public', 'uploads')
       end
 
       # Upload a file.
@@ -456,8 +459,17 @@ class Controller0Controller < ApplicationController
         redirect_to :back
       end
 
-      # ##send_file: takes path as input.
-      # ##send_data: takes data as input.
+      ##send_file
+
+        # takes path as input.
+
+      ##send_data
+
+        # takes string as input.
+
+        # TODO other differences?
+        # http://stackoverflow.com/questions/5535981/difference-between-rails-send-data-and-send-file-with-example
+
       def file_download
         send_file File.join(upload_dir, params[:id])
       end
@@ -488,7 +500,11 @@ class Controller0Controller < ApplicationController
       def view_tests
       end
 
-  private
+  protected
+
+    def upload_dir
+      Rails.public_path.join('uploads')
+    end
 
     # This determines which parameters can be sent through POST methods.
     # It is mandatory to whitelist possible parameters or they won't work.

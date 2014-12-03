@@ -22,6 +22,7 @@ module ApplicationHelper
   end
 
   def print_eval(s, &b)
-    content_tag(:code, s) + ' = ' + eval(s.to_s, b.binding).to_s
+    ss = s.to_s
+    content_tag(:code, ss) + ' = ' + eval(ss, b.binding).to_s
   end
 end

@@ -48,10 +48,14 @@ module App
 
       ##autoload_paths
 
-          config.autoload_paths += %W(#{config.root}/lib)
+          config.autoload_paths.concat(%W(#{config.root}/lib))
 
       ##eager
 
         # TODO vs autoload
+
+      ##x_sendfile_header
+
+          #config.action_dispatch.x_sendfile_header = "X-Sendfile"
   end
 end

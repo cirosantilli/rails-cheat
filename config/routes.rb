@@ -101,6 +101,7 @@ App::Application.routes.draw do
     scope 'controller0', controller: :controller0 do
 
           get '' => :action0
+          post '' => :post, as: :post
           get 'action0' => :action0
           get 'redirect-to-action0' => :redirect_to_action0
           get 'ajax' => :ajax

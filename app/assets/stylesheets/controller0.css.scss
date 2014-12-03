@@ -5,3 +5,7 @@
 #controller0-scss {
   display: none;
 }
+
+// To include an asset, e.g. for background-image: url(,
+// use the magic SASS helpers:
+// http://stackoverflow.com/questions/15257555/how-to-reference-images-in-css-within-rails-4

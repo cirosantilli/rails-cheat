@@ -1,7 +1,7 @@
 <% provide(:title, 'controller0') %>
 
-<p><code>Rails.env</code> = <%= Rails.env %></p>
-<p><code>Rails::VERSION::STRING</code> = <%= Rails::VERSION::STRING %></p>
+<p><%= print_eval('Rails::env') {} %></p>
+<p><%= print_eval('Rails::VERSION::STRING') {} %></p>
 
 <%= header "Controller0#action0", 2 %>
 
@@ -138,11 +138,44 @@ b</div>
 
   <%= header '#content_tag', 3 %>
 
-    <p>Convenient to generate an arbitray tag with many attributes.</p>
+    <p>Most general tag generation method for non-self closing (or implicily closed) tags.</p>
 
     <%= content_tag :div, {class: 'a', style: 'background-color:green'} do %>
       Inside div.
     <% end %>
+
+    <%= header '#html_options', 4 %>
+
+      <p>
+        TODO where are they documented? This hash parameter can be passed to all HTML helpers
+        to add attributes to elements. Some helpers add extra magic parameters, but all share a common base.
+      </p>
+
+      <p>
+        Some parts of the options algorithm which is implemented at:
+        <a href="https://github.com/rails/rails/blob/52fddcc653458456f98b3683dffd781cf00b35fe/actionview/lib/action_view/helpers/tag_helper.rb">https://github.com/rails/rails/blob/52fddcc653458456f98b3683dffd781cf00b35fe/actionview/lib/action_view/helpers/tag_helper.rb</a>
+      </p>
+      <ul>
+        <li>
+          boolean attributes must receive <code>true</code> or <code>false</code>
+        </li>
+        <li>
+          array values are space joined, thus good behavior for classes
+        </li>
+        <li>
+          <code>Hash</code> values can only be passed to <code>data</code> and <code>aria</code> keys.
+          In those cases they do what you expect and produce several <code>data-X="Y"</code> attributes.
+          Any other key that contains hashes will produce a <code>inspect</code> representation of the hash,
+          which is never what you want.
+        </li>
+      </ul>
+
+  <%= header '#tag', 3 %>
+
+    <p>
+      Most general method for generating tags without the closing tag.
+      Default is to generate XML self closing syntax (which is valid HTML5, the slash being ignored).
+    </p>
 
   <%= header '#javascript_tag', 3 %>
 
@@ -608,9 +641,24 @@ b</div>
   Current environment: production, development, test, etc.
   %>
 
-  <p>Rails.env = <%= Rails.env %></p>
-  <p>Rails.root = <%= Rails.root %></p>
-  <p>Rails.logger.level = <%= Rails.logger.level %></p>
+  <p>Top level module.</p>
+  <p><a href="http://api.rubyonrails.org/classes/Rails.html#method-i-public_path">http://api.rubyonrails.org/classes/Rails.html#method-i-public_path</a></p>
+
+  <p><%= print_eval('Rails.env') {} %></p>
+  <p><%= print_eval('Rails.logger.level') {} %></p>
+  <p><%= print_eval('Rails.public_path') {} %></p>
+  <p><%= print_eval('Rails.root') {} %></p>
+
+  <%= header '#VERSION', 2 %>
+
+    <p><%= print_eval('Rails::VERSION::MAJOR') {} %></p>
+    <p><%= print_eval('Rails::VERSION::MINOR') {} %></p>
+    <p><%= print_eval('Rails::VERSION::TINY') {} %></p>
+    <p><%= print_eval('Rails::VERSION::STRING') {} %></p>
+
+  <%= header '#Info', 2 %>
+
+    <p><code>Rails::Info.to_s</code> prints some nice human readable framework info.</p>
 
 <%= header "#button_to", 2 %>
 
@@ -668,9 +716,12 @@ b</div>
 
 <%= header "##form", 2 %>
 
-  <%= header "###form_tag", 3 %>
+  <%= header "##form_tag", 3 %>
 
-    <p>Lower level method than `form_for`, which is much more commonly used when the form is a way to create an object.</p>
+    <p>
+      Lower level method than <code>form_for</code>,
+      which is much more commonly used when the form is a way to create an object.
+    </p>
 
     <p>input: <%= text_field 'model0', 'string_col' %></p>
     <p>expected: <code>input id="model0_string_col" name="model0[string_col]" type="text"</code></p>
@@ -690,6 +741,24 @@ b</div>
     <%#= time_field(:task, :started_at) %>
     <%# dropdown selection on one to many relation: %>
     <%#= collection_select(:model0, :model1_id, @model1s, :id, :string_col) %>
+
+    <p>GET request. Note no autheticity token:</p>
+    <%= form_tag '.', method: :get do %>
+      <div><%= text_field_tag 'name' %></div>
+      <div><%= submit_tag 'Submit' %></div>
+    <% end %>
+
+    <p>POST request. Autheticity token set and sent:</p>
+    <%= form_tag post_path, method: :post do %>
+      <div><%= text_field_tag 'name' %></div>
+      <div><%= submit_tag 'Submit' %></div>
+    <% end %>
+
+    <p>
+      Other methods are not possible in current HTML specs,
+      so if you chose any other Rails will add a <code>_method</code>
+      parameter which it automatically interprets server side.
+    </p>
 
   <%= header "###form_for", 3 %>
 
