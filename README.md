@@ -1,4 +1,4 @@
-# ![logo](logo.png) Rails Cheat
+# Rails Cheat ![logo](logo.png)
 
 Rails information and cheatsheets.
 
