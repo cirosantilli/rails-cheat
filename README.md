@@ -4,6 +4,7 @@ Rails information and cheatsheets.
 
 Every non-Rails-specific gem will not be in this repository,
 e.g.: HAML, Capybara, factory_girl, etc.
+A likely possible for them is the [Ruby Cheat](https://github.com/cirosantilli/ruby-cheat).
 
 ## Location of the main cheats
 
